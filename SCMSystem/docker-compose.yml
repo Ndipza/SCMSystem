@@ -1,0 +1,34 @@
+﻿version: '2.0'
+
+services:
+ api:
+    image: ndiphiwenombula/scmsystem:latest
+    container_name: cart-api
+    environment:
+      "ASPNETCORE_ENVIRONMENT": "Development"
+    ports:
+      - "43333:80"  # Map host port 80 to container port 80
+    depends_on:
+     - db  # Wait for the SQL Server container to be ready
+    networks:
+      - cart-network
+ db:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: sql-server
+    environment:
+      SA_PASSWORD: Fr@nce2023  # Set your SQL Server SA password
+      ACCEPT_EULA: Y
+    ports:
+      - "1533:1433"  # Map host port 1533 to container port 1433
+    networks:
+      - cart-network
+
+  #esconfig1:
+  #  driver: local
+  #esconfig2:
+  #  driver: local
+
+networks:
+  cart-network:
+    driver: bridge  
+    
