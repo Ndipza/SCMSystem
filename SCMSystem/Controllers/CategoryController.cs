@@ -18,7 +18,7 @@ namespace SCMSystem.Controllers
         [HttpGet]
         public Task<List<Category>> Get()
         {
-            var model = _unitOfWork.Category.GetAll();
+            var model = _unitOfWork.CategoryRepository.GetAll();
             return model;
         }
 
@@ -26,7 +26,7 @@ namespace SCMSystem.Controllers
         [HttpGet("{id}")]
         public Task<Category?> Get(int id)
         {
-            var model = _unitOfWork.Category.GetById(id);
+            var model = _unitOfWork.CategoryRepository.GetById(id);
             return model;
         }
 
@@ -34,7 +34,7 @@ namespace SCMSystem.Controllers
         [HttpPost]
         public Task<long> Post([FromBody] CategoryViewModel categoryViewModel)
         {
-            var model = _unitOfWork.Category.InsertAsync(categoryViewModel);
+            var model = _unitOfWork.CategoryRepository.InsertAsync(categoryViewModel);
             return model;
         }
 
@@ -42,7 +42,7 @@ namespace SCMSystem.Controllers
         [HttpPut("{id}")]
         public Task<Category> Put([FromBody] CategoryViewModel categoryViewModel, int id)
         {
-            var model = _unitOfWork.Category.UpdateAsync(categoryViewModel, id);
+            var model = _unitOfWork.CategoryRepository.UpdateAsync(categoryViewModel, id);
             return model;
         }
 
@@ -50,7 +50,7 @@ namespace SCMSystem.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
-            _unitOfWork.Category.Delete(id);
+            _unitOfWork.CategoryRepository.Delete(id);
         }
     }
 }

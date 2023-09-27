@@ -3,7 +3,7 @@ using Data.Models;
 
 namespace Repositories.Interfaces
 {
-    public interface ICategory
+    public interface ICategoryRepository
     {
         Task<List<Category>> GetAll();
         Task<Category?> GetById(int id);

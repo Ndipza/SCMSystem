@@ -8,12 +8,15 @@ namespace Repositories.Interfaces
 {
     public interface IUnitOfWork
     {
-        ICategory Category { get; }
-        //IFeature Feature { get; }
-        //IArticle Article { get; }
-        //IHashTag HashTag { get; }
-        //ILiveStream LiveStream { get; }
-        //IAuthRepository Auth { get; }
+        ICategoryRepository CategoryRepository { get; }
+        IAdminRepository AdminRepository { get; }
+        ICartRepository CartRepository { get; }
+        IOrderRepository OrderRepository { get; }
+        IOrderItemRepository OrderItemRepository { get; }
+        IPaymentMethodRepository PaymentMethodRepository { get; }
+        IPaymentRepository PaymentRepository { get; }
+        IProductRepository ProductRepository { get; }
+        IStatusRepository StatusRepository { get; }
         void Save();
         Task SaveAsync();
     }

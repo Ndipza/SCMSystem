@@ -6,7 +6,7 @@ using Repositories.Interfaces;
 
 namespace Repositories
 {
-    public class CategoryRepository : ICategory
+    public class CategoryRepository : ICategoryRepository
     {
         private readonly SCMSystemDBContext _context;
         public CategoryRepository(SCMSystemDBContext context)
