@@ -1,29 +1,26 @@
 ﻿using Core.ViewModels;
-using Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Interfaces;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace SCMSystem.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PaymentMethodController : ControllerBase
+    public class CustomerStatusController : ControllerBase
     {
         private readonly IUnitOfWorkRepository _unitOfWork;
-        public PaymentMethodController(IUnitOfWorkRepository unitOfWork)
+        public CustomerStatusController(IUnitOfWorkRepository unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
-        // GET: api/<PaymentMethodController>
+        // GET: api/<CustomerStatusController>
         [HttpGet]
-        [Route("GetAllPaymentMethods")]
+        [Route("GetAllCustomerStatuss")]
         public async Task<IActionResult> Get()
         {
             try
             {
-                var model = await _unitOfWork.PaymentMethodRepository.GetAll();
+                var model = await _unitOfWork.CustomerStatusRepository.GetAllCustomerStatuses();
                 if (model == null) { return NotFound(); }
 
                 return Ok(model);
@@ -34,13 +31,13 @@ namespace SCMSystem.Controllers
             }
         }
 
-        // GET api/<PaymentMethodController>/5
+        // GET api/<CustomerStatusController>/5
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
             try
             {
-                var model = await _unitOfWork.PaymentMethodRepository.GetById(id);
+                var model = await _unitOfWork.CustomerStatusRepository.GetCustomerStatusById(id);
                 if (model == null) { return NotFound(); }
 
                 return Ok(model);
@@ -53,14 +50,14 @@ namespace SCMSystem.Controllers
 
         }
 
-        // POST api/<PaymentMethodController>
+        // POST api/<CustomerStatusController>
         [HttpPost]
-        [Route("CreatePaymentMethod")]
-        public async Task<IActionResult> Post([FromBody] PaymentMethodViewModel paymentMethodViewModel)
+        [Route("CreateCustomerStatus")]
+        public async Task<IActionResult> Post([FromBody] CustomerStatusViewModel CustomerStatusViewModel)
         {
             try
             {
-                var model = await _unitOfWork.PaymentMethodRepository.InsertAsync(paymentMethodViewModel);
+                var model = await _unitOfWork.CustomerStatusRepository.CreateCustomerStatusAsync(CustomerStatusViewModel);
                 if (model == 0) { return NotFound(); }
 
                 return Ok(model);
@@ -71,13 +68,13 @@ namespace SCMSystem.Controllers
             }
         }
 
-        // PUT api/<PaymentMethodController>/5
+        // PUT api/<CustomerStatusController>/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put([FromBody] PaymentMethodViewModel paymentMethodViewModel, int id)
+        public async Task<IActionResult> Put([FromBody] CustomerStatusViewModel customerStatusViewModel, int id)
         {
             try
             {
-                var model = await _unitOfWork.PaymentMethodRepository.UpdateAsync(paymentMethodViewModel, id);
+                var model = await _unitOfWork.CustomerStatusRepository.UpdateCustomerStatusAsync(customerStatusViewModel, id);
                 if (model == null) { return NotFound(); }
 
                 return Ok(model);
@@ -88,13 +85,13 @@ namespace SCMSystem.Controllers
             }
         }
 
-        // DELETE api/<PaymentMethodController>/5
+        // DELETE api/<CustomerStatusController>/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             try
             {
-                await _unitOfWork.PaymentMethodRepository.Delete(id);
+                await _unitOfWork.CustomerStatusRepository.DeleteCustomerStatusById(id);
 
                 return Ok($"{id} Deleted");
             }

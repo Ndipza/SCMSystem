@@ -11,6 +11,7 @@ namespace Core.ViewModels
     {
         [Required]
         [StringLength(50)]
+        [MinLength(2)]
         public string? Description { get; set; }
     }
 }
