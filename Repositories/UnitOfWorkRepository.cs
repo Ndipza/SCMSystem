@@ -19,9 +19,11 @@ namespace Repositories
         private IPaymentRepository _paymentRepository;
         private IProductRepository _productRepository;
         private ICustomerStatusRepository _customerStatusRepository;
+        private ICartStatusRepository _cartStatusRepository;
         public UnitOfWorkRepository(SCMSystemDBContext context, ICartRepository cartRepository,
             ICategoryRepository categoryRepository, ICustomerRepository customerRepository, IPaymentMethodRepository paymentMethodRepository, IPaymentRepository paymentRepository,
-            IProductRepository productRepository, ICustomerStatusRepository customerStatusRepository)
+            IProductRepository productRepository, ICustomerStatusRepository customerStatusRepository,
+            ICartStatusRepository cartStatusRepository)
         {
             _context = context;
             _cartRepository = cartRepository;
@@ -31,6 +33,7 @@ namespace Repositories
             _paymentRepository = paymentRepository;
             _productRepository = productRepository;
             _customerStatusRepository = customerStatusRepository;
+            _cartStatusRepository = cartStatusRepository;
         }
 
         public ICartRepository CartRepository
@@ -86,6 +89,14 @@ namespace Repositories
             get
             {
                 return _customerStatusRepository ?? new CustomerStatusRepository(_context);
+            }
+        }
+
+        public ICartStatusRepository CartStatusRepository
+        {
+            get
+            {
+                return _cartStatusRepository ?? new CartStatusRepository(_context);
             }
         }
 

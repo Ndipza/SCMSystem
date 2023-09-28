@@ -54,6 +54,7 @@ namespace NN.Cart
             builder.Services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository>();
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<ICustomerStatusRepository, CustomerStatusRepository>();
+            builder.Services.AddScoped<ICartStatusRepository, CartStatusRepository>();
 
             var app = builder.Build();
 
