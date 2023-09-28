@@ -6,15 +6,14 @@ namespace Core.ViewModels
     {
         [Required]
         [StringLength(50)]
-        public string Name { get; set; }
+        public string? Name { get; set; }
         [Required]
         [StringLength(50)]
-        public string Password { get; set; }
-        [Required]
-        [StringLength(50)]
-        public string Email { get; set; }
+        public string? Email { get; set; }
         [Required]
         [StringLength(13)]
-        public string CellNumber { get; set; }
+        public string? CellNumber { get; set; }
+
+        public int CustomerStatusId { get; set; }
     }
 }

@@ -9,8 +9,8 @@ namespace SCMSystem.Controllers
     [ApiController]
     public class CartController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
-        public CartController(IUnitOfWork unitOfWork)
+        private readonly IUnitOfWorkRepository _unitOfWork;
+        public CartController(IUnitOfWorkRepository unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
@@ -24,9 +24,9 @@ namespace SCMSystem.Controllers
 
         // GET api/<CartController>/5
         [HttpGet("{id}")]
-        public Task<Admin?> Get(int id)
+        public Task<Cart?> Get(int id)
         {
-            var model = _unitOfWork.AdminRepository.GetById(id);
+            var model = _unitOfWork.CartRepository.GetById(id);
             return model;
         }
 

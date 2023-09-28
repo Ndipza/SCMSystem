@@ -9,22 +9,34 @@ namespace SCMSystem.Controllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
-        public CategoryController(IUnitOfWork unitOfWork)
+        private readonly IUnitOfWorkRepository _unitOfWork;
+        public CategoryController(IUnitOfWorkRepository unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
         // GET: api/<CategoryController>
         [HttpGet]
-        public Task<List<Category>> Get()
+        [Route("GetCategories")]
+        public async Task<IActionResult> GetCategories()
         {
-            var model = _unitOfWork.CategoryRepository.GetAll();
-            return model;
+            try
+            {
+                var model = _unitOfWork.CategoryRepository.GetCategories();
+                if(model == null) { return NotFound(); }
+
+                return Ok(model);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+            
         }
 
         // GET api/<CategoryController>/5
         [HttpGet("{id}")]
-        public Task<Category?> Get(int id)
+        [Route("GetCategory")]
+        public Task<Category?> GetCategory(int id)
         {
             var model = _unitOfWork.CategoryRepository.GetById(id);
             return model;
@@ -34,7 +46,7 @@ namespace SCMSystem.Controllers
         [HttpPost]
         public Task<long> Post([FromBody] CategoryViewModel categoryViewModel)
         {
-            var model = _unitOfWork.CategoryRepository.InsertAsync(categoryViewModel);
+            var model = _unitOfWork.CategoryRepository.Create(categoryViewModel);
             return model;
         }
 
@@ -42,7 +54,7 @@ namespace SCMSystem.Controllers
         [HttpPut("{id}")]
         public Task<Category> Put([FromBody] CategoryViewModel categoryViewModel, int id)
         {
-            var model = _unitOfWork.CategoryRepository.UpdateAsync(categoryViewModel, id);
+            var model = _unitOfWork.CategoryRepository.Update(categoryViewModel, id);
             return model;
         }
 

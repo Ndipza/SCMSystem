@@ -10,9 +10,7 @@ namespace Core.ViewModels
     {
         [Required]
         [StringLength(50)]
-        public string Name { get; set; }
-        public string? Description { get; set; }
-        [Required]
+        public string? Name { get; set; }
         public int Price { get; set; }
     }
 }

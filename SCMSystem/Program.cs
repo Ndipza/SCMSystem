@@ -2,6 +2,8 @@ using Data;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Repositories;
+using Repositories.Interfaces;
 
 namespace NN.Cart
 {
@@ -15,21 +17,21 @@ namespace NN.Cart
             //    .MinimumLevel.Debug()
             //    .WriteTo.Console(theme: SystemConsoleTheme.Literate)
             //.WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(Configuration.GetConnectionString("elasticsearch"))) // for the docker-compose implementation
-            //    {
-            //        AutoRegisterTemplate = true,
-            //        OverwriteTemplate = true,
-            //        DetectElasticsearchVersion = true,
-            //        AutoRegisterTemplateVersion = AutoRegisterTemplateVersion.ESv7,
-            //        NumberOfReplicas = 1,
-            //        NumberOfShards = 2,
-            //        //BufferBaseFilename = "./buffer",
-            //        // RegisterTemplateFailure = RegisterTemplateRecovery.FailSink,
-            //        FailureCallback = e => Console.WriteLine("Unable to submit event " + e.MessageTemplate),
-            //        EmitEventFailure = EmitEventFailureHandling.WriteToSelfLog |
+            //{
+            //    AutoRegisterTemplate = true,
+            //    OverwriteTemplate = true,
+            //    DetectElasticsearchVersion = true,
+            //    AutoRegisterTemplateVersion = AutoRegisterTemplateVersion.ESv7,
+            //    NumberOfReplicas = 1,
+            //    NumberOfShards = 2,
+            //    //BufferBaseFilename = "./buffer",
+            //    // RegisterTemplateFailure = RegisterTemplateRecovery.FailSink,
+            //    FailureCallback = e => Console.WriteLine("Unable to submit event " + e.MessageTemplate),
+            //    EmitEventFailure = EmitEventFailureHandling.WriteToSelfLog |
             //                           EmitEventFailureHandling.WriteToFailureSink |
             //                           EmitEventFailureHandling.RaiseCallback,
-            //        FailureSink = new FileSink("./fail-{Date}.txt", new JsonFormatter(), null, null)
-            //    })
+            //    FailureSink = new FileSink("./fail-{Date}.txt", new JsonFormatter(), null, null)
+            //})
             //    .CreateLogger();
 
             //Log.Information("Hello, world!");
@@ -45,6 +47,13 @@ namespace NN.Cart
                 builder.Configuration.GetConnectionString("CartConnection")
             ));
             //builder.Services.AddScoped<ISeedService, SeedService>();
+            builder.Services.AddTransient<IUnitOfWorkRepository, UnitOfWorkRepository>();
+            builder.Services.AddScoped<ICartRepository, CartRepository>();
+            builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+            builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+            builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+            builder.Services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository>();
+            builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
             var app = builder.Build();
 

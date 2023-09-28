@@ -29,7 +29,8 @@ namespace Repositories
         {
             return await _context.Carts
                 .AsNoTracking()
-                .Include(cart => cart.Order)
+                .Include(cart => cart.CartStatus)
+                .Include(cart => cart.Customer)
                 .SingleOrDefaultAsync(x => x.Id == id);
         }
 
@@ -37,9 +38,9 @@ namespace Repositories
         {
             var cart = new Cart
             {
-                Quantity = cartViewModel.Quantity,
+                DateCreated = DateTime.Now,
                 CustomerId = cartViewModel.CustomerId,
-                OrderId = cartViewModel.OrderId
+                CartStatusId = cartViewModel.CartStatusId
             };
             await _context.Carts.AddAsync(cart);
             return cart.Id;
@@ -54,9 +55,9 @@ namespace Repositories
             cart = new Cart
             {
                 Id = id,
-                Quantity = cartViewModel.Quantity,
+                DateUpdated = DateTime.Now,
                 CustomerId = cartViewModel.CustomerId,
-                OrderId = cartViewModel.OrderId
+                CartStatusId = cartViewModel.CartStatusId
             };
             _context.Carts.Update(cart);
             await _context.SaveChangesAsync();

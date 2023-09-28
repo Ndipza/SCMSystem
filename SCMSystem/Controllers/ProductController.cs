@@ -11,8 +11,8 @@ namespace SCMSystem.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
-        public ProductController(IUnitOfWork unitOfWork)
+        private readonly IUnitOfWorkRepository _unitOfWork;
+        public ProductController(IUnitOfWorkRepository unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }

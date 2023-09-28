@@ -11,8 +11,8 @@ namespace SCMSystem.Controllers
     [ApiController]
     public class PaymentMethodController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
-        public PaymentMethodController(IUnitOfWork unitOfWork)
+        private readonly IUnitOfWorkRepository _unitOfWork;
+        public PaymentMethodController(IUnitOfWorkRepository unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }

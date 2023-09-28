@@ -29,7 +29,7 @@ namespace Repositories
         {
             return await _context.Products
                 .AsNoTracking()
-                .Include(product => product.OrderItems)
+                .Include(product => product.CartItems)
                 .SingleOrDefaultAsync(x => x.Id == id);
         }
 
@@ -37,7 +37,8 @@ namespace Repositories
         {
             var product = new Product
             {
-                Name = productViewModel.Name
+                Name = productViewModel.Name,
+                Price = productViewModel.Price
             };
             await _context.Products.AddAsync(product);
             return product.Id;
@@ -52,7 +53,8 @@ namespace Repositories
             product = new Product
             {
                 Id = id,
-                Name = productViewModel.Name
+                Name = productViewModel.Name,
+                Price = productViewModel.Price
             };
             _context.Products.Update(product);
             await _context.SaveChangesAsync();

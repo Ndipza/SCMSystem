@@ -7,8 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Category\Models\" />
-    <Folder Include="Interfaces\" />
+    <Folder Include="Category\" />
   </ItemGroup>
 
 </Project>

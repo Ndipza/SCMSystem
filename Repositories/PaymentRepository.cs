@@ -37,11 +37,11 @@ namespace Repositories
         {
             var payment = new Payment
             {
-                PaymentMethodID = paymentViewModel.PaymentMethodID,
-                CustomerId = paymentViewModel.CustomerId,
-                OrderItemId = paymentViewModel.OrderItemId,
+                PaymentMethodId = paymentViewModel.PaymentMethodID,
+                CartId = paymentViewModel.CartId,
+                PaymentStatusId = paymentViewModel.PaymentStatusId,
                 PaymentDate = DateTime.Now,
-                Amount = paymentViewModel.Amount
+                Balance = paymentViewModel.Amount
             };
             await _context.Payments.AddAsync(payment);
             return payment.Id;
@@ -56,11 +56,11 @@ namespace Repositories
             payment = new Payment
             {
                 Id = id,
-                PaymentMethodID = paymentViewModel.PaymentMethodID,
-                CustomerId = paymentViewModel.CustomerId,
-                OrderItemId = paymentViewModel.OrderItemId,
+                PaymentMethodId = paymentViewModel.PaymentMethodID,
+                PaymentStatusId = paymentViewModel.PaymentStatusId,
+                CartId = paymentViewModel.CartId,
                 PaymentDate = DateTime.Now,
-                Amount = paymentViewModel.Amount
+                Balance = paymentViewModel.Amount
             };
             _context.Payments.Update(payment);
             await _context.SaveChangesAsync();

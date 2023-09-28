@@ -1,6 +1,5 @@
 ﻿using Data.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Data;
 
 namespace Data
 {
@@ -10,56 +9,66 @@ namespace Data
         {
 
         }
-        public DbSet<Admin> Admins { get; set; }
-        public DbSet<Customer> Customers { get; set; }
-        public DbSet<Product> Products { get; set; }
-        public DbSet<Category> Categories { get; set; }
-        public DbSet<Order> Orders { get; set; }
-        public DbSet<OrderItem> OrderItems { get; set; }
-        public DbSet<Payment> Payments { get; set; }
         public DbSet<Cart> Carts { get; set; }
-        public DbSet<Status> Statuses { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
+        public DbSet<CartStatus> CartStatuses { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Customer> Customers { get; set; }
+        public DbSet<CustomerStatus> CustomerStatuses { get; set; }
+        public DbSet<Payment> Payments { get; set; }
         public DbSet<PaymentMethod> PaymentMethods { get; set; }
+        public DbSet<PaymentStatus> Statuses { get; set; }
+        public DbSet<Product> Products { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Category>()
+                .HasMany(c => c.Products)
+                .WithOne(p => p.Category)
+                .OnDelete(DeleteBehavior.SetNull);
 
-            //modelBuilder.Entity<ArticleHashTag>()
-            //    .HasKey(sma => new { sma.ArticleId, sma.HashTagId });
+            modelBuilder.Entity<CartStatus>()
+                .HasMany(c => c.Carts)
+                .WithOne(p => p.CartStatus)
+                .OnDelete(DeleteBehavior.SetNull);
 
-            //modelBuilder.Entity<ArticleHashTag>()
-            //    .HasOne(sma => sma.Article)
-            //    .WithMany(sma => sma.ArticleHashTags)
-            //    .HasForeignKey(s => s.ArticleId);
 
-            //modelBuilder.Entity<ArticleHashTag>()
-            //    .HasOne(sma => sma.HashTag)
-            //    .WithMany(sma => sma.ArticleHashTags)
-            //    .HasForeignKey(s => s.HashTagId);
+            modelBuilder.Entity<PaymentStatus>()
+                .HasMany(c => c.Payments)
+                .WithOne(p => p.PaymentStatus)
+                .OnDelete(DeleteBehavior.SetNull);
 
-            //modelBuilder.Entity<ArticleFeature>()
-            //    .HasKey(sma => new { sma.ArticleId, sma.FeatureId });
+            modelBuilder.Entity<PaymentMethod>()
+                .HasMany(c => c.Payments)
+                .WithOne(p => p.PaymentMethod)
+                .OnDelete(DeleteBehavior.SetNull);
 
-            //modelBuilder.Entity<ArticleFeature>()
-            //    .HasOne(sma => sma.Article)
-            //    .WithMany(sma => sma.ArticleFeatures)
-            //    .HasForeignKey(s => s.ArticleId);
+            modelBuilder.Entity<CustomerStatus>()
+                .HasMany(c => c.Customers)
+                .WithOne(p => p.CustomerStatus)
+                .OnDelete(DeleteBehavior.SetNull);
 
-            //modelBuilder.Entity<ArticleFeature>()
-            //    .HasOne(sma => sma.Feature)
-            //    .WithMany(sma => sma.ArticleFeatures)
-            //    .HasForeignKey(s => s.FeatureId);
+            modelBuilder.Entity<Customer>()
+               .HasMany(c => c.Carts)
+               .WithOne(p => p.Customer)
+               .OnDelete(DeleteBehavior.SetNull);
 
-            //modelBuilder.Entity<Category>()
-            //    .HasMany(c => c.Articles)
-            //    .WithOne(a => a.Category)
-            //    .IsRequired();
+            modelBuilder.Entity<Product>()
+               .HasMany(c => c.CartItems)
+               .WithOne(p => p.Product)
+               .OnDelete(DeleteBehavior.SetNull);
 
-            //modelBuilder.Entity<AppUser>()
-            //.HasOne(user => user.UserRole);
+            modelBuilder.Entity<Cart>()
+               .HasMany(c => c.CartItems)
+               .WithOne(p => p.Cart)
+               .OnDelete(DeleteBehavior.SetNull);
 
-            //modelBuilder.Entity<Role>();
+            modelBuilder.Entity<Cart>()
+               .HasMany(c => c.Payments)
+               .WithOne(p => p.Cart)
+               .OnDelete(DeleteBehavior.SetNull);
+           
         }
-
+        
     }
 }

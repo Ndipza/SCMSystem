@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Models
 {
@@ -7,18 +8,12 @@ namespace Data.Models
         public int Id { get; set; }
         [Required]
         [StringLength(50)]
-        public string Name { get; set; }
-        public string? Description { get; set; }
+        public string? Name { get; set; }
         [Required]
-        public int Price { get; set; }
-        [Required]
-        public int CategoryId { get; set; }
-        [Required]
-        public virtual Category? Category { get; set; }
-        [Required]
-        public int AdminId { get; set; }
-        [Required]
-        public virtual Admin? Admin { get; set; }
-        public virtual List<OrderItem>? OrderItems { get; set; } = new List<OrderItem>();
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal Price { get; set; }
+        public int? CategoryId { get; set; }
+        public Category? Category { get; set; }
+        public List<CartItem>? CartItems { get; set; } = new List<CartItem>();
     }
 }

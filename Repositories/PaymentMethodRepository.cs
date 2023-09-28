@@ -37,7 +37,7 @@ namespace Repositories
         {
             var paymentMethod = new PaymentMethod
             {
-                Name = paymentMethodViewModel.Name
+                Description = paymentMethodViewModel.Name
             };
             await _context.PaymentMethods.AddAsync(paymentMethod);
             return paymentMethod.Id;
@@ -52,7 +52,7 @@ namespace Repositories
             paymentMethod = new PaymentMethod
             {
                 Id = id,
-                Name = paymentMethodViewModel.Name                
+                Description = paymentMethodViewModel.Name                
             };
             _context.PaymentMethods.Update(paymentMethod);
             await _context.SaveChangesAsync();
