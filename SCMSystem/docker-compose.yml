@@ -19,7 +19,7 @@ services:
       SA_PASSWORD: Fr@nce2023  # Set your SQL Server SA password
       ACCEPT_EULA: Y
     ports:
-      - "1533:1433"  # Map host port 1533 to container port 1433
+      - "1433:1433"  # Map host port 1433 to container port 1433
     networks:
       - cart-network
 
