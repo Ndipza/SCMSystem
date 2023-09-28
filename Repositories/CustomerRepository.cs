@@ -48,6 +48,7 @@ namespace Repositories
                 DateCreated = DateTime.Now
             };
             await _context.Customers.AddAsync(customer);
+            await _context.SaveChangesAsync();
             return customer.Id;
         }
 

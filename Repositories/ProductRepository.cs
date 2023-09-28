@@ -41,6 +41,7 @@ namespace Repositories
                 Price = productViewModel.Price
             };
             await _context.Products.AddAsync(product);
+            await _context.SaveChangesAsync();
             return product.Id;
         }
 

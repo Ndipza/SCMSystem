@@ -21,8 +21,8 @@ namespace SCMSystem.Controllers
         {
             try
             {
-                var model = _unitOfWork.CategoryRepository.GetCategories();
-                if(model == null) { return NotFound(); }
+                var model = await _unitOfWork.CategoryRepository.GetCategories();
+                if (model == null) { return NotFound(); }
 
                 return Ok(model);
             }
@@ -30,39 +30,75 @@ namespace SCMSystem.Controllers
             {
                 return BadRequest();
             }
-            
+
         }
 
         // GET api/<CategoryController>/5
         [HttpGet("{id}")]
-        public Task<Category?> GetCategory(int id)
+        public async Task<IActionResult> GetCategory(int id)
         {
-            var model = _unitOfWork.CategoryRepository.GetById(id);
-            return model;
+            try
+            {
+                var model = await _unitOfWork.CategoryRepository.GetCategoryById(id);
+                if (model == null) { return NotFound(); }
+
+                return Ok(model);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
 
         // POST api/<CategoryController>
         [HttpPost]
         [Route("CreateCategory")]
-        public Task<long> Post([FromBody] CategoryViewModel categoryViewModel)
+        public async Task<IActionResult> Post([FromBody] CategoryViewModel categoryViewModel)
         {
-            var model = _unitOfWork.CategoryRepository.Create(categoryViewModel);
-            return model;
+            try
+            {
+                var model = await _unitOfWork.CategoryRepository.CreateCategory(categoryViewModel);
+                if (model == 0) { return NotFound(); }
+
+                return Ok(model);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
 
         // PUT api/<CategoryController>/5
         [HttpPut("{id}")]
-        public Task<Category> Put([FromBody] CategoryViewModel categoryViewModel, int id)
+        public async Task<IActionResult> Put([FromBody] CategoryViewModel categoryViewModel, int id)
         {
-            var model = _unitOfWork.CategoryRepository.Update(categoryViewModel, id);
-            return model;
+            try
+            {
+                var model = await _unitOfWork.CategoryRepository.UpdateCategory(categoryViewModel, id);
+                if (model == null) { return NotFound(); }
+
+                return Ok(model);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
 
         // DELETE api/<CategoryController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            _unitOfWork.CategoryRepository.Delete(id);
+            try
+            {
+                await _unitOfWork.CategoryRepository.DeleteCategory(id);
+
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
     }
 }

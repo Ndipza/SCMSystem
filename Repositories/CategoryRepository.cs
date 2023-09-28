@@ -13,11 +13,11 @@ namespace Repositories
         {
             _context = context;
         }
-        public async Task Delete(int id)
+        public async Task DeleteCategory(int id)
         {
             if (_context != null)
             {
-                var category = GetById(id)?.Result ?? new Category();
+                var category = GetCategoryById(id)?.Result ?? new Category();
                 _context.Categories.RemoveRange(category);
                 await _context.SaveChangesAsync();
             }
@@ -31,7 +31,7 @@ namespace Repositories
             return await _context.Categories.ToListAsync();
         }
 
-        public async Task<Category?> GetById(int id)
+        public async Task<Category?> GetCategoryById(int id)
         {
             if (_context == null)
                 return new Category();
@@ -42,7 +42,7 @@ namespace Repositories
                 .SingleOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<long> Create(CategoryViewModel categoryViewModel)
+        public async Task<long> CreateCategory(CategoryViewModel categoryViewModel)
         {
             if (_context == null)
                 return 0;
@@ -52,12 +52,13 @@ namespace Repositories
                 Name = categoryViewModel.Name
             };
             await _context.Categories.AddAsync(category);
+            await _context.SaveChangesAsync();
             return category.Id;
         }
 
-        public async Task<Category> Update(CategoryViewModel categoryViewModel, int id)
+        public async Task<Category> UpdateCategory(CategoryViewModel categoryViewModel, int id)
         {
-            var category = GetById(id)?.Result;
+            var category = GetCategoryById(id)?.Result;
 
             if (category == null) { return new Category(); }
 

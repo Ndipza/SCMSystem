@@ -43,6 +43,7 @@ namespace Repositories
                 CartStatusId = cartViewModel.CartStatusId
             };
             await _context.Carts.AddAsync(cart);
+            await _context.SaveChangesAsync();
             return cart.Id;
         }
 

@@ -44,6 +44,7 @@ namespace Repositories
                 Balance = paymentViewModel.Amount
             };
             await _context.Payments.AddAsync(payment);
+            await _context.SaveChangesAsync();
             return payment.Id;
         }
 

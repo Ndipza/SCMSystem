@@ -86,7 +86,7 @@ namespace RepositoriesTest.Category
 
             foreach (var category in _categories)
             {
-                mockCategoryRepo.Setup(service => service.GetById(category.Id)).ReturnsAsync(category);
+                mockCategoryRepo.Setup(service => service.GetCategoryById(category.Id)).ReturnsAsync(category);
             }
 
             var categoryViewModel = new CategoryViewModel
@@ -95,8 +95,8 @@ namespace RepositoriesTest.Category
             };
 
             //mockCategoryRepo.Setup(service => service.Create(categoryViewModel)).ReturnsAsync(  );
-            mockCategoryRepo.Setup(service => service.Delete(It.IsAny<Data.Models.Category>().Id));
-            mockCategoryRepo.Setup(service => service.Update(It.IsAny<CategoryViewModel>(), It.IsAny<Data.Models.Category>().Id)).ReturnsAsync((Data.Models.Category category) => category);
+            mockCategoryRepo.Setup(service => service.DeleteCategory(It.IsAny<Data.Models.Category>().Id));
+            mockCategoryRepo.Setup(service => service.UpdateCategory(It.IsAny<CategoryViewModel>(), It.IsAny<Data.Models.Category>().Id)).ReturnsAsync((Data.Models.Category category) => category);
 
             return mockCategoryRepo.Object;
         }
