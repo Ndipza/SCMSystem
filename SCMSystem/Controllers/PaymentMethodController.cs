@@ -18,41 +18,90 @@ namespace SCMSystem.Controllers
         }
         // GET: api/<PaymentMethodController>
         [HttpGet]
-        public Task<List<PaymentMethod>> Get()
+        [Route("GetAllPaymentMethods")]
+        public async Task<IActionResult> Get()
         {
-            var model = _unitOfWork.PaymentMethodRepository.GetAll();
-            return model;
+            try
+            {
+                var model = await _unitOfWork.PaymentMethodRepository.GetAll();
+                if (model == null) { return NotFound(); }
+
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // GET api/<PaymentMethodController>/5
         [HttpGet("{id}")]
-        public Task<PaymentMethod?> Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            var model = _unitOfWork.PaymentMethodRepository.GetById(id);
-            return model;
+            try
+            {
+                var model = await _unitOfWork.PaymentMethodRepository.GetById(id);
+                if (model == null) { return NotFound(); }
+
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+
         }
 
         // POST api/<PaymentMethodController>
         [HttpPost]
-        public Task<long> Post([FromBody] PaymentMethodViewModel paymentMethodViewModel)
+        [Route("CreateCategory")]
+        public async Task<IActionResult> Post([FromBody] PaymentMethodViewModel paymentMethodViewModel)
         {
-            var model = _unitOfWork.PaymentMethodRepository.InsertAsync(paymentMethodViewModel);
-            return model;
+            try
+            {
+                var model = await _unitOfWork.PaymentMethodRepository.InsertAsync(paymentMethodViewModel);
+                if (model == 0) { return NotFound(); }
+
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // PUT api/<PaymentMethodController>/5
         [HttpPut("{id}")]
-        public Task<PaymentMethod> Put([FromBody] PaymentMethodViewModel paymentMethodViewModel, int id)
+        public async Task<IActionResult> Put([FromBody] PaymentMethodViewModel paymentMethodViewModel, int id)
         {
-            var model = _unitOfWork.PaymentMethodRepository.UpdateAsync(paymentMethodViewModel, id);
-            return model;
+            try
+            {
+                var model = await _unitOfWork.PaymentMethodRepository.UpdateAsync(paymentMethodViewModel, id);
+                if (model == null) { return NotFound(); }
+
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // DELETE api/<PaymentMethodController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            _unitOfWork.PaymentMethodRepository.Delete(id);
+            try
+            {
+                await _unitOfWork.PaymentMethodRepository.Delete(id);
+
+                return Ok($"{id} Deleted");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

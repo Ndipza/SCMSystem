@@ -39,7 +39,8 @@ namespace Repositories
             {
                 Description = paymentMethodViewModel.Name
             };
-            await _context.PaymentMethods.AddAsync(paymentMethod);
+            await _context.PaymentMethods.AddAsync(paymentMethod).ConfigureAwait(false);
+            await _context.SaveChangesAsync();
             return paymentMethod.Id;
         }
 

@@ -1,4 +1,8 @@
+using Core.ViewModels;
 using Data;
+using Data.Models;
+using Data.Validators;
+using FluentValidation;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -48,12 +52,15 @@ namespace NN.Cart
             ));
             //builder.Services.AddScoped<ISeedService, SeedService>();
             builder.Services.AddTransient<IUnitOfWorkRepository, UnitOfWorkRepository>();
+            builder.Services.AddTransient<IValidator<PaymentMethodViewModel>, PaymentMethodViewModelValidator>();
+
             builder.Services.AddScoped<ICartRepository, CartRepository>();
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
             builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
             builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
             builder.Services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository>();
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
+
 
             var app = builder.Build();
 

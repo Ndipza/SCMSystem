@@ -16,7 +16,7 @@ namespace SCMSystem.Controllers
         }
         // GET: api/<CategoryController>
         [HttpGet]
-        [Route("GetCategories")]
+        [Route("GetAllCategories")]
         public async Task<IActionResult> GetCategories()
         {
             try
@@ -35,7 +35,6 @@ namespace SCMSystem.Controllers
 
         // GET api/<CategoryController>/5
         [HttpGet("{id}")]
-        [Route("GetCategory")]
         public Task<Category?> GetCategory(int id)
         {
             var model = _unitOfWork.CategoryRepository.GetById(id);
@@ -44,6 +43,7 @@ namespace SCMSystem.Controllers
 
         // POST api/<CategoryController>
         [HttpPost]
+        [Route("CreateCategory")]
         public Task<long> Post([FromBody] CategoryViewModel categoryViewModel)
         {
             var model = _unitOfWork.CategoryRepository.Create(categoryViewModel);
