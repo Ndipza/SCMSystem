@@ -17,7 +17,7 @@ namespace Data
         public DbSet<CustomerStatus> CustomerStatuses { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<PaymentMethod> PaymentMethods { get; set; }
-        public DbSet<PaymentStatus> Statuses { get; set; }
+        public DbSet<PaymentStatus> PaymentStatuses { get; set; }
         public DbSet<Product> Products { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

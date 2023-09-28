@@ -1,5 +1,4 @@
 ﻿using Core.ViewModels;
-using Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Interfaces;
 
@@ -7,21 +6,21 @@ namespace SCMSystem.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PaymentMethodController : ControllerBase
+    public class PaymentStatusController : ControllerBase
     {
         private readonly IUnitOfWorkRepository _unitOfWork;
-        public PaymentMethodController(IUnitOfWorkRepository unitOfWork)
+        public PaymentStatusController(IUnitOfWorkRepository unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
-        // GET: api/<PaymentMethodController>
+        // GET: api/<PaymentStatusController>
         [HttpGet]
-        [Route("GetAllPaymentMethods")]
+        [Route("GetAllPaymentStatuss")]
         public async Task<IActionResult> Get()
         {
             try
             {
-                var model = await _unitOfWork.PaymentMethodRepository.GetAll();
+                var model = await _unitOfWork.PaymentStatusRepository.GetAllPaymentStatuses();
                 if (model == null) { return NotFound(); }
 
                 return Ok(model);
@@ -32,13 +31,13 @@ namespace SCMSystem.Controllers
             }
         }
 
-        // GET api/<PaymentMethodController>/5
+        // GET api/<PaymentStatusController>/5
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
             try
             {
-                var model = await _unitOfWork.PaymentMethodRepository.GetById(id);
+                var model = await _unitOfWork.PaymentStatusRepository.GetPaymentStatusById(id);
                 if (model == null) { return NotFound(); }
 
                 return Ok(model);
@@ -51,14 +50,14 @@ namespace SCMSystem.Controllers
 
         }
 
-        // POST api/<PaymentMethodController>
+        // POST api/<PaymentStatusController>
         [HttpPost]
-        [Route("CreatePaymentMethod")]
-        public async Task<IActionResult> Post([FromBody] PaymentMethodViewModel paymentMethodViewModel)
+        [Route("CreatePaymentStatus")]
+        public async Task<IActionResult> Post([FromBody] PaymentStatusViewModel PaymentStatusViewModel)
         {
             try
             {
-                var model = await _unitOfWork.PaymentMethodRepository.InsertAsync(paymentMethodViewModel);
+                var model = await _unitOfWork.PaymentStatusRepository.CreatePaymentStatusAsync(PaymentStatusViewModel);
                 if (model == 0) { return NotFound(); }
 
                 return Ok(model);
@@ -69,13 +68,13 @@ namespace SCMSystem.Controllers
             }
         }
 
-        // PUT api/<PaymentMethodController>/5
+        // PUT api/<PaymentStatusController>/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put([FromBody] PaymentMethodViewModel paymentMethodViewModel, int id)
+        public async Task<IActionResult> Put([FromBody] PaymentStatusViewModel PaymentStatusViewModel, int id)
         {
             try
             {
-                var model = await _unitOfWork.PaymentMethodRepository.UpdateAsync(paymentMethodViewModel, id);
+                var model = await _unitOfWork.PaymentStatusRepository.UpdatePaymentStatusAsync(PaymentStatusViewModel, id);
                 if (model == null) { return NotFound(); }
 
                 return Ok(model);
@@ -86,13 +85,13 @@ namespace SCMSystem.Controllers
             }
         }
 
-        // DELETE api/<PaymentMethodController>/5
+        // DELETE api/<PaymentStatusController>/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             try
             {
-                await _unitOfWork.PaymentMethodRepository.Delete(id);
+                await _unitOfWork.PaymentStatusRepository.DeletePaymentStatusById(id);
 
                 return Ok($"{id} Deleted");
             }

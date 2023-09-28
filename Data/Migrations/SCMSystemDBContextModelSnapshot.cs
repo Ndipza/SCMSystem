@@ -235,7 +235,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Statuses");
+                    b.ToTable("PaymentStatuses");
                 });
 
             modelBuilder.Entity("Data.Models.Product", b =>

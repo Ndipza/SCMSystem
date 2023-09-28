@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(SCMSystemDBContext))]
-    [Migration("20230928161456_Initial")]
+    [Migration("20230928211007_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -238,7 +238,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Statuses");
+                    b.ToTable("PaymentStatuses");
                 });
 
             modelBuilder.Entity("Data.Models.Product", b =>

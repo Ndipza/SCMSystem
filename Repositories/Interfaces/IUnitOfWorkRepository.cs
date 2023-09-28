@@ -17,6 +17,7 @@ namespace Repositories.Interfaces
         IProductRepository ProductRepository { get; }
         ICustomerStatusRepository CustomerStatusRepository { get; }
         ICartStatusRepository CartStatusRepository { get; }
+        IPaymentStatusRepository PaymentStatusRepository { get; }
         void Save();
         Task SaveAsync();
     }

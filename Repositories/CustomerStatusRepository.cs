@@ -8,8 +8,6 @@ namespace Repositories
 {
     public class CustomerStatusRepository : ICustomerStatusRepository
     {
-
-
         private readonly SCMSystemDBContext _context;
         public CustomerStatusRepository(SCMSystemDBContext context)
         {

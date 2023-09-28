@@ -64,7 +64,7 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Statuses",
+                name: "PaymentStatuses",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -73,7 +73,7 @@ namespace Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Statuses", x => x.Id);
+                    table.PrimaryKey("PK_PaymentStatuses", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -203,9 +203,9 @@ namespace Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
-                        name: "FK_Payments_Statuses_PaymentStatusId",
+                        name: "FK_Payments_PaymentStatuses_PaymentStatusId",
                         column: x => x.PaymentStatusId,
-                        principalTable: "Statuses",
+                        principalTable: "PaymentStatuses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
                 });
@@ -275,7 +275,7 @@ namespace Data.Migrations
                 name: "PaymentMethods");
 
             migrationBuilder.DropTable(
-                name: "Statuses");
+                name: "PaymentStatuses");
 
             migrationBuilder.DropTable(
                 name: "Categories");
