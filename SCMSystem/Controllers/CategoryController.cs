@@ -2,6 +2,7 @@
 using Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Interfaces;
+using Services.Interfaces;
 
 namespace SCMSystem.Controllers
 {
@@ -9,10 +10,10 @@ namespace SCMSystem.Controllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
-        private readonly IUnitOfWorkRepository _unitOfWork;
-        public CategoryController(IUnitOfWorkRepository unitOfWork)
+        private readonly ICategoryService _categoryService;
+        public CategoryController(ICategoryService categoryService)
         {
-            _unitOfWork = unitOfWork;
+            _categoryService = categoryService;
         }
         // GET: api/<CategoryController>
         [HttpGet]
@@ -21,7 +22,7 @@ namespace SCMSystem.Controllers
         {
             try
             {
-                var model = await _unitOfWork.CategoryRepository.GetCategories();
+                var model = await _categoryService.GetCategories();
                 if (model == null) { return NotFound(); }
 
                 return Ok(model);
@@ -39,7 +40,7 @@ namespace SCMSystem.Controllers
         {
             try
             {
-                var model = await _unitOfWork.CategoryRepository.GetCategoryById(id);
+                var model = await _categoryService.GetCategoryById(id);
                 if (model == null) { return NotFound(); }
 
                 return Ok(model);
@@ -57,7 +58,7 @@ namespace SCMSystem.Controllers
         {
             try
             {
-                var model = await _unitOfWork.CategoryRepository.CreateCategory(categoryViewModel);
+                var model = await _categoryService.CreateCategory(categoryViewModel);
                 if (model == 0) { return NotFound(); }
 
                 return Ok(model);
@@ -74,7 +75,7 @@ namespace SCMSystem.Controllers
         {
             try
             {
-                var model = await _unitOfWork.CategoryRepository.UpdateCategory(categoryViewModel, id);
+                var model = await _categoryService.UpdateCategory(categoryViewModel, id);
                 if (model == null) { return NotFound(); }
 
                 return Ok(model);
@@ -91,7 +92,7 @@ namespace SCMSystem.Controllers
         {
             try
             {
-                await _unitOfWork.CategoryRepository.DeleteCategory(id);
+                await _categoryService.DeleteCategory(id);
 
                 return Ok();
             }
