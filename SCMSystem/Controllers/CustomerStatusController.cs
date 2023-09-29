@@ -1,6 +1,8 @@
 ﻿using Core.ViewModels;
+using Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Interfaces;
+using Services.Interfaces;
 
 namespace SCMSystem.Controllers
 {
@@ -8,11 +10,12 @@ namespace SCMSystem.Controllers
     [ApiController]
     public class CustomerStatusController : ControllerBase
     {
-        private readonly IUnitOfWorkRepository _unitOfWork;
-        public CustomerStatusController(IUnitOfWorkRepository unitOfWork)
+        private readonly ICustomerStatusService _customerStatusService;
+        public CustomerStatusController(ICustomerStatusService customerStatusService)
         {
-            _unitOfWork = unitOfWork;
+            _customerStatusService = customerStatusService;
         }
+
         // GET: api/<CustomerStatusController>
         [HttpGet]
         [Route("GetAllCustomerStatuss")]
@@ -20,7 +23,7 @@ namespace SCMSystem.Controllers
         {
             try
             {
-                var model = await _unitOfWork.CustomerStatusRepository.GetAllCustomerStatuses();
+                var model = await _customerStatusService.GetAllCustomerStatuses();
                 if (model == null) { return NotFound(); }
 
                 return Ok(model);
@@ -37,7 +40,7 @@ namespace SCMSystem.Controllers
         {
             try
             {
-                var model = await _unitOfWork.CustomerStatusRepository.GetCustomerStatusById(id);
+                var model = await _customerStatusService.GetCustomerStatusById(id);
                 if (model == null) { return NotFound(); }
 
                 return Ok(model);
@@ -53,11 +56,11 @@ namespace SCMSystem.Controllers
         // POST api/<CustomerStatusController>
         [HttpPost]
         [Route("CreateCustomerStatus")]
-        public async Task<IActionResult> Post([FromBody] CustomerStatusViewModel CustomerStatusViewModel)
+        public async Task<IActionResult> Post([FromBody] CustomerStatusViewModel customerStatusViewModel)
         {
             try
             {
-                var model = await _unitOfWork.CustomerStatusRepository.CreateCustomerStatusAsync(CustomerStatusViewModel);
+                var model = await _customerStatusService.CreateCustomerStatusAsync(customerStatusViewModel);
                 if (model == 0) { return NotFound(); }
 
                 return Ok(model);
@@ -74,7 +77,7 @@ namespace SCMSystem.Controllers
         {
             try
             {
-                var model = await _unitOfWork.CustomerStatusRepository.UpdateCustomerStatusAsync(customerStatusViewModel, id);
+                var model = await _customerStatusService.UpdateCustomerStatusAsync(customerStatusViewModel, id);
                 if (model == null) { return NotFound(); }
 
                 return Ok(model);
@@ -91,7 +94,7 @@ namespace SCMSystem.Controllers
         {
             try
             {
-                await _unitOfWork.CustomerStatusRepository.DeleteCustomerStatusById(id);
+                await _customerStatusService.DeleteCustomerStatusById(id);
 
                 return Ok($"{id} Deleted");
             }
