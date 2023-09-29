@@ -66,6 +66,11 @@ namespace SCMSystem.Controllers
         {            
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
                 var model = await _cartService.CreateCart(cartViewModel);
                 if (model == 0) { return NotFound(); }
 

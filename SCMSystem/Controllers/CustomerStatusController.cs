@@ -46,6 +46,11 @@ namespace SCMSystem.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
                 var model = await _customerStatusService.GetCustomerStatusById(id);
                 if (model == null) { return NotFound(); }
 
