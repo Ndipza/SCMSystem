@@ -13,19 +13,22 @@ namespace Repositories
         {
             _context = context;
         }
-        public async Task Delete(int id)
+        public async Task DeleteCart(int id)
         {
-            var cart = GetById(id)?.Result ?? new Cart();
+            var cart = GetCartById(id)?.Result ?? new Cart();
             _context.Carts.RemoveRange(cart);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<Cart>> GetAll()
+        public async Task<List<Cart>> GetAllCarts()
         {
-            return await _context.Carts.ToListAsync();
+            return await _context.Carts
+                .AsNoTracking()
+                .Include(cart => cart.CartStatus)
+                .Include(cart => cart.Customer).ToListAsync();
         }
 
-        public async Task<Cart?> GetById(int id)
+        public async Task<Cart?> GetCartById(int id)
         {
             return await _context.Carts
                 .AsNoTracking()
@@ -34,7 +37,7 @@ namespace Repositories
                 .SingleOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<long> InsertAsync(CartViewModel cartViewModel)
+        public async Task<long> CreateCart(CartViewModel cartViewModel)
         {
             var cart = new Cart
             {
@@ -47,19 +50,17 @@ namespace Repositories
             return cart.Id;
         }
 
-        public async Task<Cart> UpdateAsync(CartViewModel cartViewModel, int id)
+        public async Task<Cart> UpdateCart(CartViewModel cartViewModel, int id)
         {
-            var cart = GetById(id)?.Result;
+            var cart = GetCartById(id)?.Result;
 
             if (cart == null) { return new Cart(); }
 
-            cart = new Cart
-            {
-                Id = id,
-                DateUpdated = DateTime.Now,
-                CustomerId = cartViewModel.CustomerId,
-                CartStatusId = cartViewModel.CartStatusId
-            };
+            cart.Id = id;
+            cart.DateUpdated = DateTime.Now;
+            cart.CustomerId = cartViewModel.CustomerId;
+            cart.CartStatusId = cartViewModel.CartStatusId;
+
             _context.Carts.Update(cart);
             await _context.SaveChangesAsync();
             return cart;

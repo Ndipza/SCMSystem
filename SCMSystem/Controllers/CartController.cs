@@ -2,6 +2,8 @@
 using Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Interfaces;
+using Services;
+using Services.Interfaces;
 
 namespace SCMSystem.Controllers
 {
@@ -9,48 +11,97 @@ namespace SCMSystem.Controllers
     [ApiController]
     public class CartController : ControllerBase
     {
-        private readonly IUnitOfWorkRepository _unitOfWork;
-        public CartController(IUnitOfWorkRepository unitOfWork)
+        private readonly ICartService _cartService;
+        public CartController(ICartService cartService)
         {
-            _unitOfWork = unitOfWork;
+            _cartService = cartService;
         }
         // GET: api/<CartController>
         [HttpGet]
-        public Task<List<Cart>> Get()
+        public async Task<IActionResult> Get()
         {
-            var model = _unitOfWork.CartRepository.GetAll();
-            return model;
+            try
+            {
+                var model = await _cartService.GetAllCarts();
+                if (model == null) { return NotFound(); }
+
+
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex?.InnerException?.Message);
+            }
         }
 
         // GET api/<CartController>/5
         [HttpGet("{id}")]
-        public Task<Cart?> Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            var model = _unitOfWork.CartRepository.GetById(id);
-            return model;
+            try
+            {
+                var model = await _cartService.GetCartById(id);
+                if (model == null) { return NotFound(); }
+
+
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex?.InnerException?.Message);
+            }
         }
 
         // POST api/<CartController>
         [HttpPost]
-        public Task<long> Post([FromBody] CartViewModel cartViewModel)
-        {
-            var model = _unitOfWork.CartRepository.InsertAsync(cartViewModel);
-            return model;
+        public async Task<IActionResult> Post([FromBody] CartViewModel cartViewModel)
+        {            
+            try
+            {
+                var model = await _cartService.CreateCart(cartViewModel);
+                if (model == 0) { return NotFound(); }
+
+
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex?.InnerException?.Message);
+            }
         }
 
         // PUT api/<CartController>/5
         [HttpPut("{id}")]
-        public Task<Cart> Put([FromBody] CartViewModel cartViewModel, int id)
-        {
-            var model = _unitOfWork.CartRepository.UpdateAsync(cartViewModel, id);
-            return model;
+        public async Task<IActionResult> Put([FromBody] CartViewModel cartViewModel, int id)
+        {            
+            try
+            {
+                var model = await _cartService.UpdateCart(cartViewModel, id);
+                if (model == null) { return NotFound(); }
+
+
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex?.InnerException?.Message);
+            }
         }
 
         // DELETE api/<CartController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-            _unitOfWork.CartRepository.Delete(id);
+        public async Task<IActionResult> Delete(int id)
+        {           
+            try
+            {
+                await _cartService.DeleteCart(id);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex?.InnerException?.Message);
+            }
         }
     }
 }

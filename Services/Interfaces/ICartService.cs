@@ -1,9 +1,9 @@
 ﻿using Core.ViewModels;
 using Data.Models;
 
-namespace Repositories.Interfaces
+namespace Services.Interfaces
 {
-    public interface ICartRepository
+    public interface ICartService
     {
         Task<List<Cart>> GetAllCarts();
         Task<Cart?> GetCartById(int id);
