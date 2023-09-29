@@ -1,7 +1,10 @@
 ﻿using Core.ViewModels;
 using Data.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualBasic;
 using Repositories.Interfaces;
+using Services;
+using Services.Interfaces;
 
 namespace SCMSystem.Controllers
 {
@@ -9,48 +12,102 @@ namespace SCMSystem.Controllers
     [ApiController]
     public class PaymentController : ControllerBase
     {
-        private readonly IUnitOfWorkRepository _unitOfWork;
-        public PaymentController(IUnitOfWorkRepository unitOfWork)
+        private readonly IPaymentService _paymentService;
+        public PaymentController(IPaymentService paymentService)
         {
-            _unitOfWork = unitOfWork;
+            _paymentService = paymentService;
         }
         // GET: api/<PaymentController>
         [HttpGet]
-        public Task<List<Payment>> Get()
+        public async Task<IActionResult> Get()
         {
-            var model = _unitOfWork.PaymentRepository.GetAll();
-            return model;
+            
+            try
+            {
+                var model = await _paymentService.GetAllPayments();
+                if (model == null) { return NotFound(); }
+
+
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex?.InnerException?.Message);
+            }
         }
 
         // GET api/<PaymentController>/5
         [HttpGet("{id}")]
-        public Task<Payment?> Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            var model = _unitOfWork.PaymentRepository.GetById(id);
-            return model;
+            
+            try
+            {
+                var model = await _paymentService.GetPaymentById(id);
+                if (model == null) { return NotFound(); }
+
+
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex?.InnerException?.Message);
+            }
         }
 
         // POST api/<PaymentController>
         [HttpPost]
-        public Task<long> Post([FromBody] PaymentViewModel paymentViewModel)
-        {
-            var model = _unitOfWork.PaymentRepository.InsertAsync(paymentViewModel);
-            return model;
+        public async Task<IActionResult> Post([FromBody] PaymentViewModel paymentViewModel)
+        {            
+            try
+            {
+                var model = await _paymentService.CreatePayment(paymentViewModel);
+                if (model == 0) { return NotFound(); }
+
+
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex?.InnerException?.Message);
+            }
         }
 
         // PUT api/<PaymentController>/5
         [HttpPut("{id}")]
-        public Task<Payment> Put([FromBody] PaymentViewModel paymentViewModel, int id)
-        {
-            var model = _unitOfWork.PaymentRepository.UpdateAsync(paymentViewModel, id);
-            return model;
+        public async Task<IActionResult> Put([FromBody] PaymentViewModel paymentViewModel, int id)
+        {            
+            try
+            {
+                var model = await _paymentService.UpdatePayment(paymentViewModel, id);
+                if (model == null) { return NotFound(); }
+
+
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex?.InnerException?.Message);
+            }
         }
 
         // DELETE api/<PaymentController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            _unitOfWork.PaymentRepository.Delete(id);
+            
+            try
+            {
+                await _paymentService.DeletePayment(id);
+
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex?.InnerException?.Message);
+            }
+
         }
     }
 }

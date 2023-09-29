@@ -13,27 +13,33 @@ namespace Repositories
         {
             _context = context;
         }
-        public async Task Delete(int id)
+        public async Task DeletePayment(int id)
         {
-            var category = GetById(id)?.Result ?? new Payment();
+            var category = GetPaymentById(id)?.Result ?? new Payment();
             _context.Payments.RemoveRange(category);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<Payment>> GetAll()
-        {
-            return await _context.Payments.ToListAsync();
-        }
-
-        public async Task<Payment?> GetById(int id)
+        public async Task<List<Payment>> GetAllPayments()
         {
             return await _context.Payments
                 .AsNoTracking()
                 .Include(payment => payment.PaymentMethod)
+                .Include(payment => payment.PaymentStatus)
+                .Include(payment => payment.Cart).ToListAsync();
+        }
+
+        public async Task<Payment?> GetPaymentById(int id)
+        {
+            return await _context.Payments
+                .AsNoTracking()
+                .Include(payment => payment.PaymentMethod)
+                .Include(payment => payment.PaymentStatus)
+                .Include(payment => payment.Cart)
                 .SingleOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<long> InsertAsync(PaymentViewModel paymentViewModel)
+        public async Task<long> CreatePayment(PaymentViewModel paymentViewModel)
         {
             var payment = new Payment
             {
@@ -48,21 +54,19 @@ namespace Repositories
             return payment.Id;
         }
 
-        public async Task<Payment> UpdateAsync(PaymentViewModel paymentViewModel, int id)
+        public async Task<Payment> UpdatePayment(PaymentViewModel paymentViewModel, int id)
         {
-            var payment = GetById(id)?.Result;
+            var payment = GetPaymentById(id)?.Result;
 
             if (payment == null) { return new Payment(); }
 
-            payment = new Payment
-            {
-                Id = id,
-                PaymentMethodId = paymentViewModel.PaymentMethodID,
-                PaymentStatusId = paymentViewModel.PaymentStatusId,
-                CartId = paymentViewModel.CartId,
-                PaymentDate = DateTime.Now,
-                Balance = paymentViewModel.Amount
-            };
+            payment.Id = id;
+            payment.PaymentMethodId = paymentViewModel.PaymentMethodID;
+            payment.PaymentStatusId = paymentViewModel.PaymentStatusId;
+            payment.CartId = paymentViewModel.CartId;
+            payment.PaymentDate = DateTime.Now;
+            payment.Balance = paymentViewModel.Amount;
+
             _context.Payments.Update(payment);
             await _context.SaveChangesAsync();
             return payment;

@@ -1,9 +1,14 @@
 ﻿using Core.ViewModels;
 using Data.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Repositories.Interfaces
+namespace Services.Interfaces
 {
-    public interface IPaymentRepository
+    public interface IPaymentService
     {
         Task<List<Payment>> GetAllPayments();
         Task<Payment?> GetPaymentById(int id);
