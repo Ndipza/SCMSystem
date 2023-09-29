@@ -63,7 +63,7 @@ namespace NN.Cart
             //builder.Services.AddScoped<ICategoryService, CategoryService>();
             //builder.Services.AddScoped<ICustomerService, CustomerService>();
             //builder.Services.AddScoped<IPaymentService, PaymentService>();
-            //builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
+            builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
             //builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<ICustomerStatusService, CustomerStatusService>();
             builder.Services.AddScoped<ICartStatusService, CartStatusService>();

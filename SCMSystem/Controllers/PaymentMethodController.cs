@@ -2,6 +2,7 @@
 using Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Interfaces;
+using Services.Interfaces;
 
 namespace SCMSystem.Controllers
 {
@@ -9,10 +10,10 @@ namespace SCMSystem.Controllers
     [ApiController]
     public class PaymentMethodController : ControllerBase
     {
-        private readonly IUnitOfWorkRepository _unitOfWork;
-        public PaymentMethodController(IUnitOfWorkRepository unitOfWork)
+        private readonly IPaymentMethodService _paymentMethodService;
+        public PaymentMethodController(IPaymentMethodService paymentMethodService)
         {
-            _unitOfWork = unitOfWork;
+            _paymentMethodService = paymentMethodService;
         }
         // GET: api/<PaymentMethodController>
         [HttpGet]
@@ -21,7 +22,7 @@ namespace SCMSystem.Controllers
         {
             try
             {
-                var model = await _unitOfWork.PaymentMethodRepository.GetAll();
+                var model = await _paymentMethodService.GetAllPaymentMethods();
                 if (model == null) { return NotFound(); }
 
                 return Ok(model);
@@ -38,7 +39,7 @@ namespace SCMSystem.Controllers
         {
             try
             {
-                var model = await _unitOfWork.PaymentMethodRepository.GetById(id);
+                var model = await _paymentMethodService.GetPaymentMethodById(id);
                 if (model == null) { return NotFound(); }
 
                 return Ok(model);
@@ -58,7 +59,7 @@ namespace SCMSystem.Controllers
         {
             try
             {
-                var model = await _unitOfWork.PaymentMethodRepository.InsertAsync(paymentMethodViewModel);
+                var model = await _paymentMethodService.CreatePaymentMethod(paymentMethodViewModel);
                 if (model == 0) { return NotFound(); }
 
                 return Ok(model);
@@ -75,7 +76,7 @@ namespace SCMSystem.Controllers
         {
             try
             {
-                var model = await _unitOfWork.PaymentMethodRepository.UpdateAsync(paymentMethodViewModel, id);
+                var model = await _paymentMethodService.UpdatePaymentMethod(paymentMethodViewModel, id);
                 if (model == null) { return NotFound(); }
 
                 return Ok(model);
@@ -92,7 +93,7 @@ namespace SCMSystem.Controllers
         {
             try
             {
-                await _unitOfWork.PaymentMethodRepository.Delete(id);
+                await _paymentMethodService.DeletePaymentMethod(id);
 
                 return Ok($"{id} Deleted");
             }

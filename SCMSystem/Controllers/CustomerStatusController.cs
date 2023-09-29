@@ -1,7 +1,5 @@
 ﻿using Core.ViewModels;
-using Data.Models;
 using Microsoft.AspNetCore.Mvc;
-using Repositories.Interfaces;
 using Services.Interfaces;
 
 namespace SCMSystem.Controllers
