@@ -11,11 +11,11 @@ namespace Data.Models
         [Column(TypeName = "decimal(18,2)")]
         public decimal Balance { get; set; }
         public int? CartId { get; set; }
-        public Cart? Cart { get; set; }
+        public virtual Cart? Cart { get; set; }
         public int? PaymentMethodId { get; set; }
-        public PaymentMethod? PaymentMethod { get; set; }
+        public virtual PaymentMethod? PaymentMethod { get; set; }
         public int? PaymentStatusId { get; set; }
-        public PaymentStatus? PaymentStatus { get; set; }
+        public virtual PaymentStatus? PaymentStatus { get; set; }
 
     }
 }

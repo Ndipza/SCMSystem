@@ -9,6 +9,6 @@ namespace Data.Models
         [StringLength(50)]
         [MinLength(2)]
         public string? Name { get; set; }
-        public List<Product>? Products { get; set; } = new List<Product>();
+        public virtual ICollection<Product>? Products { get; set; } = new List<Product>();
     }
 }

@@ -13,6 +13,6 @@ namespace Data.Models
         [Required]
         [StringLength(50)]
         public string? Description { get; set; }
-        public ICollection<Payment>? Payments { get; set; } = new List<Payment>();
+        public virtual ICollection<Payment>? Payments { get; set; } = new List<Payment>();
     }
 }

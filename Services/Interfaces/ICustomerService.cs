@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Repositories.Interfaces
+namespace Services.Interfaces
 {
-    public interface ICustomerRepository
+    public interface ICustomerService
     {
         Task<List<Customer>> GetAllCustomer();
         Task<Customer?> GetCustomerById(Guid id);

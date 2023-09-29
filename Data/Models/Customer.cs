@@ -18,7 +18,7 @@ namespace Data.Models
         public DateTime DateCreated { get; set; }
         public DateTime? DateUpdated { get; set; }
         public int? CustomerStatusId { get; set; }
-        public CustomerStatus? CustomerStatus { get; set; }
-        public ICollection<Cart>? Carts { get; set; } = new List<Cart>();
+        public virtual CustomerStatus? CustomerStatus { get; set; }
+        public virtual ICollection<Cart>? Carts { get; set; } = new List<Cart>();
     }
 }

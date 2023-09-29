@@ -13,7 +13,7 @@ namespace Core.ViewModels
         [Required]
         [StringLength(13)]
         public string? CellNumber { get; set; }
-
+        [Required]
         public int CustomerStatusId { get; set; }
     }
 }

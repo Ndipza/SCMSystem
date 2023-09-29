@@ -8,6 +8,6 @@ namespace Data.Models
         [Required]
         [StringLength(50)]
         public string? Description { get; set; }
-        public ICollection<Cart>? Carts { get; set;} = new List<Cart>();
+        public virtual ICollection<Cart>? Carts { get; set;} = new List<Cart>();
     }
 }

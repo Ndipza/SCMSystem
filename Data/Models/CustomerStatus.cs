@@ -8,6 +8,6 @@ namespace Data.Models
         [Required]
         [StringLength(50)]
         public string? Description { get; set; }
-        public ICollection<Customer>? Customers { get; set; } = new List<Customer>();
+        public virtual ICollection<Customer>? Customers { get; set; } = new List<Customer>();
     }
 }

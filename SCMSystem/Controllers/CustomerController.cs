@@ -2,6 +2,8 @@
 using Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Interfaces;
+using Services;
+using Services.Interfaces;
 using System.Runtime.InteropServices;
 
 namespace SCMSystem.Controllers
@@ -10,48 +12,94 @@ namespace SCMSystem.Controllers
     [ApiController]
     public class CustomerController : ControllerBase
     {
-        private readonly IUnitOfWorkRepository _unitOfWork;
-        public CustomerController(IUnitOfWorkRepository unitOfWork)
+        private readonly ICustomerService _customerService;
+        public CustomerController(ICustomerService customerService)
         {
-            _unitOfWork = unitOfWork;
+            _customerService = customerService;
         }
         // GET: api/<CustomerController>
         [HttpGet]
-        public Task<List<Customer>> Get()
+        public async Task<IActionResult> Get()
         {
-            var model = _unitOfWork.CustomerRepository.GetAll();
-            return model;
+            try
+            {
+                var model = await _customerService.GetAllCustomer();
+                if (model == null) { return NotFound(); }
+                
+                
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // GET api/<CustomerController>/5
         [HttpGet("{id}")]
-        public Task<Customer?> Get(Guid id)
+        public async Task<IActionResult> Get(Guid id)
         {
-            var model = _unitOfWork.CustomerRepository.GetById(id);
-            return model;
+            try
+            {
+                var model = await _customerService.GetCustomerById(id);
+                if (model == null) { return NotFound(); }
+
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // POST api/<CustomerController>
         [HttpPost]
-        public Task<Guid> Post([FromBody] CustomerViewModel customerViewModel)
+        public async Task<IActionResult> Post([FromBody] CustomerViewModel customerViewModel)
         {
-            var model = _unitOfWork.CustomerRepository.InsertAsync(customerViewModel);
-            return model;
+            try
+            {
+                var model = await _customerService.CreateCustomer(customerViewModel);
+
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // PUT api/<CustomerController>/5
         [HttpPut("{id}")]
-        public Task<Customer> Put([FromBody] CustomerViewModel customerViewModel, Guid id)
+        public async Task<IActionResult> Put([FromBody] CustomerViewModel customerViewModel, Guid id)
         {
-            var model = _unitOfWork.CustomerRepository.UpdateAsync(customerViewModel, id);
-            return model;
+            try
+            {
+                var model = await _customerService.UpdateCustomer(customerViewModel, id);
+                if (model == null) { return NotFound(); }
+
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // DELETE api/<CustomerController>/5
         [HttpDelete("{id}")]
-        public void Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            _unitOfWork.CustomerRepository.Delete(id);
+           
+            try
+            {
+                await _customerService.DeleteCustomer(id);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

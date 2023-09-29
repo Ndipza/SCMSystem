@@ -34,15 +34,15 @@ namespace Repositories
 
         public async Task<List<CustomerStatus>> GetAllCustomerStatuses()
         {
-            return await _context.CustomerStatuses.ToListAsync();
+            return await _context.CustomerStatuses.Include(c => c.Customers).ToListAsync();
         }
 
         public async Task<CustomerStatus?> GetCustomerStatusById(int id)
         {
             return await _context.CustomerStatuses
-                .AsNoTracking()
-                .Include(payment => payment.Customers)
-                .SingleOrDefaultAsync(x => x.Id == id);
+                .Include(c => c.Customers)
+                .Where(c => c.Id == id)
+                .SingleOrDefaultAsync();
         }
 
         public async Task<CustomerStatus> UpdateCustomerStatusAsync(CustomerStatusViewModel customerStatusViewModel, int id)

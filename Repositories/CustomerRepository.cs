@@ -18,54 +18,57 @@ namespace Repositories
         {
             _context = context;
         }
-        public async Task Delete(Guid id)
+        public async Task DeleteCustomer(Guid id)
         {
-            var customer = GetById(id)?.Result ?? new Customer();
+            var customer = GetCustomerById(id)?.Result ?? new Customer();
             _context.Customers.RemoveRange(customer);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<Customer>> GetAll()
+        public async Task<List<Customer>> GetAllCustomer()
         {
-            return await _context.Customers.ToListAsync();
+            return await _context.Customers.AsNoTracking()
+                .Include(customer => customer.Carts)
+                .Include(customer => customer.CustomerStatus).ToListAsync();
         }
 
-        public async Task<Customer?> GetById(Guid id)
+        public async Task<Customer?> GetCustomerById(Guid id)
         {
             return await _context.Customers
                 .AsNoTracking()
                 .Include(customer => customer.Carts)
+                .Include(customer => customer.CustomerStatus)
                 .SingleOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<Guid> InsertAsync(CustomerViewModel customerViewModel)
+        public async Task<Guid> CreateCustomer(CustomerViewModel customerViewModel)
         {
             var customer = new Customer
             {
                 Name = customerViewModel.Name,
                 Email = customerViewModel.Email,   
                 CellNumber = customerViewModel.CellNumber,
-                DateCreated = DateTime.Now
+                DateCreated = DateTime.Now,
+                CustomerStatusId = customerViewModel.CustomerStatusId,
             };
             await _context.Customers.AddAsync(customer);
             await _context.SaveChangesAsync();
             return customer.Id;
         }
 
-        public async Task<Customer> UpdateAsync(CustomerViewModel customerViewModel, Guid id)
+        public async Task<Customer> UpdateCustomer(CustomerViewModel customerViewModel, Guid id)
         {
-            var customer = GetById(id)?.Result;
+            var customer = GetCustomerById(id)?.Result;
 
             if (customer == null) { return new Customer(); }
 
-            customer = new Customer
-            {
-                Id = id,
-                Name = customerViewModel.Name,
-                Email = customerViewModel.Email,
-                CellNumber = customerViewModel.CellNumber,
-                DateUpdated = DateTime.Now
-            };
+            customer.Id = id;
+            customer.Name = customerViewModel.Name;
+            customer.Email = customerViewModel.Email;
+            customer.CellNumber = customerViewModel.CellNumber;
+            customer.DateUpdated = DateTime.Now;
+            customer.CustomerStatusId = customerViewModel.CustomerStatusId;
+
             _context.Customers.Update(customer);
             await _context.SaveChangesAsync();
             return customer;
