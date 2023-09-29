@@ -2,6 +2,8 @@ using Data;
 using Microsoft.EntityFrameworkCore;
 using Repositories;
 using Repositories.Interfaces;
+using Services;
+using Services.Interfaces;
 
 namespace NN.Cart
 {
@@ -56,6 +58,16 @@ namespace NN.Cart
             builder.Services.AddScoped<ICustomerStatusRepository, CustomerStatusRepository>();
             builder.Services.AddScoped<ICartStatusRepository, CartStatusRepository>();
             builder.Services.AddScoped<IPaymentStatusRepository, PaymentStatusRepository>();
+
+            //builder.Services.AddScoped<ICartRepository, CartRepository>();
+            //builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+            //builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+            //builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+            //builder.Services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository>();
+            //builder.Services.AddScoped<IProductRepository, ProductRepository>();
+            //builder.Services.AddScoped<ICustomerStatusRepository, CustomerStatusRepository>();
+            builder.Services.AddScoped<ICartStatusServices, CartStatusServices>();
+            //builder.Services.AddScoped<IPaymentStatusRepository, PaymentStatusRepository>();
 
             var app = builder.Build();
 

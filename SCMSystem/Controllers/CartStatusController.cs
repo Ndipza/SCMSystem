@@ -1,6 +1,7 @@
 ﻿using Core.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Interfaces;
+using Services.Interfaces;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -10,10 +11,10 @@ namespace SCMSystem.Controllers
     [ApiController]
     public class CartStatusController : ControllerBase
     {
-        private readonly IUnitOfWorkRepository _unitOfWork;
-        public CartStatusController(IUnitOfWorkRepository unitOfWork)
+        private readonly ICartStatusServices _cartStatusServices;
+        public CartStatusController(ICartStatusServices cartStatusServices)
         {
-            _unitOfWork = unitOfWork;
+            _cartStatusServices = cartStatusServices;
         }
         // GET: api/<CartStatusController>
         [HttpGet]
@@ -22,7 +23,7 @@ namespace SCMSystem.Controllers
         {
             try
             {
-                var model = await _unitOfWork.CartStatusRepository.GetAllCartStatuses();
+                var model = await _cartStatusServices.GetAllCartStatuses();
                 if (model == null) { return NotFound(); }
 
                 return Ok(model);
@@ -39,7 +40,7 @@ namespace SCMSystem.Controllers
         {
             try
             {
-                var model = await _unitOfWork.CartStatusRepository.GetCartStatusById(id);
+                var model = await _cartStatusServices.GetCartStatusById(id);
                 if (model == null) { return NotFound(); }
 
                 return Ok(model);
@@ -55,11 +56,11 @@ namespace SCMSystem.Controllers
         // POST api/<CartStatusController>
         [HttpPost]
         [Route("CreateCartStatus")]
-        public async Task<IActionResult> Post([FromBody] CartStatusViewModel CartStatusViewModel)
+        public async Task<IActionResult> Post([FromBody] CartStatusViewModel cartStatusViewModel)
         {
             try
             {
-                var model = await _unitOfWork.CartStatusRepository.CreateCartStatusAsync(CartStatusViewModel);
+                var model = await _cartStatusServices.CreateCartStatusAsync(cartStatusViewModel);
                 if (model == 0) { return NotFound(); }
 
                 return Ok(model);
@@ -72,11 +73,11 @@ namespace SCMSystem.Controllers
 
         // PUT api/<CartStatusController>/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put([FromBody] CartStatusViewModel CartStatusViewModel, int id)
+        public async Task<IActionResult> Put([FromBody] CartStatusViewModel cartStatusViewModel, int id)
         {
             try
             {
-                var model = await _unitOfWork.CartStatusRepository.UpdateCartStatusAsync(CartStatusViewModel, id);
+                var model = await _cartStatusServices.UpdateCartStatusAsync(cartStatusViewModel, id);
                 if (model == null) { return NotFound(); }
 
                 return Ok(model);
@@ -93,7 +94,7 @@ namespace SCMSystem.Controllers
         {
             try
             {
-                await _unitOfWork.CartStatusRepository.DeleteCartStatusById(id);
+                await _cartStatusServices.DeleteCartStatusById(id);
 
                 return Ok($"{id} Deleted");
             }
