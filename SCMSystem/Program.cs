@@ -61,6 +61,7 @@ namespace NN.Cart
             builder.Services.AddScoped<ICustomerStatusRepository, CustomerStatusRepository>();
             builder.Services.AddScoped<ICartStatusRepository, CartStatusRepository>();
             builder.Services.AddScoped<IPaymentStatusRepository, PaymentStatusRepository>();
+            builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
 
             builder.Services.AddScoped<ICartService, CartService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
@@ -71,6 +72,7 @@ namespace NN.Cart
             builder.Services.AddScoped<ICustomerStatusService, CustomerStatusService>();
             builder.Services.AddScoped<ICartStatusService, CartStatusService>();
             builder.Services.AddScoped<IPaymentStatusService, PaymentStatusService>();
+            builder.Services.AddScoped<ICartItemService, CartItemService>();
 
             var app = builder.Build();
 

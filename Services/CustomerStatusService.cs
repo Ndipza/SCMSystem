@@ -12,7 +12,7 @@ namespace Services
         {
             _unitOfWork = unitOfWork;
         }
-        public async Task<long> CreateCustomerStatusAsync(CustomerStatusViewModel customerStatusViewModel)
+        public async Task<long> CreateCustomerStatus(CustomerStatusViewModel customerStatusViewModel)
         {
             return await _unitOfWork.CustomerStatusRepository.CreateCustomerStatusAsync(customerStatusViewModel);
         }
@@ -32,7 +32,7 @@ namespace Services
             return await _unitOfWork.CustomerStatusRepository.GetCustomerStatusById(id);
         }
 
-        public async Task<CustomerStatus> UpdateCustomerStatusAsync(CustomerStatusViewModel customerStatusViewModel, int id)
+        public async Task<CustomerStatus> UpdateCustomerStatus(CustomerStatusViewModel customerStatusViewModel, int id)
         {
             return await _unitOfWork.CustomerStatusRepository.UpdateCustomerStatusAsync(customerStatusViewModel, id);
         }

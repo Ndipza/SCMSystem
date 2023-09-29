@@ -6,22 +6,22 @@ namespace SCMSystem.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomerStatusController : ControllerBase
+    public class CartItemController : ControllerBase
     {
-        private readonly ICustomerStatusService _customerStatusService;
-        public CustomerStatusController(ICustomerStatusService customerStatusService)
+        private readonly ICartItemService _CartItemService;
+        public CartItemController(ICartItemService CartItemService)
         {
-            _customerStatusService = customerStatusService;
+            _CartItemService = CartItemService;
         }
 
-        // GET: api/<CustomerStatusController>
+        // GET: api/<CartItemController>
         [HttpGet]
-        [Route("GetAllCustomerStatuss")]
+        [Route("GetAllCartItems")]
         public async Task<IActionResult> Get()
         {
             try
             {
-                var model = await _customerStatusService.GetAllCustomerStatuses();
+                var model = await _CartItemService.GetAllCartItems();
                 if (model == null) { return NotFound(); }
 
                 return Ok(model);
@@ -32,13 +32,13 @@ namespace SCMSystem.Controllers
             }
         }
 
-        // GET api/<CustomerStatusController>/5
+        // GET api/<CartItemController>/5
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
             try
             {
-                var model = await _customerStatusService.GetCustomerStatusById(id);
+                var model = await _CartItemService.GetCartItemById(id);
                 if (model == null) { return NotFound(); }
 
                 return Ok(model);
@@ -51,14 +51,14 @@ namespace SCMSystem.Controllers
 
         }
 
-        // POST api/<CustomerStatusController>
+        // POST api/<CartItemController>
         [HttpPost]
-        [Route("CreateCustomerStatus")]
-        public async Task<IActionResult> Post([FromBody] CustomerStatusViewModel customerStatusViewModel)
+        [Route("CreateCartItem")]
+        public async Task<IActionResult> Post([FromBody] CartItemViewModel CartItemViewModel)
         {
             try
             {
-                var model = await _customerStatusService.CreateCustomerStatus(customerStatusViewModel);
+                var model = await _CartItemService.CreateCartItem(CartItemViewModel);
                 if (model == 0) { return NotFound(); }
 
                 return Ok(model);
@@ -69,13 +69,13 @@ namespace SCMSystem.Controllers
             }
         }
 
-        // PUT api/<CustomerStatusController>/5
+        // PUT api/<CartItemController>/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put([FromBody] CustomerStatusViewModel customerStatusViewModel, int id)
+        public async Task<IActionResult> Put([FromBody] CartItemViewModel CartItemViewModel, int id)
         {
             try
             {
-                var model = await _customerStatusService.UpdateCustomerStatus(customerStatusViewModel, id);
+                var model = await _CartItemService.UpdateCartItem(CartItemViewModel, id);
                 if (model == null) { return NotFound(); }
 
                 return Ok(model);
@@ -86,13 +86,13 @@ namespace SCMSystem.Controllers
             }
         }
 
-        // DELETE api/<CustomerStatusController>/5
+        // DELETE api/<CartItemController>/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             try
             {
-                await _customerStatusService.DeleteCustomerStatusById(id);
+                await _CartItemService.DeleteCartItem(id);
 
                 return Ok($"{id} Deleted");
             }

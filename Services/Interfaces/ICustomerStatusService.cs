@@ -7,8 +7,8 @@ namespace Services.Interfaces
     {
         Task<List<CustomerStatus>> GetAllCustomerStatuses();
         Task<CustomerStatus?> GetCustomerStatusById(int id);
-        Task<long> CreateCustomerStatusAsync(CustomerStatusViewModel customerStatusViewModel);
-        Task<CustomerStatus> UpdateCustomerStatusAsync(CustomerStatusViewModel customerStatusViewModel, int id);
+        Task<long> CreateCustomerStatus(CustomerStatusViewModel customerStatusViewModel);
+        Task<CustomerStatus> UpdateCustomerStatus(CustomerStatusViewModel customerStatusViewModel, int id);
         Task DeleteCustomerStatusById(int id);
     }
 }
