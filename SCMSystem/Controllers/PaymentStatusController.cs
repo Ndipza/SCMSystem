@@ -1,6 +1,7 @@
 ﻿using Core.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Interfaces;
+using Services.Interfaces;
 
 namespace SCMSystem.Controllers
 {
@@ -8,10 +9,10 @@ namespace SCMSystem.Controllers
     [ApiController]
     public class PaymentStatusController : ControllerBase
     {
-        private readonly IUnitOfWorkRepository _unitOfWork;
-        public PaymentStatusController(IUnitOfWorkRepository unitOfWork)
+        private readonly IPaymentStatusService _paymentStatusService;
+        public PaymentStatusController(IPaymentStatusService paymentStatusService)
         {
-            _unitOfWork = unitOfWork;
+            _paymentStatusService = paymentStatusService;
         }
         // GET: api/<PaymentStatusController>
         [HttpGet]
@@ -20,7 +21,7 @@ namespace SCMSystem.Controllers
         {
             try
             {
-                var model = await _unitOfWork.PaymentStatusRepository.GetAllPaymentStatuses();
+                var model = await _paymentStatusService.GetAllPaymentStatuses();
                 if (model == null) { return NotFound(); }
 
                 return Ok(model);
@@ -37,7 +38,7 @@ namespace SCMSystem.Controllers
         {
             try
             {
-                var model = await _unitOfWork.PaymentStatusRepository.GetPaymentStatusById(id);
+                var model = await _paymentStatusService.GetPaymentStatusById(id);
                 if (model == null) { return NotFound(); }
 
                 return Ok(model);
@@ -53,11 +54,11 @@ namespace SCMSystem.Controllers
         // POST api/<PaymentStatusController>
         [HttpPost]
         [Route("CreatePaymentStatus")]
-        public async Task<IActionResult> Post([FromBody] PaymentStatusViewModel PaymentStatusViewModel)
+        public async Task<IActionResult> Post([FromBody] PaymentStatusViewModel paymentStatusViewModel)
         {
             try
             {
-                var model = await _unitOfWork.PaymentStatusRepository.CreatePaymentStatusAsync(PaymentStatusViewModel);
+                var model = await _paymentStatusService.CreatePaymentStatusAsync(paymentStatusViewModel);
                 if (model == 0) { return NotFound(); }
 
                 return Ok(model);
@@ -70,11 +71,11 @@ namespace SCMSystem.Controllers
 
         // PUT api/<PaymentStatusController>/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put([FromBody] PaymentStatusViewModel PaymentStatusViewModel, int id)
+        public async Task<IActionResult> Put([FromBody] PaymentStatusViewModel paymentStatusViewModel, int id)
         {
             try
             {
-                var model = await _unitOfWork.PaymentStatusRepository.UpdatePaymentStatusAsync(PaymentStatusViewModel, id);
+                var model = await _paymentStatusService.UpdatePaymentStatusAsync(paymentStatusViewModel, id);
                 if (model == null) { return NotFound(); }
 
                 return Ok(model);
@@ -91,7 +92,7 @@ namespace SCMSystem.Controllers
         {
             try
             {
-                await _unitOfWork.PaymentStatusRepository.DeletePaymentStatusById(id);
+                await _paymentStatusService.DeletePaymentStatusById(id);
 
                 return Ok($"{id} Deleted");
             }

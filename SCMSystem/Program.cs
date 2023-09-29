@@ -67,7 +67,7 @@ namespace NN.Cart
             //builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<ICustomerStatusService, CustomerStatusService>();
             builder.Services.AddScoped<ICartStatusService, CartStatusService>();
-            //builder.Services.AddScoped<IPaymentStatusService, PaymentStatusService>();
+            builder.Services.AddScoped<IPaymentStatusService, PaymentStatusService>();
 
             var app = builder.Build();
 
