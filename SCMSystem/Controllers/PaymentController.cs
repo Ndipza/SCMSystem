@@ -19,7 +19,8 @@ namespace SCMSystem.Controllers
         }
         // GET: api/<PaymentController>
         [HttpGet]
-        public async Task<IActionResult> Get()
+        [Route("GetAllPayments")]
+        public async Task<IActionResult> GetAllPayments(int page)
         {
             
             try
@@ -27,8 +28,15 @@ namespace SCMSystem.Controllers
                 var model = await _paymentService.GetAllPayments();
                 if (model == null) { return NotFound(); }
 
+                var pageResults = 3f;
+                var pageCount = Math.Ceiling(model.Count / pageResults);
 
-                return Ok(model);
+                var payments = model
+                    .Skip((page - 1) * (int)pageResults)
+                    .Take((int)pageResults)
+                    .ToList();
+
+                return Ok(payments);
             }
             catch (Exception ex)
             {

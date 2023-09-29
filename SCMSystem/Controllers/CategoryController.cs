@@ -18,14 +18,22 @@ namespace SCMSystem.Controllers
         // GET: api/<CategoryController>
         [HttpGet]
         [Route("GetAllCategories")]
-        public async Task<IActionResult> GetCategories()
+        public async Task<IActionResult> GetAllCategories(int page)
         {
             try
             {
                 var model = await _categoryService.GetCategories();
                 if (model == null) { return NotFound(); }
 
-                return Ok(model);
+                var pageResults = 3f;
+                var pageCount = Math.Ceiling(model.Count / pageResults);
+
+                var categories = model
+                    .Skip((page - 1) * (int)pageResults)
+                    .Take((int)pageResults)
+                    .ToList();
+
+                return Ok(categories);
             }
             catch (Exception)
             {
@@ -36,7 +44,7 @@ namespace SCMSystem.Controllers
 
         // GET api/<CategoryController>/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetCategory(int id)
+        public async Task<IActionResult> Get(int id)
         {
             try
             {

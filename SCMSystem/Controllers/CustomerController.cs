@@ -1,6 +1,7 @@
 ﻿using Core.ViewModels;
 using Data.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Repositories.Interfaces;
 using Services;
 using Services.Interfaces;
@@ -19,15 +20,23 @@ namespace SCMSystem.Controllers
         }
         // GET: api/<CustomerController>
         [HttpGet]
-        public async Task<IActionResult> Get()
+        [Route("GetAllCustomer")]
+        public async Task<IActionResult> GetAllCustomer(int page)
         {
             try
             {
                 var model = await _customerService.GetAllCustomer();
                 if (model == null) { return NotFound(); }
-                
-                
-                return Ok(model);
+
+                var pageResults = 3f;
+                var pageCount = Math.Ceiling(model.Count / pageResults);
+
+                var customers = model
+                    .Skip((page - 1) * (int)pageResults)
+                    .Take((int)pageResults)
+                    .ToList();
+
+                return Ok(customers);
             }
             catch (Exception ex)
             {

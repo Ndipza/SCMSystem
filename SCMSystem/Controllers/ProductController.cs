@@ -21,14 +21,23 @@ namespace SCMSystem.Controllers
 
         // GET: api/<ProductController>
         [HttpGet]
-        public async Task<IActionResult> Get()
+        [Route("GetAllProducts")]
+        public async Task<IActionResult> GetAllProducts(int page)
         {
             try
             {
                 var model = await _productServicek.GetAllProducts();
                 if (model == null) { return NotFound(); }
 
-                return Ok(model);
+                var pageResults = 3f;
+                var pageCount = Math.Ceiling(model.Count / pageResults);
+
+                var products = model
+                    .Skip((page - 1) * (int)pageResults)
+                    .Take((int)pageResults)
+                    .ToList();
+
+                return Ok(products);
             }
             catch (Exception ex)
             {

@@ -18,15 +18,23 @@ namespace SCMSystem.Controllers
         }
         // GET: api/<CartController>
         [HttpGet]
-        public async Task<IActionResult> Get()
+        [Route("GetAllCarts")]
+        public async Task<IActionResult> GetAllCarts(int page)
         {
             try
             {
                 var model = await _cartService.GetAllCarts();
                 if (model == null) { return NotFound(); }
 
+                var pageResults = 3f;
+                var pageCount = Math.Ceiling(model.Count / pageResults);
 
-                return Ok(model);
+                var carts = model
+                    .Skip((page - 1) * (int)pageResults)
+                    .Take((int)pageResults)
+                    .ToList();
+
+                return Ok(carts);
             }
             catch (Exception ex)
             {

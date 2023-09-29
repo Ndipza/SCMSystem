@@ -17,14 +17,22 @@ namespace SCMSystem.Controllers
         // GET: api/<PaymentStatusController>
         [HttpGet]
         [Route("GetAllPaymentStatuss")]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetAllPaymentStatuss(int page)
         {
             try
             {
                 var model = await _paymentStatusService.GetAllPaymentStatuses();
                 if (model == null) { return NotFound(); }
 
-                return Ok(model);
+                var pageResults = 3f;
+                var pageCount = Math.Ceiling(model.Count / pageResults);
+
+                var paymentStatuses = model
+                    .Skip((page - 1) * (int)pageResults)
+                    .Take((int)pageResults)
+                    .ToList();
+
+                return Ok(paymentStatuses);
             }
             catch (Exception ex)
             {
