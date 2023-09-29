@@ -2,6 +2,8 @@
 using Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Interfaces;
+using Services;
+using Services.Interfaces;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -11,48 +13,95 @@ namespace SCMSystem.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly IUnitOfWorkRepository _unitOfWork;
-        public ProductController(IUnitOfWorkRepository unitOfWork)
+        private readonly IProductService _productServicek;
+        public ProductController(IProductService productServicek)
         {
-            _unitOfWork = unitOfWork;
+            _productServicek = productServicek;
         }
+
         // GET: api/<ProductController>
         [HttpGet]
-        public Task<List<Product>> Get()
+        public async Task<IActionResult> Get()
         {
-            var model = _unitOfWork.ProductRepository.GetAll();
-            return model;
+            try
+            {
+                var model = await _productServicek.GetAllProducts();
+                if (model == null) { return NotFound(); }
+
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex?.InnerException?.Message);
+            }
         }
 
         // GET api/<ProductController>/5
         [HttpGet("{id}")]
-        public Task<Product?> Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            var model = _unitOfWork.ProductRepository.GetById(id);
-            return model;
+            try
+            {
+                var model = await _productServicek.GetProductById(id);
+                if (model == null) { return NotFound(); }
+
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex?.InnerException?.Message);
+            }
         }
 
         // POST api/<ProductController>
         [HttpPost]
-        public Task<long> Post([FromBody] ProductViewModel productViewModel)
+        public async Task<IActionResult> Post([FromBody] ProductViewModel productViewModel)
         {
-            var model = _unitOfWork.ProductRepository.InsertAsync(productViewModel);
-            return model;
+            try
+            {
+                var model = await _productServicek.CreateProduct(productViewModel);
+                if (model == 0) { return NotFound(); }
+
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex?.InnerException?.Message);
+            }
         }
 
         // PUT api/<ProductController>/5
         [HttpPut("{id}")]
-        public Task<Product> Put([FromBody] ProductViewModel productViewModel, int id)
+        public async Task<IActionResult> Put([FromBody] ProductViewModel productViewModel, int id)
         {
-            var model = _unitOfWork.ProductRepository.UpdateAsync(productViewModel, id);
-            return model;
+            try
+            {
+                var model = await _productServicek.UpdateProduct(productViewModel, id);
+                if (model == null) { return NotFound(); }
+
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex?.InnerException?.Message);
+            }
         }
 
         // DELETE api/<ProductController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            _unitOfWork.ProductRepository.Delete(id);
+            
+            try
+            {
+                await _productServicek.DeleteProduct(id);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex?.InnerException?.Message);
+            }
         }
     }
 }

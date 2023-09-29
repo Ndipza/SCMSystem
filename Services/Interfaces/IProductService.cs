@@ -1,9 +1,9 @@
 ﻿using Core.ViewModels;
 using Data.Models;
 
-namespace Repositories.Interfaces
+namespace Services.Interfaces
 {
-    public interface IProductRepository
+    public interface IProductService
     {
         Task<List<Product>> GetAllProducts();
         Task<Product?> GetProductById(int id);
