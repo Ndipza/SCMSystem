@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Services.Interfaces
 {
-    public interface ICartStatusServices
+    public interface ICartStatusService
     {
         Task<List<CartStatus>> GetAllCartStatuses();
         Task<CartStatus?> GetCartStatusById(int id);

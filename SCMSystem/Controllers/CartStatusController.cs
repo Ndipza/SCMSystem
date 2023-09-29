@@ -11,8 +11,8 @@ namespace SCMSystem.Controllers
     [ApiController]
     public class CartStatusController : ControllerBase
     {
-        private readonly ICartStatusServices _cartStatusServices;
-        public CartStatusController(ICartStatusServices cartStatusServices)
+        private readonly ICartStatusService _cartStatusServices;
+        public CartStatusController(ICartStatusService cartStatusServices)
         {
             _cartStatusServices = cartStatusServices;
         }

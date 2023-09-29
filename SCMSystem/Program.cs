@@ -59,15 +59,15 @@ namespace NN.Cart
             builder.Services.AddScoped<ICartStatusRepository, CartStatusRepository>();
             builder.Services.AddScoped<IPaymentStatusRepository, PaymentStatusRepository>();
 
-            //builder.Services.AddScoped<ICartRepository, CartRepository>();
-            //builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-            //builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
-            //builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
-            //builder.Services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository>();
-            //builder.Services.AddScoped<IProductRepository, ProductRepository>();
-            //builder.Services.AddScoped<ICustomerStatusRepository, CustomerStatusRepository>();
-            builder.Services.AddScoped<ICartStatusServices, CartStatusServices>();
-            //builder.Services.AddScoped<IPaymentStatusRepository, PaymentStatusRepository>();
+            //builder.Services.AddScoped<ICartService, CartService>();
+            //builder.Services.AddScoped<ICategoryService, CategoryService>();
+            //builder.Services.AddScoped<ICustomerService, CustomerService>();
+            //builder.Services.AddScoped<IPaymentService, PaymentService>();
+            //builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
+            //builder.Services.AddScoped<IProductService, ProductService>();
+            //builder.Services.AddScoped<ICustomerStatusService, CustomerStatusService>();
+            builder.Services.AddScoped<ICartStatusService, CartStatusService>();
+            //builder.Services.AddScoped<IPaymentStatusService, PaymentStatusService>();
 
             var app = builder.Build();
 

@@ -5,10 +5,10 @@ using Services.Interfaces;
 
 namespace Services
 {
-    public class CartStatusServices : ICartStatusServices
+    public class CartStatusService : ICartStatusService
     {
         private readonly IUnitOfWorkRepository _unitOfWork;
-        public CartStatusServices(IUnitOfWorkRepository unitOfWork)
+        public CartStatusService(IUnitOfWorkRepository unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
