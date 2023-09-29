@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(SCMSystemDBContext))]
-    [Migration("20230928211007_Initial")]
+    [Migration("20230929080903_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -251,6 +251,10 @@ namespace Data.Migrations
 
                     b.Property<int?>("CategoryId")
                         .HasColumnType("int");
+
+                    b.Property<byte[]>("Image")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()

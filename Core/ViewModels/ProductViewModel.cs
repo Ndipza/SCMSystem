@@ -11,6 +11,8 @@ namespace Core.ViewModels
         [Required]
         [StringLength(50)]
         public string? Name { get; set; }
+        [Required]
+        public byte[] Image { get; set; } = Array.Empty<byte>();
         public int Price { get; set; }
     }
 }
