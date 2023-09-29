@@ -2,14 +2,14 @@
 using Data;
 using Data.Models;
 using Microsoft.EntityFrameworkCore;
-using Repositories.Interfaces;
+using Services.Interfaces;
 
-namespace Repositories
+namespace Services
 {
-    public class CategoryRepository : ICategoryRepository
+    public class CategoryService : ICategoryService
     {
         private readonly SCMSystemDBContext _context;
-        public CategoryRepository(SCMSystemDBContext context)
+        public CategoryService(SCMSystemDBContext context)
         {
             _context = context;
         }
@@ -62,7 +62,12 @@ namespace Repositories
 
             if (category == null) { return new Category(); }
 
-            category.Name = categoryViewModel.Name;
+            category = new Category
+            {
+                Id = id,
+                Name = categoryViewModel.Name,
+                Products = category.Products.ToList()
+            };
             _context.Categories.Update(category);
             await _context.SaveChangesAsync();
             return category;

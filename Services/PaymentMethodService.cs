@@ -2,14 +2,14 @@
 using Data;
 using Data.Models;
 using Microsoft.EntityFrameworkCore;
-using Repositories.Interfaces;
+using Services.Interfaces;
 
-namespace Repositories
+namespace Services
 {
-    public class PaymentMethodRepository : IPaymentMethodRepository
+    public class PaymentMethodService : IPaymentMethodService
     {
         private readonly SCMSystemDBContext _context;
-        public PaymentMethodRepository(SCMSystemDBContext context)
+        public PaymentMethodService(SCMSystemDBContext context)
         {
             _context = context;
         }
@@ -49,8 +49,12 @@ namespace Repositories
             var paymentMethod = GetById(id)?.Result;
 
             if (paymentMethod == null) { return new PaymentMethod(); }
-            
-            paymentMethod.Description = paymentMethodViewModel.Name;
+
+            paymentMethod = new PaymentMethod
+            {
+                Id = id,
+                Description = paymentMethodViewModel.Name                
+            };
             _context.PaymentMethods.Update(paymentMethod);
             await _context.SaveChangesAsync();
             return paymentMethod;

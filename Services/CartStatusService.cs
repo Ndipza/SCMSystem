@@ -2,33 +2,33 @@
 using Data;
 using Data.Models;
 using Microsoft.EntityFrameworkCore;
-using Repositories.Interfaces;
+using Services.Interfaces;
 
-namespace Repositories
+namespace Services
 {
-    public class CartStatusRepository : ICartStatusRepository
+    public class CartStatusService : ICartStatusService
     {
         private readonly SCMSystemDBContext _context;
-        public CartStatusRepository(SCMSystemDBContext context)
+        public CartStatusService(SCMSystemDBContext context)
         {
             _context = context;
         }
 
         public async Task<long> CreateCartStatusAsync(CartStatusViewModel cartStatusViewModel)
         {
-            var cartStatus = new CartStatus
+            var CartStatus = new CartStatus
             {
                 Description = cartStatusViewModel.Description
             };
-            await _context.CartStatuses.AddAsync(cartStatus).ConfigureAwait(false);
+            await _context.CartStatuses.AddAsync(CartStatus).ConfigureAwait(false);
             await _context.SaveChangesAsync();
-            return cartStatus.Id;
+            return CartStatus.Id;
         }
 
         public async Task DeleteCartStatusById(int id)
         {
-            var cartStatus = GetCartStatusById(id)?.Result ?? new CartStatus();
-            _context.CartStatuses.RemoveRange(cartStatus);
+            var CartStatus = GetCartStatusById(id)?.Result ?? new CartStatus();
+            _context.CartStatuses.RemoveRange(CartStatus);
             await _context.SaveChangesAsync();
         }
 
@@ -47,14 +47,18 @@ namespace Repositories
 
         public async Task<CartStatus> UpdateCartStatusAsync(CartStatusViewModel cartStatusViewModel, int id)
         {
-            var cartStatus = GetCartStatusById(id)?.Result;
+            var CartStatus = GetCartStatusById(id)?.Result;
 
-            if (cartStatus == null) { return new CartStatus(); }
+            if (CartStatus == null) { return new CartStatus(); }
 
-            cartStatus.Description = cartStatusViewModel.Description;
-            _context.CartStatuses.Update(cartStatus);
+            CartStatus = new CartStatus
+            {
+                Id = id,
+                Description = cartStatusViewModel.Description
+            };
+            _context.CartStatuses.Update(CartStatus);
             await _context.SaveChangesAsync();
-            return cartStatus;
+            return CartStatus;
         }
     }
 }

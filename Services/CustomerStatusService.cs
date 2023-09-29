@@ -2,14 +2,14 @@
 using Data;
 using Data.Models;
 using Microsoft.EntityFrameworkCore;
-using Repositories.Interfaces;
+using Services.Interfaces;
 
-namespace Repositories
+namespace Services
 {
-    public class CustomerStatusRepository : ICustomerStatusRepository
+    public class CustomerStatusService : ICustomerStatusService
     {
         private readonly SCMSystemDBContext _context;
-        public CustomerStatusRepository(SCMSystemDBContext context)
+        public CustomerStatusService(SCMSystemDBContext context)
         {
             _context = context;
         }
@@ -51,7 +51,11 @@ namespace Repositories
 
             if (customerStatus == null) { return new CustomerStatus(); }
 
-            customerStatus.Description = customerStatusViewModel.Description;
+            customerStatus = new CustomerStatus
+            {
+                Id = id,
+                Description = customerStatusViewModel.Description
+            };
             _context.CustomerStatuses.Update(customerStatus);
             await _context.SaveChangesAsync();
             return customerStatus;

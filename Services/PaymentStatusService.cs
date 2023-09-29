@@ -1,34 +1,34 @@
 ﻿using Core.ViewModels;
 using Data.Models;
 using Data;
-using Repositories.Interfaces;
+using Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace Repositories
+namespace Services
 {
-    public class PaymentStatusRepository : IPaymentStatusRepository
+    public class PaymentStatusService : IPaymentStatusService
     {
         private readonly SCMSystemDBContext _context;
-        public PaymentStatusRepository(SCMSystemDBContext context)
+        public PaymentStatusService(SCMSystemDBContext context)
         {
             _context = context;
         }
 
         public async Task<long> CreatePaymentStatusAsync(PaymentStatusViewModel PaymentStatusViewModel)
         {
-            var paymentStatus = new PaymentStatus
+            var PaymentStatus = new PaymentStatus
             {
                 Description = PaymentStatusViewModel.Description
             };
-            await _context.PaymentStatuses.AddAsync(paymentStatus).ConfigureAwait(false);
+            await _context.PaymentStatuses.AddAsync(PaymentStatus).ConfigureAwait(false);
             await _context.SaveChangesAsync();
-            return paymentStatus.Id;
+            return PaymentStatus.Id;
         }
 
         public async Task DeletePaymentStatusById(int id)
         {
-            var paymentStatus = GetPaymentStatusById(id)?.Result ?? new PaymentStatus();
-            _context.PaymentStatuses.RemoveRange(paymentStatus);
+            var PaymentStatus = GetPaymentStatusById(id)?.Result ?? new PaymentStatus();
+            _context.PaymentStatuses.RemoveRange(PaymentStatus);
             await _context.SaveChangesAsync();
         }
 
@@ -47,14 +47,18 @@ namespace Repositories
 
         public async Task<PaymentStatus> UpdatePaymentStatusAsync(PaymentStatusViewModel PaymentStatusViewModel, int id)
         {
-            var paymentStatus = GetPaymentStatusById(id)?.Result;
+            var PaymentStatus = GetPaymentStatusById(id)?.Result;
 
-            if (paymentStatus == null) { return new PaymentStatus(); }
+            if (PaymentStatus == null) { return new PaymentStatus(); }
 
-            paymentStatus.Description = PaymentStatusViewModel.Description;
-            _context.PaymentStatuses.Update(paymentStatus);
+            PaymentStatus = new PaymentStatus
+            {
+                Id = id,
+                Description = PaymentStatusViewModel.Description
+            };
+            _context.PaymentStatuses.Update(PaymentStatus);
             await _context.SaveChangesAsync();
-            return paymentStatus;
+            return PaymentStatus;
         }
     }
 }
