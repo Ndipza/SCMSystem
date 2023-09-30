@@ -10,11 +10,45 @@ namespace SCMSystem.Controllers
     [ApiController]
     public class PaymentMethodController : ControllerBase
     {
+        #region Constructor
+
         private readonly IPaymentMethodService _paymentMethodService;
         public PaymentMethodController(IPaymentMethodService paymentMethodService)
         {
             _paymentMethodService = paymentMethodService;
         }
+
+        #endregion
+
+        #region Create
+
+        // POST api/<PaymentMethodController>
+        [HttpPost]
+        [Route("CreatePaymentMethod")]
+        public async Task<IActionResult> Post([FromBody] PaymentMethodViewModel paymentMethodViewModel)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var model = await _paymentMethodService.CreatePaymentMethod(paymentMethodViewModel);
+                if (model == 0) { return NotFound(); }
+
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex?.InnerException?.Message);
+            }
+        }
+
+        #endregion
+
+        #region Read
+
         // GET: api/<PaymentMethodController>
         [HttpGet]
         [Route("GetAllPaymentMethods")]
@@ -60,28 +94,9 @@ namespace SCMSystem.Controllers
 
         }
 
-        // POST api/<PaymentMethodController>
-        [HttpPost]
-        [Route("CreatePaymentMethod")]
-        public async Task<IActionResult> Post([FromBody] PaymentMethodViewModel paymentMethodViewModel)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
+        #endregion
 
-                var model = await _paymentMethodService.CreatePaymentMethod(paymentMethodViewModel);
-                if (model == 0) { return NotFound(); }
-
-                return Ok(model);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex?.InnerException?.Message);
-            }
-        }
+        #region Update
 
         // PUT api/<PaymentMethodController>/5
         [HttpPut("{id}")]
@@ -100,6 +115,10 @@ namespace SCMSystem.Controllers
             }
         }
 
+        #endregion
+
+        #region Delete
+
         // DELETE api/<PaymentMethodController>/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
@@ -115,5 +134,8 @@ namespace SCMSystem.Controllers
                 return BadRequest(ex?.InnerException?.Message);
             }
         }
+
+        #endregion
+
     }
 }

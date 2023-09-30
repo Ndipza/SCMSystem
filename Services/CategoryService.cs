@@ -23,12 +23,12 @@ namespace Services
             return await _unitOfWork.CategoryRepository.CreateCategory(categoryViewModel);
         }
 
-        public async Task DeleteCategory(int id)
+        public async Task<bool> DeleteCategory(int id)
         {
-            await _unitOfWork.CategoryRepository.DeleteCategory(id);
+            return await _unitOfWork.CategoryRepository.DeleteCategory(id);
         }
 
-        public async Task<List<Category>> GetCategories()
+        public async Task<List<Category?>?> GetCategories()
         {
             return await _unitOfWork.CategoryRepository.GetCategories();
         }
@@ -38,7 +38,7 @@ namespace Services
             return await _unitOfWork.CategoryRepository.GetCategoryById(id);
         }
 
-        public async Task<Category> UpdateCategory(CategoryViewModel categoryViewModel, int id)
+        public async Task<Category?> UpdateCategory(CategoryViewModel categoryViewModel, int id)
         {
             return await _unitOfWork.CategoryRepository.UpdateCategory(categoryViewModel, id);
         }

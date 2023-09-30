@@ -11,11 +11,46 @@ namespace SCMSystem.Controllers
     [ApiController]
     public class CartController : ControllerBase
     {
+
+        #region Constructor
+
         private readonly ICartService _cartService;
         public CartController(ICartService cartService)
         {
             _cartService = cartService;
         }
+
+        #endregion
+
+        #region Create
+
+        // POST api/<CartController>
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody] CartViewModel cartViewModel)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var model = await _cartService.CreateCart(cartViewModel);
+                if (model == 0) { return NotFound(); }
+
+
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex?.InnerException?.Message);
+            }
+        }
+
+        #endregion
+
+        #region Read
+
         // GET: api/<CartController>
         [HttpGet]
         [Route("GetAllCarts")]
@@ -60,33 +95,14 @@ namespace SCMSystem.Controllers
             }
         }
 
-        // POST api/<CartController>
-        [HttpPost]
-        public async Task<IActionResult> Post([FromBody] CartViewModel cartViewModel)
-        {            
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
+        #endregion
 
-                var model = await _cartService.CreateCart(cartViewModel);
-                if (model == 0) { return NotFound(); }
-
-
-                return Ok(model);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex?.InnerException?.Message);
-            }
-        }
+        #region Update
 
         // PUT api/<CartController>/5
         [HttpPut("{id}")]
         public async Task<IActionResult> Put([FromBody] CartViewModel cartViewModel, int id)
-        {            
+        {
             try
             {
                 var model = await _cartService.UpdateCart(cartViewModel, id);
@@ -101,10 +117,14 @@ namespace SCMSystem.Controllers
             }
         }
 
+        #endregion
+
+        #region Delete
+
         // DELETE api/<CartController>/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
-        {           
+        {
             try
             {
                 await _cartService.DeleteCart(id);
@@ -116,5 +136,7 @@ namespace SCMSystem.Controllers
                 return BadRequest(ex?.InnerException?.Message);
             }
         }
+        #endregion
+
     }
 }

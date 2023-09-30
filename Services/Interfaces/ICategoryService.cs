@@ -14,6 +14,6 @@ namespace Services.Interfaces
         Task<Category?> GetCategoryById(int id);
         Task<long> CreateCategory(CategoryViewModel categoryViewModel);
         Task<Category> UpdateCategory(CategoryViewModel categoryViewModel, int id);
-        Task DeleteCategory(int id);
+        Task<bool> DeleteCategory(int id);
     }
 }

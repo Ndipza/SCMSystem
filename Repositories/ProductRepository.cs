@@ -23,7 +23,6 @@ namespace Repositories
         public async Task<List<Product>> GetAllProducts()
         {
             return await _context.Products
-                .AsNoTracking()
                 .Include(p=>p.CartItems)
                 .Include(p=>p.Category).ToListAsync();
         }
@@ -31,7 +30,6 @@ namespace Repositories
         public async Task<Product?> GetProductById(int id)
         {
             return await _context.Products
-                .AsNoTracking()
                 .Include(product => product.CartItems)
                 .Include(product => product.Category)
                 .SingleOrDefaultAsync(x => x.Id == id);

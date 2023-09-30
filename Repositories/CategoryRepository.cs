@@ -13,32 +13,37 @@ namespace Repositories
         {
             _context = context;
         }
-        public async Task DeleteCategory(int id)
+        public async Task<bool> DeleteCategory(int id)
         {
             if (_context != null)
             {
-                var category = GetCategoryById(id)?.Result ?? new Category();
-                _context.Categories.RemoveRange(category);
-                await _context.SaveChangesAsync();
+                var category = GetCategoryById(id)?.Result;
+                if (category != null)
+                {
+                    _context.Categories.RemoveRange(category);
+                    await _context.SaveChangesAsync();
+
+                    return true;
+                }
+                
             }
+            return false;
         }
 
-        public async Task<List<Category>> GetCategories()
+        public async Task<List<Category?>?> GetCategories()
         {
             if (_context == null)
-                return new List<Category>();
+                return null;
 
-            return await _context.Categories.ToListAsync();
+            return await _context.Categories?.ToListAsync();
         }
 
         public async Task<Category?> GetCategoryById(int id)
         {
             if (_context == null)
-                return new Category();
+                return null;
 
             return await _context.Categories
-                .AsNoTracking()
-                .Include(category => category.Products)
                 .SingleOrDefaultAsync(x => x.Id == id);
         }
 
@@ -56,15 +61,17 @@ namespace Repositories
             return category.Id;
         }
 
-        public async Task<Category> UpdateCategory(CategoryViewModel categoryViewModel, int id)
+        public async Task<Category?> UpdateCategory(CategoryViewModel categoryViewModel, int id)
         {
             var category = GetCategoryById(id)?.Result;
 
-            if (category == null) { return new Category(); }
+            if (category != null)
+            {
+                category.Name = categoryViewModel.Name;
+                _context.Categories.Update(category);
+                await _context.SaveChangesAsync();
+            }
 
-            category.Name = categoryViewModel.Name;
-            _context.Categories.Update(category);
-            await _context.SaveChangesAsync();
             return category;
         }
     }

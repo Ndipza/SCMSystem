@@ -13,11 +13,43 @@ namespace SCMSystem.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
+        #region Constructor
+
         private readonly IProductService _productServicek;
         public ProductController(IProductService productServicek)
         {
             _productServicek = productServicek;
         }
+
+        #endregion
+
+        #region Create
+
+        // POST api/<ProductController>
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody] ProductViewModel productViewModel)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var model = await _productServicek.CreateProduct(productViewModel);
+                if (model == 0) { return NotFound(); }
+
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex?.InnerException?.Message);
+            }
+        }
+
+        #endregion
+
+        #region Read
 
         // GET: api/<ProductController>
         [HttpGet]
@@ -62,27 +94,9 @@ namespace SCMSystem.Controllers
             }
         }
 
-        // POST api/<ProductController>
-        [HttpPost]
-        public async Task<IActionResult> Post([FromBody] ProductViewModel productViewModel)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
+        #endregion
 
-                var model = await _productServicek.CreateProduct(productViewModel);
-                if (model == 0) { return NotFound(); }
-
-                return Ok(model);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex?.InnerException?.Message);
-            }
-        }
+        #region Update
 
         // PUT api/<ProductController>/5
         [HttpPut("{id}")]
@@ -101,11 +115,15 @@ namespace SCMSystem.Controllers
             }
         }
 
+        #endregion
+
+        #region Delete
+
         // DELETE api/<ProductController>/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            
+
             try
             {
                 await _productServicek.DeleteProduct(id);
@@ -117,5 +135,7 @@ namespace SCMSystem.Controllers
                 return BadRequest(ex?.InnerException?.Message);
             }
         }
+
+        #endregion
     }
 }

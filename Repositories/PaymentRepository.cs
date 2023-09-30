@@ -23,7 +23,6 @@ namespace Repositories
         public async Task<List<Payment>> GetAllPayments()
         {
             return await _context.Payments
-                .AsNoTracking()
                 .Include(payment => payment.PaymentMethod)
                 .Include(payment => payment.PaymentStatus)
                 .Include(payment => payment.Cart).ToListAsync();
@@ -32,7 +31,6 @@ namespace Repositories
         public async Task<Payment?> GetPaymentById(int id)
         {
             return await _context.Payments
-                .AsNoTracking()
                 .Include(payment => payment.PaymentMethod)
                 .Include(payment => payment.PaymentStatus)
                 .Include(payment => payment.Cart)

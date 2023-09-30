@@ -40,7 +40,6 @@ namespace Repositories
         public async Task<PaymentStatus?> GetPaymentStatusById(int id)
         {
             return await _context.PaymentStatuses
-                .AsNoTracking()
                 .Include(payment => payment.Payments)
                 .SingleOrDefaultAsync(x => x.Id == id);
         }

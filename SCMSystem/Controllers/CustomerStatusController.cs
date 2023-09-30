@@ -8,11 +8,39 @@ namespace SCMSystem.Controllers
     [ApiController]
     public class CustomerStatusController : ControllerBase
     {
+        #region Constructor
+
         private readonly ICustomerStatusService _customerStatusService;
         public CustomerStatusController(ICustomerStatusService customerStatusService)
         {
             _customerStatusService = customerStatusService;
         }
+
+        #endregion
+
+        #region Create
+
+        // POST api/<CustomerStatusController>
+        [HttpPost]
+        [Route("CreateCustomerStatus")]
+        public async Task<IActionResult> Post([FromBody] CustomerStatusViewModel customerStatusViewModel)
+        {
+            try
+            {
+                var model = await _customerStatusService.CreateCustomerStatus(customerStatusViewModel);
+                if (model == 0) { return NotFound(); }
+
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex?.InnerException?.Message);
+            }
+        }
+
+        #endregion
+
+        #region Read
 
         // GET: api/<CustomerStatusController>
         [HttpGet]
@@ -64,23 +92,9 @@ namespace SCMSystem.Controllers
 
         }
 
-        // POST api/<CustomerStatusController>
-        [HttpPost]
-        [Route("CreateCustomerStatus")]
-        public async Task<IActionResult> Post([FromBody] CustomerStatusViewModel customerStatusViewModel)
-        {
-            try
-            {
-                var model = await _customerStatusService.CreateCustomerStatus(customerStatusViewModel);
-                if (model == 0) { return NotFound(); }
+        #endregion
 
-                return Ok(model);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex?.InnerException?.Message);
-            }
-        }
+        #region Update
 
         // PUT api/<CustomerStatusController>/5
         [HttpPut("{id}")]
@@ -99,6 +113,10 @@ namespace SCMSystem.Controllers
             }
         }
 
+        #endregion
+
+        #region Delete
+
         // DELETE api/<CustomerStatusController>/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
@@ -114,5 +132,8 @@ namespace SCMSystem.Controllers
                 return BadRequest(ex?.InnerException?.Message);
             }
         }
+
+        #endregion
+
     }
 }

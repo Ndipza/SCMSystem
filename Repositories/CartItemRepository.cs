@@ -35,8 +35,7 @@ namespace Repositories
 
         public async Task<List<CartItem>> GetAllCartItems()
         {
-            return await _context.CartItems
-                .AsNoTracking()
+            return await _context.CartItems                
                 .Include(p => p.Cart)
                 .Include(p => p.Product).ToListAsync();
         }
@@ -44,7 +43,6 @@ namespace Repositories
         public async Task<CartItem?> GetCartItemById(int id)
         {
             return await _context.CartItems
-                .AsNoTracking()
                 .Include(CartItem => CartItem.Cart)
                 .Include(CartItem => CartItem.Product)
                 .SingleOrDefaultAsync(x => x.Id == id);

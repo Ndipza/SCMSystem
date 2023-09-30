@@ -8,11 +8,44 @@ namespace SCMSystem.Controllers
     [ApiController]
     public class CartItemController : ControllerBase
     {
+        #region Constructor
+
         private readonly ICartItemService _CartItemService;
         public CartItemController(ICartItemService CartItemService)
         {
             _CartItemService = CartItemService;
         }
+
+        #endregion
+
+        #region Create
+
+        // POST api/<CartItemController>
+        [HttpPost]
+        [Route("CreateCartItem")]
+        public async Task<IActionResult> Post([FromBody] CartItemViewModel CartItemViewModel)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var model = await _CartItemService.CreateCartItem(CartItemViewModel);
+                if (model == 0) { return NotFound(); }
+
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex?.InnerException?.Message);
+            }
+        }
+
+        #endregion
+
+        #region Read
 
         // GET: api/<CartItemController>
         [HttpGet]
@@ -59,28 +92,9 @@ namespace SCMSystem.Controllers
 
         }
 
-        // POST api/<CartItemController>
-        [HttpPost]
-        [Route("CreateCartItem")]
-        public async Task<IActionResult> Post([FromBody] CartItemViewModel CartItemViewModel)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
+        #endregion
 
-                var model = await _CartItemService.CreateCartItem(CartItemViewModel);
-                if (model == 0) { return NotFound(); }
-
-                return Ok(model);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex?.InnerException?.Message);
-            }
-        }
+        #region Update
 
         // PUT api/<CartItemController>/5
         [HttpPut("{id}")]
@@ -99,6 +113,10 @@ namespace SCMSystem.Controllers
             }
         }
 
+        #endregion
+
+        #region Delete
+
         // DELETE api/<CartItemController>/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
@@ -114,5 +132,7 @@ namespace SCMSystem.Controllers
                 return BadRequest(ex?.InnerException?.Message);
             }
         }
+        #endregion
+
     }
 }

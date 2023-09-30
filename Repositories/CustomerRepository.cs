@@ -27,7 +27,7 @@ namespace Repositories
 
         public async Task<List<Customer>> GetAllCustomer()
         {
-            return await _context.Customers.AsNoTracking()
+            return await _context.Customers
                 .Include(customer => customer.Carts)
                 .Include(customer => customer.CustomerStatus).ToListAsync();
         }
@@ -35,7 +35,6 @@ namespace Repositories
         public async Task<Customer?> GetCustomerById(Guid id)
         {
             return await _context.Customers
-                .AsNoTracking()
                 .Include(customer => customer.Carts)
                 .Include(customer => customer.CustomerStatus)
                 .SingleOrDefaultAsync(x => x.Id == id);

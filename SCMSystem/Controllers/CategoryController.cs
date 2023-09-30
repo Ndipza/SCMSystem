@@ -10,11 +10,44 @@ namespace SCMSystem.Controllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
+        #region Constructor
+
         private readonly ICategoryService _categoryService;
         public CategoryController(ICategoryService categoryService)
         {
             _categoryService = categoryService;
         }
+
+        #endregion
+
+        #region Create
+
+        // POST api/<CategoryController>
+        [HttpPost]
+        [Route("CreateCategory")]
+        public async Task<IActionResult> Post([FromBody] CategoryViewModel categoryViewModel)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var model = await _categoryService.CreateCategory(categoryViewModel);
+
+                return Ok(model);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        #endregion
+
+        #region Read
+
         // GET: api/<CategoryController>
         [HttpGet]
         [Route("GetAllCategories")]
@@ -24,6 +57,7 @@ namespace SCMSystem.Controllers
             {
                 var model = await _categoryService.GetCategories();
                 if (model == null) { return NotFound(); }
+                if (model.Count == 0) { return NoContent(); }
 
                 var pageResults = 3f;
                 var pageCount = Math.Ceiling(model.Count / pageResults);
@@ -59,28 +93,10 @@ namespace SCMSystem.Controllers
             }
         }
 
-        // POST api/<CategoryController>
-        [HttpPost]
-        [Route("CreateCategory")]
-        public async Task<IActionResult> Post([FromBody] CategoryViewModel categoryViewModel)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
+        #endregion
 
-                var model = await _categoryService.CreateCategory(categoryViewModel);
-                if (model == 0) { return NotFound(); }
+        #region Update
 
-                return Ok(model);
-            }
-            catch (Exception)
-            {
-                return BadRequest();
-            }
-        }
 
         // PUT api/<CategoryController>/5
         [HttpPut("{id}")]
@@ -89,15 +105,22 @@ namespace SCMSystem.Controllers
             try
             {
                 var model = await _categoryService.UpdateCategory(categoryViewModel, id);
-                if (model == null) { return NotFound(); }
+                if (model != null)
+                {
+                    return Ok(model);
+                }
 
-                return Ok(model);
+                return NotFound();
             }
             catch (Exception)
             {
                 return BadRequest();
             }
         }
+
+        #endregion
+
+        #region Delete
 
         // DELETE api/<CategoryController>/5
         [HttpDelete("{id}")]
@@ -105,14 +128,19 @@ namespace SCMSystem.Controllers
         {
             try
             {
-                await _categoryService.DeleteCategory(id);
+                var model = await _categoryService.DeleteCategory(id);
+                
+                if(model)
+                    return Ok(model);
 
-                return Ok();
+                return NotFound();
             }
             catch (Exception)
             {
                 return BadRequest();
             }
         }
+        #endregion
+
     }
 }

@@ -13,11 +13,38 @@ namespace SCMSystem.Controllers
     [ApiController]
     public class CustomerController : ControllerBase
     {
+        #region Constructor
+
         private readonly ICustomerService _customerService;
         public CustomerController(ICustomerService customerService)
         {
             _customerService = customerService;
         }
+
+        #endregion
+
+        #region Create
+
+        // POST api/<CustomerController>
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody] CustomerViewModel customerViewModel)
+        {
+            try
+            {
+                var model = await _customerService.CreateCustomer(customerViewModel);
+
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex?.InnerException?.Message);
+            }
+        }
+
+        #endregion
+
+        #region Read
+
         // GET: api/<CustomerController>
         [HttpGet]
         [Route("GetAllCustomer")]
@@ -66,21 +93,9 @@ namespace SCMSystem.Controllers
             }
         }
 
-        // POST api/<CustomerController>
-        [HttpPost]
-        public async Task<IActionResult> Post([FromBody] CustomerViewModel customerViewModel)
-        {
-            try
-            {
-                var model = await _customerService.CreateCustomer(customerViewModel);
+        #endregion
 
-                return Ok(model);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex?.InnerException?.Message);
-            }
-        }
+        #region Update
 
         // PUT api/<CustomerController>/5
         [HttpPut("{id}")]
@@ -99,11 +114,15 @@ namespace SCMSystem.Controllers
             }
         }
 
+        #endregion
+
+        #region Delete
+
         // DELETE api/<CustomerController>/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-           
+
             try
             {
                 await _customerService.DeleteCustomer(id);
@@ -115,5 +134,6 @@ namespace SCMSystem.Controllers
                 return BadRequest(ex?.InnerException?.Message);
             }
         }
+        #endregion
     }
 }

@@ -40,7 +40,6 @@ namespace Repositories
         public async Task<CartStatus?> GetCartStatusById(int id)
         {
             return await _context.CartStatuses
-                .AsNoTracking()
                 .Include(payment => payment.Carts)
                 .SingleOrDefaultAsync(x => x.Id == id);
         }
