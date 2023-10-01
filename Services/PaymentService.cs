@@ -18,9 +18,9 @@ namespace Services
             return await _unitOfWork.PaymentRepository.CreatePayment(paymentViewModel);
         }
 
-        public async Task DeletePayment(int id)
+        public async Task<bool> DeletePayment(int id)
         {
-            await _unitOfWork.PaymentRepository.DeletePayment(id);
+            return await _unitOfWork.PaymentRepository.DeletePayment(id);
         }
 
         public async Task<List<Payment>> GetAllPayments()

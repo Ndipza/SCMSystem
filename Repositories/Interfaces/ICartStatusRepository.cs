@@ -9,6 +9,6 @@ namespace Repositories.Interfaces
         Task<CartStatus?> GetCartStatusById(int id);
         Task<long> CreateCartStatusAsync(CartStatusViewModel cartStatusViewModel);
         Task<CartStatus> UpdateCartStatusAsync(CartStatusViewModel cartStatusViewModel, int id);
-        Task DeleteCartStatusById(int id);
+        Task<bool> DeleteCartStatusById(int id);
     }
 }

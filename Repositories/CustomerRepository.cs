@@ -18,11 +18,21 @@ namespace Repositories
         {
             _context = context;
         }
-        public async Task DeleteCustomer(Guid id)
+        public async Task<bool> DeleteCustomer(Guid id)
         {
-            var customer = GetCustomerById(id)?.Result ?? new Customer();
-            _context.Customers.RemoveRange(customer);
-            await _context.SaveChangesAsync();
+            if (_context != null)
+            {
+                var customer = GetCustomerById(id)?.Result;
+                if (customer != null)
+                {
+                    _context.Customers.RemoveRange(customer);
+                    await _context.SaveChangesAsync();
+
+                    return true;
+                }
+
+            }
+            return false;
         }
 
         public async Task<List<Customer>> GetAllCustomer()

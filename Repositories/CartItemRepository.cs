@@ -26,11 +26,20 @@ namespace Repositories
             return cartItem.Id;
         }
 
-        public async Task DeleteCartItem(int id)
+        public async Task<bool> DeleteCartItem(int id)
         {
-            var CartItem = GetCartItemById(id)?.Result ?? new CartItem();
-            _context.CartItems.RemoveRange(CartItem);
-            await _context.SaveChangesAsync();
+            if (_context != null)
+            {
+                var cartItem = GetCartItemById(id)?.Result;
+                if (cartItem != null)
+                {
+                    _context.CartItems.RemoveRange(cartItem);
+                    await _context.SaveChangesAsync();
+
+                    return true;
+                }
+            }
+            return false;
         }
 
         public async Task<List<CartItem>> GetAllCartItems()

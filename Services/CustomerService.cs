@@ -23,9 +23,9 @@ namespace Services
             return await _unitOfWork.CustomerRepository.CreateCustomer(customerViewModel);
         }
 
-        public async Task DeleteCustomer(Guid id)
+        public async Task<bool> DeleteCustomer(Guid id)
         {
-            await _unitOfWork.CustomerRepository.DeleteCustomer(id);
+            return await _unitOfWork.CustomerRepository.DeleteCustomer(id);
         }
 
         public async Task<List<Customer>> GetAllCustomer()

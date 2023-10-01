@@ -123,9 +123,12 @@ namespace SCMSystem.Controllers
         {
             try
             {
-                await _customerStatusService.DeleteCustomerStatusById(id);
+                var model = await _customerStatusService.DeleteCustomerStatusById(id);
 
-                return Ok($"{id} Deleted");
+                if (model)
+                    return Ok(model);
+
+                return NotFound();
             }
             catch (Exception ex)
             {

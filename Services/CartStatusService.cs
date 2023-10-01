@@ -17,9 +17,9 @@ namespace Services
             return await _unitOfWork.CartStatusRepository.CreateCartStatusAsync(cartStatusViewModel);
         }
 
-        public async Task DeleteCartStatusById(int id)
+        public async Task<bool> DeleteCartStatusById(int id)
         {
-            await _unitOfWork.CartStatusRepository.DeleteCartStatusById(id);
+            return await _unitOfWork.CartStatusRepository.DeleteCartStatusById(id);
         }
 
         public async Task<List<CartStatus>> GetAllCartStatuses()

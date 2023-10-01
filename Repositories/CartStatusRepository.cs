@@ -25,11 +25,21 @@ namespace Repositories
             return cartStatus.Id;
         }
 
-        public async Task DeleteCartStatusById(int id)
+        public async Task<bool> DeleteCartStatusById(int id)
         {
-            var cartStatus = GetCartStatusById(id)?.Result ?? new CartStatus();
-            _context.CartStatuses.RemoveRange(cartStatus);
-            await _context.SaveChangesAsync();
+            if (_context != null)
+            {
+                var cartStatus = GetCartStatusById(id)?.Result;
+                if (cartStatus != null)
+                {
+                    _context.CartStatuses.RemoveRange(cartStatus);
+                    await _context.SaveChangesAsync();
+
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public async Task<List<CartStatus>> GetAllCartStatuses()

@@ -1,5 +1,6 @@
 ﻿using Core.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Services;
 using Services.Interfaces;
 
 namespace SCMSystem.Controllers
@@ -122,10 +123,13 @@ namespace SCMSystem.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             try
-            {
-                await _CartItemService.DeleteCartItem(id);
+            {              
+                var model = await _CartItemService.DeleteCartItem(id);
 
-                return Ok($"{id} Deleted");
+                if (model)
+                    return Ok(model);
+
+                return NotFound();
             }
             catch (Exception ex)
             {

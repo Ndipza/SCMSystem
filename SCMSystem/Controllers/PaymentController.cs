@@ -130,10 +130,12 @@ namespace SCMSystem.Controllers
 
             try
             {
-                await _paymentService.DeletePayment(id);
+                var model = await _paymentService.DeletePayment(id);
 
+                if (model)
+                    return Ok(model);
 
-                return Ok();
+                return NotFound();
             }
             catch (Exception ex)
             {

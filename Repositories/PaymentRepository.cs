@@ -13,11 +13,21 @@ namespace Repositories
         {
             _context = context;
         }
-        public async Task DeletePayment(int id)
+        public async Task<bool> DeletePayment(int id)
         {
-            var category = GetPaymentById(id)?.Result ?? new Payment();
-            _context.Payments.RemoveRange(category);
-            await _context.SaveChangesAsync();
+            if (_context != null)
+            {
+                var payment = GetPaymentById(id)?.Result;
+                if (payment != null)
+                {
+                    _context.Payments.RemoveRange(payment);
+                    await _context.SaveChangesAsync();
+
+                    return true;
+                }
+
+            }
+            return false;
         }
 
         public async Task<List<Payment>> GetAllPayments()

@@ -25,11 +25,22 @@ namespace Repositories
             return customerStatus.Id;
         }
 
-        public async Task DeleteCustomerStatusById(int id)
+        public async Task<bool> DeleteCustomerStatusById(int id)
         {
-            var customerStatus = GetCustomerStatusById(id)?.Result ?? new CustomerStatus();
-            _context.CustomerStatuses.RemoveRange(customerStatus);
-            await _context.SaveChangesAsync();
+
+            if (_context != null)
+            {
+                var customerStatus = GetCustomerStatusById(id)?.Result;
+                if (customerStatus != null)
+                {
+                    _context.CustomerStatuses.RemoveRange(customerStatus);
+                    await _context.SaveChangesAsync();
+
+                    return true;
+                }
+
+            }
+            return false;
         }
 
         public async Task<List<CustomerStatus>> GetAllCustomerStatuses()

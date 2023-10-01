@@ -14,6 +14,6 @@ namespace Services.Interfaces
         Task<PaymentMethod?> GetPaymentMethodById(int id);
         Task<long> CreatePaymentMethod(PaymentMethodViewModel paymentMethodViewModel);
         Task<PaymentMethod> UpdatePaymentMethod(PaymentMethodViewModel paymentMethodViewModel, int id);
-        Task DeletePaymentMethod(int id);
+        Task<bool> DeletePaymentMethod(int id);
     }
 }

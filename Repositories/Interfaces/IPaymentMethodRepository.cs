@@ -9,6 +9,6 @@ namespace Repositories.Interfaces
         Task<PaymentMethod?> GetById(int id);
         Task<long> InsertAsync(PaymentMethodViewModel paymentMethodViewModel);
         Task<PaymentMethod> UpdateAsync(PaymentMethodViewModel paymentMethodViewModel, int id);
-        Task Delete(int id);
+        Task<bool> Delete(int id);
     }
 }

@@ -135,9 +135,9 @@ namespace SCMSystem.Controllers
 
                 return NotFound();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BadRequest();
+                return BadRequest(ex?.InnerException?.Message);
             }
         }
         #endregion

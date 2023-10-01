@@ -9,6 +9,6 @@ namespace Repositories.Interfaces
         Task<PaymentStatus?> GetPaymentStatusById(int id);
         Task<long> CreatePaymentStatusAsync(PaymentStatusViewModel paymentStatusViewModel);
         Task<PaymentStatus> UpdatePaymentStatusAsync(PaymentStatusViewModel paymentStatusViewModel, int id);
-        Task DeletePaymentStatusById(int id);
+        Task<bool> DeletePaymentStatusById(int id);
     }
 }

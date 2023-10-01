@@ -1,6 +1,7 @@
 ﻿using Core.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Interfaces;
+using Services;
 using Services.Interfaces;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -126,9 +127,12 @@ namespace SCMSystem.Controllers
         {
             try
             {
-                await _cartStatusServices.DeleteCartStatusById(id);
+                var model = await _cartStatusServices.DeleteCartStatusById(id);
 
-                return Ok($"{id} Deleted");
+                if (model)
+                    return Ok(model);
+
+                return NotFound();
             }
             catch (Exception ex)
             {

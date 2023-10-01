@@ -23,9 +23,9 @@ namespace Services
             return await _unitOfWork.CartRepository.CreateCart(cartViewModel);
         }
 
-        public async Task DeleteCart(int id)
+        public async Task<bool> DeleteCart(int id)
         {
-            await _unitOfWork.CartRepository.DeleteCart(id);
+            return await _unitOfWork.CartRepository.DeleteCart(id);
         }
 
         public async Task<List<Cart>> GetAllCarts()

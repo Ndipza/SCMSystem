@@ -9,6 +9,6 @@ namespace Services.Interfaces
         Task<CustomerStatus?> GetCustomerStatusById(int id);
         Task<long> CreateCustomerStatus(CustomerStatusViewModel customerStatusViewModel);
         Task<CustomerStatus> UpdateCustomerStatus(CustomerStatusViewModel customerStatusViewModel, int id);
-        Task DeleteCustomerStatusById(int id);
+        Task<bool> DeleteCustomerStatusById(int id);
     }
 }

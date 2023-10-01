@@ -9,6 +9,6 @@ namespace Services.Interfaces
         Task<Cart?> GetCartById(int id);
         Task<long> CreateCart(CartViewModel cartViewModel);
         Task<Cart> UpdateCart(CartViewModel cartViewModel, int id);
-        Task DeleteCart(int id);
+        Task<bool> DeleteCart(int id);
     }
 }

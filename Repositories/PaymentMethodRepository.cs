@@ -13,11 +13,21 @@ namespace Repositories
         {
             _context = context;
         }
-        public async Task Delete(int id)
+        public async Task<bool> Delete(int id)
         {
-            var paymentMethod = GetById(id)?.Result ?? new PaymentMethod();
-            _context.PaymentMethods.RemoveRange(paymentMethod);
-            await _context.SaveChangesAsync();
+            if (_context != null)
+            {
+                var paymentMethod = GetById(id)?.Result;
+                if (paymentMethod != null)
+                {
+                    _context.PaymentMethods.RemoveRange(paymentMethod);
+                    await _context.SaveChangesAsync();
+
+                    return true;
+                }
+
+            }
+            return false;
         }
 
         public async Task<List<PaymentMethod>> GetAll()

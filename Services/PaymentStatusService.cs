@@ -2,11 +2,6 @@
 using Data.Models;
 using Repositories.Interfaces;
 using Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Services
 {
@@ -23,13 +18,13 @@ namespace Services
             return await _unitOfWork.PaymentStatusRepository.CreatePaymentStatusAsync(paymentStatusViewModel);
         }
 
-        public async Task DeletePaymentStatusById(int id)
+        public async Task<bool> DeletePaymentStatusById(int id)
         {
-            await _unitOfWork.PaymentStatusRepository.DeletePaymentStatusById(id);
+            return await _unitOfWork.PaymentStatusRepository.DeletePaymentStatusById(id);
         }
 
         public async Task<List<PaymentStatus>> GetAllPaymentStatuses()
-        {
+        {   
             return await _unitOfWork.PaymentStatusRepository.GetAllPaymentStatuses();
         }
 

@@ -13,11 +13,21 @@ namespace Repositories
         {
             _context = context;
         }
-        public async Task DeleteCart(int id)
+        public async Task<bool> DeleteCart(int id)
         {
-            var cart = GetCartById(id)?.Result ?? new Cart();
-            _context.Carts.RemoveRange(cart);
-            await _context.SaveChangesAsync();
+
+            if (_context != null)
+            {
+                var cart = GetCartById(id)?.Result;
+                if (cart != null)
+                {
+                    _context.Carts.RemoveRange(cart);
+                    await _context.SaveChangesAsync();
+
+                    return true;
+                }
+            }
+            return false;
         }
 
         public async Task<List<Cart>> GetAllCarts()

@@ -127,9 +127,12 @@ namespace SCMSystem.Controllers
         {
             try
             {
-                await _cartService.DeleteCart(id);
+                var model = await _cartService.DeleteCart(id);
 
-                return Ok();
+                if (model)
+                    return Ok(model);
+
+                return NotFound();
             }
             catch (Exception ex)
             {

@@ -25,11 +25,20 @@ namespace Repositories
             return paymentStatus.Id;
         }
 
-        public async Task DeletePaymentStatusById(int id)
+        public async Task<bool> DeletePaymentStatusById(int id)
         {
-            var paymentStatus = GetPaymentStatusById(id)?.Result ?? new PaymentStatus();
-            _context.PaymentStatuses.RemoveRange(paymentStatus);
-            await _context.SaveChangesAsync();
+            if (_context != null)
+            {
+                var paymentStatus = GetPaymentStatusById(id)?.Result;
+                if (paymentStatus != null)
+                {
+                    _context.PaymentStatuses.RemoveRange(paymentStatus);
+                    await _context.SaveChangesAsync();
+
+                    return true;
+                }
+            }
+            return false;
         }
 
         public async Task<List<PaymentStatus>> GetAllPaymentStatuses()

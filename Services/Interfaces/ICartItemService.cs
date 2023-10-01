@@ -14,6 +14,6 @@ namespace Services.Interfaces
         Task<CartItem?> GetCartItemById(int id);
         Task<long> CreateCartItem(CartItemViewModel cartItemViewModel);
         Task<CartItem> UpdateCartItem(CartItemViewModel cartItemViewModel, int id);
-        Task DeleteCartItem(int id);
+        Task<bool> DeleteCartItem(int id);
     }
 }

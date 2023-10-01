@@ -17,9 +17,9 @@ namespace Services
             return await _unitOfWork.CustomerStatusRepository.CreateCustomerStatusAsync(customerStatusViewModel);
         }
 
-        public async Task DeleteCustomerStatusById(int id)
+        public async Task<bool> DeleteCustomerStatusById(int id)
         {
-            await _unitOfWork.CustomerStatusRepository.DeleteCustomerStatusById(id); 
+            return await _unitOfWork.CustomerStatusRepository.DeleteCustomerStatusById(id); 
         }
 
         public async Task<List<CustomerStatus>> GetAllCustomerStatuses()
