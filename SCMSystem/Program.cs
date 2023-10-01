@@ -1,10 +1,16 @@
 using Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Repositories;
 using Repositories.Interfaces;
 using Services;
 using Services.Interfaces;
 using System.Text.Json.Serialization;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.Extensions.FileProviders;
+using SCMSystem.Helper;
+using SCMSystem.Helper.Interface;
 
 namespace NN.Cart
 {
@@ -40,12 +46,34 @@ namespace NN.Cart
 
             // Add services to the container.
 
+
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                        ValidAudience = builder.Configuration["Jwt:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+                    };
+                });
+
+            builder.Services.AddMvc();
             builder.Services.AddControllers().AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
-            
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+           // builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(options =>
+             {
+                 //options.OperationFilter<FileUploadFilter>();
+                 options.EnableAnnotations();
+             });
             builder.Services.AddDbContext<SCMSystemDBContext>(options => options.UseSqlServer(
                 builder.Configuration.GetConnectionString("CartConnection")
             ));
@@ -73,6 +101,7 @@ namespace NN.Cart
             builder.Services.AddScoped<ICartStatusService, CartStatusService>();
             builder.Services.AddScoped<IPaymentStatusService, PaymentStatusService>();
             builder.Services.AddScoped<ICartItemService, CartItemService>();
+            builder.Services.AddScoped<IFileService, FileService>();
 
             var app = builder.Build();
 
@@ -85,7 +114,24 @@ namespace NN.Cart
 
             app.UseHttpsRedirection();
 
+            app.UseRouting();
+
+            //app.UseStaticFiles(new StaticFileOptions
+            //{
+            //    FileProvider = new PhysicalFileProvider(
+            //        Path.Combine(builder.Environment.ContentRootPath, "Uploads")),
+            //        RequestPath = "/Resources"
+            //});
+
+            app.UseAuthentication();
+
             app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                endpoints.MapRazorPages();
+            });
 
             app.MapControllers();
 

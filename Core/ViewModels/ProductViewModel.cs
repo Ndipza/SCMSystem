@@ -1,9 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Http;
+using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.Contracts;
+using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
+
 namespace Core.ViewModels
 {
     public class ProductViewModel
@@ -11,8 +13,16 @@ namespace Core.ViewModels
         [Required]
         [StringLength(50)]
         public string? Name { get; set; }
+        [Display(Description = "Image name")]
+        [SwaggerSchema(ReadOnly = true)]
+        public string? ImageName { get; set; }
         [Required]
-        public byte[] Image { get; set; } = Array.Empty<byte>();
+        [Display(Description = "Category id")]
+        public int CategoryId {  get; set; }  
+        [Required]
+        [NotMapped]        
+        public IFormFile? ImageFile { get; set; }
+        [Required]
         public int Price { get; set; }
     }
 }

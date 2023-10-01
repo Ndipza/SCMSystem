@@ -1,4 +1,5 @@
 ﻿using Core.ViewModels;
+using Data.DTO;
 using Data.Models;
 
 namespace Repositories.Interfaces
@@ -9,6 +10,6 @@ namespace Repositories.Interfaces
         Task<Product?> GetProductById(int id);
         Task<long> CreateProduct(ProductViewModel productViewModel);
         Task<Product> UpdateProduct(ProductViewModel productViewModel, int id);
-        Task DeleteProduct(int id);
+        Task<DeletedProduct> DeleteProduct(int id);
     }
 }

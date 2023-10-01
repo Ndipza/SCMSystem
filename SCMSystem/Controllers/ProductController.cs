@@ -1,8 +1,8 @@
 ﻿using Core.ViewModels;
-using Data.Models;
+using Data.DTO;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Interfaces;
-using Services;
+using SCMSystem.Helper.Interface;
 using Services.Interfaces;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -15,10 +15,14 @@ namespace SCMSystem.Controllers
     {
         #region Constructor
 
-        private readonly IProductService _productServicek;
-        public ProductController(IProductService productServicek)
+        private readonly IFileService _fileService;
+        private readonly IProductService _productService;
+        private readonly ILogger<ProductController> _logger;
+        public ProductController(IProductService productService, ILogger<ProductController> logger, IFileService fileService)
         {
-            _productServicek = productServicek;
+            _productService = productService;
+            _logger = logger;
+            this._fileService = fileService;
         }
 
         #endregion
@@ -27,7 +31,7 @@ namespace SCMSystem.Controllers
 
         // POST api/<ProductController>
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] ProductViewModel productViewModel)
+        public async Task<IActionResult> Post([FromForm] ProductViewModel productViewModel)
         {
             try
             {
@@ -36,17 +40,26 @@ namespace SCMSystem.Controllers
                     return BadRequest(ModelState);
                 }
 
-                var model = await _productServicek.CreateProduct(productViewModel);
-                if (model == 0) { return NotFound(); }
+                if (productViewModel.ImageFile != null)
+                {
+                    var fileResult = _fileService.SaveImage(productViewModel.ImageFile);
+                    if (fileResult.Item1 == 1)
+                    {
+                        productViewModel.ImageName =  fileResult.Item2; // getting name of image
+                    }
+                    var model = await _productService.CreateProduct(productViewModel);
 
-                return Ok(model);
+                    return Ok(model);
+                }
+
+                return BadRequest();
             }
             catch (Exception ex)
             {
                 return BadRequest(ex?.InnerException?.Message);
             }
         }
-
+        
         #endregion
 
         #region Read
@@ -58,7 +71,7 @@ namespace SCMSystem.Controllers
         {
             try
             {
-                var model = await _productServicek.GetAllProducts();
+                var model = await _productService.GetAllProducts();
                 if (model == null) { return NotFound(); }
 
                 var pageResults = 3f;
@@ -83,7 +96,7 @@ namespace SCMSystem.Controllers
         {
             try
             {
-                var model = await _productServicek.GetProductById(id);
+                var model = await _productService.GetProductById(id);
                 if (model == null) { return NotFound(); }
 
                 return Ok(model);
@@ -100,14 +113,28 @@ namespace SCMSystem.Controllers
 
         // PUT api/<ProductController>/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put([FromBody] ProductViewModel productViewModel, int id)
+        public async Task<IActionResult> Put([FromForm] ProductViewModel productViewModel, int id)
         {
             try
             {
-                var model = await _productServicek.UpdateProduct(productViewModel, id);
-                if (model == null) { return NotFound(); }
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
 
-                return Ok(model);
+                if (productViewModel.ImageFile != null)
+                {
+                    var fileResult = _fileService.SaveImage(productViewModel.ImageFile);
+                    if (fileResult.Item1 == 1)
+                    {
+                        productViewModel.ImageName = fileResult.Item2; // getting name of image
+                    }
+                    var model = await _productService.UpdateProduct(productViewModel, id);
+                    if (model == null) { return NotFound(); }
+
+                    return Ok(model);
+                }
+                return BadRequest();
             }
             catch (Exception ex)
             {
@@ -125,10 +152,17 @@ namespace SCMSystem.Controllers
         {
 
             try
-            {
-                await _productServicek.DeleteProduct(id);
+            {                
 
-                return Ok();
+                var model = await _productService.DeleteProduct(id);
+
+                if (model.IsProductDeleted)
+                {
+                    var delete = _fileService.DeleteImage(model.ImageName);
+                    return Ok(model);
+                }
+
+                return NotFound();
             }
             catch (Exception ex)
             {

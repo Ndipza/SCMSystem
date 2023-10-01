@@ -1,5 +1,6 @@
 ﻿using Core.ViewModels;
 using Data;
+using Data.DTO;
 using Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Interfaces;
@@ -13,15 +14,28 @@ namespace Repositories
         {
             _context = context;
         }
-        public async Task DeleteProduct(int id)
+        public async Task<DeletedProduct> DeleteProduct(int id)
         {
-            var product = GetProductById(id)?.Result ?? new Product();
-            _context.Products.RemoveRange(product);
-            await _context.SaveChangesAsync();
+            var deletedProduct = new DeletedProduct();
+            if (_context != null)
+            {
+                var product = GetProductById(id)?.Result;
+                if(product != null)
+                {
+                    _context.Products.RemoveRange(product);
+                    await _context.SaveChangesAsync();
+
+                    deletedProduct.IsProductDeleted = true;
+                    deletedProduct.ImageName = product.Image;
+                }
+                
+            }
+            return deletedProduct;
         }
 
         public async Task<List<Product>> GetAllProducts()
         {
+            var image = _context.Products;
             return await _context.Products
                 .Include(p=>p.CartItems)
                 .Include(p=>p.Category).ToListAsync();
@@ -41,7 +55,8 @@ namespace Repositories
             {
                 Name = productViewModel.Name,
                 Price = productViewModel.Price,
-                Image = productViewModel.Image
+                Image = productViewModel.ImageName,
+                CategoryId = productViewModel.CategoryId
             };
             await _context.Products.AddAsync(product);
             await _context.SaveChangesAsync();
@@ -57,7 +72,7 @@ namespace Repositories
             product.Id = id;
             product.Name = productViewModel.Name;
             product.Price = productViewModel.Price;
-            product.Image = productViewModel.Image;
+            product.Image = productViewModel.ImageName;
 
             _context.Products.Update(product);
             await _context.SaveChangesAsync();

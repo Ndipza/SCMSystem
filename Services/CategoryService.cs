@@ -28,7 +28,7 @@ namespace Services
             return await _unitOfWork.CategoryRepository.DeleteCategory(id);
         }
 
-        public async Task<List<Category?>?> GetCategories()
+        public async Task<List<Category>?> GetCategories()
         {
             return await _unitOfWork.CategoryRepository.GetCategories();
         }

@@ -1,4 +1,5 @@
 ﻿using Core.ViewModels;
+using Data.DTO;
 using Data.Models;
 using Repositories.Interfaces;
 using Services.Interfaces;
@@ -18,9 +19,9 @@ namespace Services
             return await _unitOfWork.ProductRepository.CreateProduct(productViewModel);
         }
 
-        public async Task DeleteProduct(int id)
+        public async Task<DeletedProduct> DeleteProduct(int id)
         {
-            await _unitOfWork.ProductRepository.DeleteProduct(id);
+           return await _unitOfWork.ProductRepository.DeleteProduct(id);
         }
 
         public async Task<List<Product>> GetAllProducts()

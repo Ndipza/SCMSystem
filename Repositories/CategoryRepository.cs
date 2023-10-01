@@ -30,12 +30,12 @@ namespace Repositories
             return false;
         }
 
-        public async Task<List<Category?>?> GetCategories()
+        public async Task<List<Category>?> GetCategories()
         {
             if (_context == null)
                 return null;
 
-            return await _context.Categories?.ToListAsync();
+            return await _context.Categories.Include(category => category.Products).ToListAsync();
         }
 
         public async Task<Category?> GetCategoryById(int id)
@@ -44,6 +44,7 @@ namespace Repositories
                 return null;
 
             return await _context.Categories
+                .Include(category => category.Products)
                 .SingleOrDefaultAsync(x => x.Id == id);
         }
 
