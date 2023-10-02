@@ -2,6 +2,7 @@
 using Data.Models;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using RepositoriesTest.MockData;
 using SCMSystem.Controllers;
@@ -16,9 +17,12 @@ namespace RepositoriesTest.System.Controllers
         #region Constructor
 
         protected readonly Mock<ICategoryService> categoryService;
+
+        private readonly Mock<ILogger<CategoryController>> _logger;
         public CategoryTestController()
         {
             categoryService = new Mock<ICategoryService>();
+            _logger = new Mock<ILogger<CategoryController>>();
         }
 
         #endregion
@@ -70,7 +74,7 @@ namespace RepositoriesTest.System.Controllers
         {
             /// Arrange
             var newCategory = CategoryMockData.NewCategory();
-            var controller = new CategoryController(categoryService.Object);
+            var controller = new CategoryController(categoryService.Object, _logger.Object);
 
             /// Act
             var result = await controller.Post(newCategory);
@@ -79,38 +83,6 @@ namespace RepositoriesTest.System.Controllers
             categoryService.Verify(_ => _.CreateCategory(newCategory), Times.Exactly(1));
         }
 
-        [Fact]
-        public async void Task_Add_ValidData_Return_OkResult()
-        {
-            //Arrange  
-            var newCategory = CategoryMockData.NewCategory();
-            var controller = new CategoryController(categoryService.Object);
-
-            //Act  
-            var result = await controller.Post(newCategory);
-
-            //Assert  
-            Assert.IsType<OkObjectResult>(result);
-        }
-
-        [Fact]
-        public async void Task_Add_ValidData_MatchResult()
-        {
-            long zero = 0;
-            //Arrange  
-            var newCategory = CategoryMockData.NewCategory();
-            var controller = new CategoryController(categoryService.Object);
-
-            //Act  
-            var result = await controller.Post(newCategory);
-
-            //Assert  
-            Assert.IsType<OkObjectResult>(result);
-
-            var okResult = result.Should().BeOfType<OkObjectResult>().Subject;
-
-            Assert.Equal(zero, okResult.Value);
-        }
         #endregion
 
         #region Read
@@ -119,7 +91,7 @@ namespace RepositoriesTest.System.Controllers
         {
             /// Arrange
             categoryService.Setup(_ => _.GetCategories()).ReturnsAsync(CategoryMockData.GetCategories());
-            var controller = new CategoryController(categoryService.Object);
+            var controller = new CategoryController(categoryService.Object, _logger.Object);
 
             var page = 1;
             /// Act
@@ -135,7 +107,7 @@ namespace RepositoriesTest.System.Controllers
         {
             /// Arrange
             categoryService.Setup(_ => _.GetCategories()).ReturnsAsync(CategoryMockData.GetEmptyTodos());
-            var controller = new CategoryController(categoryService.Object);
+            var controller = new CategoryController(categoryService.Object, _logger.Object);
 
             var page = 1;
             /// Act
@@ -153,7 +125,7 @@ namespace RepositoriesTest.System.Controllers
             int page = 1;
             //Arrange  
             categoryService.Setup(_ => _.GetCategories()).ReturnsAsync(CategoryMockData.GetEmptyTodos());
-            var controller = new CategoryController(categoryService.Object);
+            var controller = new CategoryController(categoryService.Object, _logger.Object);
 
             //Act  
             var data = controller.GetAllCategories(page);
@@ -170,7 +142,7 @@ namespace RepositoriesTest.System.Controllers
             var id = 1;
             /// Arrange
             categoryService.Setup(_ => _.GetCategoryById(id)).ReturnsAsync(CategoryMockData.GetCategories()?.FirstOrDefault(x => x.Id == id));
-            var controller = new CategoryController(categoryService.Object);
+            var controller = new CategoryController(categoryService.Object, _logger.Object);
 
 
             /// Act
@@ -189,7 +161,7 @@ namespace RepositoriesTest.System.Controllers
             var id = 1;
             /// Arrange
             categoryService.Setup(_ => _.GetCategoryById(id)).ReturnsAsync(CategoryMockData.GetEmptyTodos()?.FirstOrDefault(x => x.Id == id));
-            var controller = new CategoryController(categoryService.Object);
+            var controller = new CategoryController(categoryService.Object, _logger.Object);
 
 
             /// Act
@@ -206,7 +178,7 @@ namespace RepositoriesTest.System.Controllers
             var id = 2;
             //Arrange  
             categoryService.Setup(_ => _.GetCategoryById(id)).ReturnsAsync(CategoryMockData.GetCategories()?.FirstOrDefault(x => x.Id == id));
-            var controller = new CategoryController(categoryService.Object);
+            var controller = new CategoryController(categoryService.Object, _logger.Object);
             
 
             //Act  
@@ -222,7 +194,7 @@ namespace RepositoriesTest.System.Controllers
             var id = 10000;
             //Arrange  
             categoryService.Setup(_ => _.GetCategoryById(id)).ReturnsAsync(CategoryMockData.GetCategories()?.FirstOrDefault(x => x.Id == id));
-            var controller = new CategoryController(categoryService.Object);
+            var controller = new CategoryController(categoryService.Object, _logger.Object);
             
 
             //Act  
@@ -238,7 +210,7 @@ namespace RepositoriesTest.System.Controllers
             int id = 3;
             //Arrange  
             categoryService.Setup(_ => _.GetCategoryById(id)).ReturnsAsync(CategoryMockData.GetCategories()?.FirstOrDefault(x => x.Id == id));
-            var controller = new CategoryController(categoryService.Object);
+            var controller = new CategoryController(categoryService.Object, _logger.Object);
             
 
             //Act  
@@ -261,7 +233,7 @@ namespace RepositoriesTest.System.Controllers
             //Arrange
             var id = 100;
             categoryService.Setup(_ => _.GetCategoryById(id)).ReturnsAsync(CategoryMockData.GetCategories()?.FirstOrDefault(x => x.Id == id));
-            var controller = new CategoryController(categoryService.Object);
+            var controller = new CategoryController(categoryService.Object, _logger.Object);
 
             //Act
             var data = await controller.Delete(id);

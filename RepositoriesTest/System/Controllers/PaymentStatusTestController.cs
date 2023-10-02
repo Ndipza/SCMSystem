@@ -1,6 +1,7 @@
 ﻿using Core.ViewModels;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using RepositoriesTest.MockData;
 using SCMSystem.Controllers;
@@ -14,9 +15,11 @@ namespace RepositoriesTest.System.Controllers
         #region Constructor
 
         protected readonly Mock<IPaymentStatusService> PaymentStatusService;
+        private readonly Mock<ILogger<PaymentStatusController>> _logger;
         public PaymentStatusTestController()
         {
             PaymentStatusService = new Mock<IPaymentStatusService>();
+            _logger = new Mock<ILogger<PaymentStatusController>>();
         }
 
         #endregion
@@ -68,7 +71,7 @@ namespace RepositoriesTest.System.Controllers
         {
             /// Arrange
             var newPaymentStatus = PaymentStatusMockData.NewPaymentStatus();
-            var controller = new PaymentStatusController(PaymentStatusService.Object);
+            var controller = new PaymentStatusController(PaymentStatusService.Object, _logger.Object);
 
             /// Act
             var result = await controller.Post(newPaymentStatus);
@@ -85,7 +88,7 @@ namespace RepositoriesTest.System.Controllers
         {
             /// Arrange
             PaymentStatusService.Setup(_ => _.GetAllPaymentStatuses()).ReturnsAsync(PaymentStatusMockData.GetPaymentStatuses());
-            var controller = new PaymentStatusController(PaymentStatusService.Object);
+            var controller = new PaymentStatusController(PaymentStatusService.Object, _logger.Object);
 
             var page = 1;
             /// Act
@@ -101,7 +104,7 @@ namespace RepositoriesTest.System.Controllers
         {
             /// Arrange
             PaymentStatusService.Setup(_ => _.GetAllPaymentStatuses()).ReturnsAsync(PaymentStatusMockData.GetEmptyTodos());
-            var controller = new PaymentStatusController(PaymentStatusService.Object);
+            var controller = new PaymentStatusController(PaymentStatusService.Object, _logger.Object);
 
             var page = 1;
             /// Act
@@ -119,7 +122,7 @@ namespace RepositoriesTest.System.Controllers
             int page = 1;
             //Arrange  
             PaymentStatusService.Setup(_ => _.GetAllPaymentStatuses()).ReturnsAsync(PaymentStatusMockData.GetEmptyTodos());
-            var controller = new PaymentStatusController(PaymentStatusService.Object);
+            var controller = new PaymentStatusController(PaymentStatusService.Object, _logger.Object);
 
             //Act  
             var data = controller.Get(page);
@@ -136,7 +139,7 @@ namespace RepositoriesTest.System.Controllers
             var id = 1;
             /// Arrange
             PaymentStatusService.Setup(_ => _.GetPaymentStatusById(id)).ReturnsAsync(PaymentStatusMockData.GetPaymentStatuses()?.FirstOrDefault(x => x.Id == id));
-            var controller = new PaymentStatusController(PaymentStatusService.Object);
+            var controller = new PaymentStatusController(PaymentStatusService.Object, _logger.Object);
 
 
             /// Act
@@ -155,7 +158,7 @@ namespace RepositoriesTest.System.Controllers
             var id = 1;
             /// Arrange
             PaymentStatusService.Setup(_ => _.GetPaymentStatusById(id)).ReturnsAsync(PaymentStatusMockData.GetEmptyTodos()?.FirstOrDefault(x => x.Id == id));
-            var controller = new PaymentStatusController(PaymentStatusService.Object);
+            var controller = new PaymentStatusController(PaymentStatusService.Object, _logger.Object);
 
 
             /// Act
@@ -172,7 +175,7 @@ namespace RepositoriesTest.System.Controllers
             var id = 2;
             //Arrange  
             PaymentStatusService.Setup(_ => _.GetPaymentStatusById(id)).ReturnsAsync(PaymentStatusMockData.GetPaymentStatuses()?.FirstOrDefault(x => x.Id == id));
-            var controller = new PaymentStatusController(PaymentStatusService.Object);
+            var controller = new PaymentStatusController(PaymentStatusService.Object, _logger.Object);
 
 
             //Act  
@@ -188,7 +191,7 @@ namespace RepositoriesTest.System.Controllers
             var id = 10000;
             //Arrange  
             PaymentStatusService.Setup(_ => _.GetPaymentStatusById(id)).ReturnsAsync(PaymentStatusMockData.GetPaymentStatuses()?.FirstOrDefault(x => x.Id == id));
-            var controller = new PaymentStatusController(PaymentStatusService.Object);
+            var controller = new PaymentStatusController(PaymentStatusService.Object, _logger.Object);
 
 
             //Act  
@@ -204,7 +207,7 @@ namespace RepositoriesTest.System.Controllers
             int id = 2;
             //Arrange  
             PaymentStatusService.Setup(_ => _.GetPaymentStatusById(id)).ReturnsAsync(PaymentStatusMockData.GetPaymentStatuses()?.FirstOrDefault(x => x.Id == id));
-            var controller = new PaymentStatusController(PaymentStatusService.Object);
+            var controller = new PaymentStatusController(PaymentStatusService.Object, _logger.Object);
 
 
             //Act  
@@ -227,7 +230,7 @@ namespace RepositoriesTest.System.Controllers
             //Arrange
             var id = 100;
             PaymentStatusService.Setup(_ => _.GetPaymentStatusById(id)).ReturnsAsync(PaymentStatusMockData.GetPaymentStatuses()?.FirstOrDefault(x => x.Id == id));
-            var controller = new PaymentStatusController(PaymentStatusService.Object);
+            var controller = new PaymentStatusController(PaymentStatusService.Object, _logger.Object);
 
             //Act
             var data = await controller.Delete(id);

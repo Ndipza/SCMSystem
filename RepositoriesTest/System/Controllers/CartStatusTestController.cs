@@ -1,6 +1,7 @@
 ﻿using Core.ViewModels;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using RepositoriesTest.MockData;
 using SCMSystem.Controllers;
@@ -15,9 +16,11 @@ namespace RepositoriesTest.System.Controllers
         #region Constructor
 
         protected readonly Mock<ICartStatusService> CartStatusService;
+        private readonly Mock<ILogger<CartStatusController>> _logger;
         public CartStatusTestController()
         {
             CartStatusService = new Mock<ICartStatusService>();
+            _logger = new Mock<ILogger<CartStatusController>>();
         }
 
         #endregion
@@ -69,7 +72,7 @@ namespace RepositoriesTest.System.Controllers
         {
             /// Arrange
             var newCartStatus = CartStatusMockData.NewCartStatus();
-            var controller = new CartStatusController(CartStatusService.Object);
+            var controller = new CartStatusController(CartStatusService.Object, _logger.Object);
 
             /// Act
             var result = await controller.Post(newCartStatus);
@@ -87,7 +90,7 @@ namespace RepositoriesTest.System.Controllers
         {
             /// Arrange
             CartStatusService.Setup(_ => _.GetAllCartStatuses()).ReturnsAsync(CartStatusMockData.GetCartStatuses());
-            var controller = new CartStatusController(CartStatusService.Object);
+            var controller = new CartStatusController(CartStatusService.Object, _logger.Object);
 
             var page = 1;
             /// Act
@@ -105,7 +108,7 @@ namespace RepositoriesTest.System.Controllers
             int page = 1;
             //Arrange  
             CartStatusService.Setup(_ => _.GetAllCartStatuses()).ReturnsAsync(CartStatusMockData.GetEmptyTodos());
-            var controller = new CartStatusController(CartStatusService.Object);
+            var controller = new CartStatusController(CartStatusService.Object, _logger.Object);
 
             //Act  
             var data = controller.Get(page);
@@ -122,7 +125,7 @@ namespace RepositoriesTest.System.Controllers
             var id = 1;
             /// Arrange
             CartStatusService.Setup(_ => _.GetCartStatusById(id)).ReturnsAsync(CartStatusMockData.GetCartStatuses()?.FirstOrDefault(x => x.Id == id));
-            var controller = new CartStatusController(CartStatusService.Object);
+            var controller = new CartStatusController(CartStatusService.Object, _logger.Object);
 
 
             /// Act
@@ -141,7 +144,7 @@ namespace RepositoriesTest.System.Controllers
             var id = 1;
             /// Arrange
             CartStatusService.Setup(_ => _.GetCartStatusById(id)).ReturnsAsync(CartStatusMockData.GetEmptyTodos()?.FirstOrDefault(x => x.Id == id));
-            var controller = new CartStatusController(CartStatusService.Object);
+            var controller = new CartStatusController(CartStatusService.Object, _logger.Object);
 
 
             /// Act
@@ -158,7 +161,7 @@ namespace RepositoriesTest.System.Controllers
             var id = 2;
             //Arrange  
             CartStatusService.Setup(_ => _.GetCartStatusById(id)).ReturnsAsync(CartStatusMockData.GetCartStatuses()?.FirstOrDefault(x => x.Id == id));
-            var controller = new CartStatusController(CartStatusService.Object);
+            var controller = new CartStatusController(CartStatusService.Object, _logger.Object);
 
 
             //Act  
@@ -174,7 +177,7 @@ namespace RepositoriesTest.System.Controllers
             var id = 10000;
             //Arrange  
             CartStatusService.Setup(_ => _.GetCartStatusById(id)).ReturnsAsync(CartStatusMockData.GetCartStatuses()?.FirstOrDefault(x => x.Id == id));
-            var controller = new CartStatusController(CartStatusService.Object);
+            var controller = new CartStatusController(CartStatusService.Object, _logger.Object);
 
 
             //Act  
@@ -190,7 +193,7 @@ namespace RepositoriesTest.System.Controllers
             int id = 2;
             //Arrange  
             CartStatusService.Setup(_ => _.GetCartStatusById(id)).ReturnsAsync(CartStatusMockData.GetCartStatuses()?.FirstOrDefault(x => x.Id == id));
-            var controller = new CartStatusController(CartStatusService.Object);
+            var controller = new CartStatusController(CartStatusService.Object, _logger.Object);
 
 
             //Act  
@@ -213,7 +216,7 @@ namespace RepositoriesTest.System.Controllers
             //Arrange
             var id = 100;
             CartStatusService.Setup(_ => _.GetCartStatusById(id)).ReturnsAsync(CartStatusMockData.GetCartStatuses()?.FirstOrDefault(x => x.Id == id));
-            var controller = new CartStatusController(CartStatusService.Object);
+            var controller = new CartStatusController(CartStatusService.Object, _logger.Object);
 
             //Act
             var data = await controller.Delete(id);

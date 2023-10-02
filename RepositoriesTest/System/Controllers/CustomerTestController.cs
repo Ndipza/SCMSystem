@@ -1,6 +1,7 @@
 ﻿using Core.ViewModels;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using RepositoriesTest.MockData;
 using SCMSystem.Controllers;
@@ -14,9 +15,11 @@ namespace RepositoriesTest.System.Controllers
         #region Constructor
 
         protected readonly Mock<ICustomerService> CustomerService;
+        private readonly Mock<ILogger<CustomerController>> _logger;
         public CustomerTestController()
         {
             CustomerService = new Mock<ICustomerService>();
+            _logger = new Mock<ILogger<CustomerController>>();
         }
 
         #endregion
@@ -68,7 +71,7 @@ namespace RepositoriesTest.System.Controllers
         {
             /// Arrange
             var newCustomer = CustomerMockData.NewCustomer();
-            var controller = new CustomerController(CustomerService.Object);
+            var controller = new CustomerController(CustomerService.Object, _logger.Object);
 
             /// Act
             var result = await controller.Post(newCustomer);
@@ -82,7 +85,7 @@ namespace RepositoriesTest.System.Controllers
         {
             //Arrange  
             var newCustomer = CustomerMockData.NewCustomer();
-            var controller = new CustomerController(CustomerService.Object);
+            var controller = new CustomerController(CustomerService.Object, _logger.Object);
 
             //Act  
             var result = await controller.Post(newCustomer);
@@ -99,7 +102,7 @@ namespace RepositoriesTest.System.Controllers
         {
             /// Arrange
             CustomerService.Setup(_ => _.GetAllCustomers()).ReturnsAsync(CustomerMockData.GetCustomers());
-            var controller = new CustomerController(CustomerService.Object);
+            var controller = new CustomerController(CustomerService.Object, _logger.Object);
 
             int page = 1;
             /// Act
@@ -117,7 +120,7 @@ namespace RepositoriesTest.System.Controllers
             Guid id = new Guid("28f1a0af-71bc-4d9e-bc4e-eae210abbb79");
             //Arrange  
             CustomerService.Setup(_ => _.GetAllCustomers()).ReturnsAsync(CustomerMockData.GetEmptyTodos());
-            var controller = new CustomerController(CustomerService.Object);
+            var controller = new CustomerController(CustomerService.Object, _logger.Object);
 
             //Act  
             var data = controller.Get(id);
@@ -134,7 +137,7 @@ namespace RepositoriesTest.System.Controllers
             var id = new Guid("28f1a0af-71bc-4d9e-bc4e-eae210abbb79");
             /// Arrange
             CustomerService.Setup(_ => _.GetCustomerById(id)).ReturnsAsync(CustomerMockData.GetCustomers()?.FirstOrDefault(x => x.Id == id));
-            var controller = new CustomerController(CustomerService.Object);
+            var controller = new CustomerController(CustomerService.Object, _logger.Object);
 
 
             /// Act
@@ -153,7 +156,7 @@ namespace RepositoriesTest.System.Controllers
             var id = new Guid("28f1a0af-71bc-4d9e-bc4e-eae210abbb79");
             /// Arrange
             CustomerService.Setup(_ => _.GetCustomerById(id)).ReturnsAsync(CustomerMockData.GetEmptyTodos()?.FirstOrDefault(x => x.Id == id));
-            var controller = new CustomerController(CustomerService.Object);
+            var controller = new CustomerController(CustomerService.Object, _logger.Object);
 
 
             /// Act
@@ -170,7 +173,7 @@ namespace RepositoriesTest.System.Controllers
             var id = new Guid("14e6b812-2b4d-4004-a5d8-e9dc72cd25dc");
             //Arrange  
             CustomerService.Setup(_ => _.GetCustomerById(id)).ReturnsAsync(CustomerMockData.GetCustomers()?.FirstOrDefault(x => x.Id == id));
-            var controller = new CustomerController(CustomerService.Object);
+            var controller = new CustomerController(CustomerService.Object, _logger.Object);
 
 
             //Act  
@@ -186,7 +189,7 @@ namespace RepositoriesTest.System.Controllers
             var id = new Guid("ebbb91fd-1080-4b6c-99fc-e134d60910ad");
             //Arrange  
             CustomerService.Setup(_ => _.GetCustomerById(id)).ReturnsAsync(CustomerMockData.GetCustomers()?.FirstOrDefault(x => x.Id == id));
-            var controller = new CustomerController(CustomerService.Object);
+            var controller = new CustomerController(CustomerService.Object, _logger.Object);
 
 
             //Act  
@@ -202,7 +205,7 @@ namespace RepositoriesTest.System.Controllers
             Guid id = new Guid("aadfb272-352f-41dd-bb9d-d3eb36af1c04");
             //Arrange  
             CustomerService.Setup(_ => _.GetCustomerById(id)).ReturnsAsync(CustomerMockData.GetCustomers()?.FirstOrDefault(x => x.Id == id));
-            var controller = new CustomerController(CustomerService.Object);
+            var controller = new CustomerController(CustomerService.Object, _logger.Object);
 
 
             //Act  
@@ -225,7 +228,7 @@ namespace RepositoriesTest.System.Controllers
             //Arrange
             var id = new Guid("eb0415e0-8ba3-4ea6-b9b2-5fd0a4717515");
             CustomerService.Setup(_ => _.GetCustomerById(id)).ReturnsAsync(CustomerMockData.GetCustomers()?.FirstOrDefault(x => x.Id == id));
-            var controller = new CustomerController(CustomerService.Object);
+            var controller = new CustomerController(CustomerService.Object, _logger.Object);
 
             //Act
             var data = await controller.Delete(id);

@@ -1,6 +1,7 @@
 ﻿using Core.ViewModels;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using RepositoriesTest.MockData;
 using SCMSystem.Controllers;
@@ -14,9 +15,11 @@ namespace RepositoriesTest.System.Controllers
         #region Constructor
 
         protected readonly Mock<ICustomerStatusService> CustomerStatusService;
+        private readonly Mock<ILogger<CustomerStatusController>> _logger;
         public CustomerStatusTestController()
         {
             CustomerStatusService = new Mock<ICustomerStatusService>();
+            _logger = new Mock<ILogger<CustomerStatusController>>();
         }
 
         #endregion
@@ -68,7 +71,7 @@ namespace RepositoriesTest.System.Controllers
         {
             /// Arrange
             var newCustomerStatus = CustomerStatusMockData.NewCustomerStatus();
-            var controller = new CustomerStatusController(CustomerStatusService.Object);
+            var controller = new CustomerStatusController(CustomerStatusService.Object, _logger.Object);
 
             /// Act
             var result = await controller.Post(newCustomerStatus);
@@ -84,7 +87,7 @@ namespace RepositoriesTest.System.Controllers
         {
             /// Arrange
             CustomerStatusService.Setup(_ => _.GetAllCustomerStatuses()).ReturnsAsync(CustomerStatusMockData.GetCustomerStatuses());
-            var controller = new CustomerStatusController(CustomerStatusService.Object);
+            var controller = new CustomerStatusController(CustomerStatusService.Object, _logger.Object);
 
             var page = 1;
             /// Act
@@ -101,7 +104,7 @@ namespace RepositoriesTest.System.Controllers
             int page = 1;
             //Arrange  
             CustomerStatusService.Setup(_ => _.GetAllCustomerStatuses()).ReturnsAsync(CustomerStatusMockData.GetEmptyTodos());
-            var controller = new CustomerStatusController(CustomerStatusService.Object);
+            var controller = new CustomerStatusController(CustomerStatusService.Object, _logger.Object);
 
             //Act  
             var data = controller.Get(page);
@@ -118,7 +121,7 @@ namespace RepositoriesTest.System.Controllers
             var id = 1;
             /// Arrange
             CustomerStatusService.Setup(_ => _.GetCustomerStatusById(id)).ReturnsAsync(CustomerStatusMockData.GetCustomerStatuses()?.FirstOrDefault(x => x.Id == id));
-            var controller = new CustomerStatusController(CustomerStatusService.Object);
+            var controller = new CustomerStatusController(CustomerStatusService.Object, _logger.Object);
 
 
             /// Act
@@ -137,7 +140,7 @@ namespace RepositoriesTest.System.Controllers
             var id = 1;
             /// Arrange
             CustomerStatusService.Setup(_ => _.GetCustomerStatusById(id)).ReturnsAsync(CustomerStatusMockData.GetEmptyTodos()?.FirstOrDefault(x => x.Id == id));
-            var controller = new CustomerStatusController(CustomerStatusService.Object);
+            var controller = new CustomerStatusController(CustomerStatusService.Object, _logger.Object);
 
 
             /// Act
@@ -154,7 +157,7 @@ namespace RepositoriesTest.System.Controllers
             var id = 2;
             //Arrange  
             CustomerStatusService.Setup(_ => _.GetCustomerStatusById(id)).ReturnsAsync(CustomerStatusMockData.GetCustomerStatuses()?.FirstOrDefault(x => x.Id == id));
-            var controller = new CustomerStatusController(CustomerStatusService.Object);
+            var controller = new CustomerStatusController(CustomerStatusService.Object, _logger.Object);
             
 
             //Act  
@@ -170,7 +173,7 @@ namespace RepositoriesTest.System.Controllers
             var id = 10000;
             //Arrange  
             CustomerStatusService.Setup(_ => _.GetCustomerStatusById(id)).ReturnsAsync(CustomerStatusMockData.GetCustomerStatuses()?.FirstOrDefault(x => x.Id == id));
-            var controller = new CustomerStatusController(CustomerStatusService.Object);
+            var controller = new CustomerStatusController(CustomerStatusService.Object, _logger.Object);
             
 
             //Act  
@@ -186,7 +189,7 @@ namespace RepositoriesTest.System.Controllers
             int id = 2;
             //Arrange  
             CustomerStatusService.Setup(_ => _.GetCustomerStatusById(id)).ReturnsAsync(CustomerStatusMockData.GetCustomerStatuses()?.FirstOrDefault(x => x.Id == id));
-            var controller = new CustomerStatusController(CustomerStatusService.Object);
+            var controller = new CustomerStatusController(CustomerStatusService.Object, _logger.Object);
             
 
             //Act  
@@ -209,7 +212,7 @@ namespace RepositoriesTest.System.Controllers
             //Arrange
             var id = 100;
             CustomerStatusService.Setup(_ => _.GetCustomerStatusById(id)).ReturnsAsync(CustomerStatusMockData.GetCustomerStatuses()?.FirstOrDefault(x => x.Id == id));
-            var controller = new CustomerStatusController(CustomerStatusService.Object);
+            var controller = new CustomerStatusController(CustomerStatusService.Object, _logger.Object);
 
             //Act
             var data = await controller.Delete(id);

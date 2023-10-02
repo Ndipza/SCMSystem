@@ -1,4 +1,5 @@
-﻿using Core.ViewModels;
+﻿using Core.Constants;
+using Core.ViewModels;
 using Data.DTO;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Interfaces;
@@ -35,8 +36,11 @@ namespace SCMSystem.Controllers
         {
             try
             {
+                _logger.LogInformation(MyLogEvents.InsertItem, $"Run endpoint /api/product POST Product");
+
                 if (!ModelState.IsValid)
                 {
+                    _logger.LogError(MyLogEvents.InsertItem, $"Create new Product Error: ModelState: {ModelState.IsValid}, BadRequest: {BadRequest().StatusCode}");
                     return BadRequest(ModelState);
                 }
 
@@ -51,13 +55,22 @@ namespace SCMSystem.Controllers
                     }
                     var model = await _productService.CreateProduct(productViewModel);
 
+                    if (model == 0)
+                    {
+                        _logger.LogInformation(MyLogEvents.InsertItem, $"New Product entity not created");
+                        return NotFound();
+                    }
+
+                    _logger.LogInformation(MyLogEvents.InsertItem, $"Created new Product entity with Id: {model}");
                     return Ok(model);
                 }
 
+                _logger.LogError(MyLogEvents.InsertItem, $"Create new Product Error, ImageFile is null, BadRequest: {BadRequest().StatusCode}");
                 return BadRequest();
             }
             catch (Exception ex)
             {
+                _logger.LogError(MyLogEvents.InsertItem, $"Create Product Error: Error message = {ex.Message}");
                 return BadRequest(ex?.InnerException?.Message);
             }
         }
@@ -73,10 +86,23 @@ namespace SCMSystem.Controllers
         {
             try
             {
-                var model = await _productService.GetAllProducts();
-                if (model == null) { return NotFound(); }
-                if (model.Count == 0) { return NoContent(); }
+                _logger.LogInformation(MyLogEvents.GetItem, $"Run endpoint /api/product Get Products: page = {page}");
 
+                var model = await _productService.GetAllProducts();
+
+                if (model == null)
+                {
+                    _logger.LogWarning(MyLogEvents.GetItemNotFound, $"Get Products on page: {page}, NotFound = {NotFound().StatusCode}");
+                    return NotFound();
+                }
+
+                if (model.Count == 0)
+                {
+                    _logger.LogWarning(MyLogEvents.GetItemNotFound, $"Get Products on page: {page}, NoContent = {NoContent().StatusCode}");
+                    return NoContent();
+                }
+
+                //Pagination
                 var pageResults = 3f;
                 var pageCount = Math.Ceiling(model.Count / pageResults);
 
@@ -85,10 +111,12 @@ namespace SCMSystem.Controllers
                     .Take((int)pageResults)
                     .ToList();
 
+                _logger.LogInformation(MyLogEvents.ListItems, $"Get Products successfully");
                 return Ok(products);
             }
             catch (Exception ex)
             {
+                _logger.LogError(MyLogEvents.GetItem, $"Get Products Error: Error message = {ex.Message}");
                 return BadRequest(ex?.InnerException?.Message);
             }
         }
@@ -99,13 +127,22 @@ namespace SCMSystem.Controllers
         {
             try
             {
-                var model = await _productService.GetProductById(id);
-                if (model == null) { return NotFound(); }
+                _logger.LogInformation(MyLogEvents.GetItem, $"Run endpoint /api/product to Get Product by id : {id}");
 
+                var model = await _productService.GetProductById(id);
+
+                if (model == null)
+                {
+                    _logger.LogWarning(MyLogEvents.GetItemNotFound, $"Get Product by id {id} NOT FOUND : {NotFound().StatusCode}");
+                    return NotFound();
+                }
+
+                _logger.LogInformation(MyLogEvents.GetItem, $"Get Product by id {id}: results successful");
                 return Ok(model);
             }
             catch (Exception ex)
             {
+                _logger.LogError(MyLogEvents.GetItemNotFound, $"Get Product by id Error: Error message = {ex.Message}");
                 return BadRequest(ex?.InnerException?.Message);
             }
         }
@@ -120,8 +157,11 @@ namespace SCMSystem.Controllers
         {
             try
             {
+                _logger.LogInformation(MyLogEvents.UpdateItem, $"Run endpoint /api/product Update Product: id = {id}");
+
                 if (!ModelState.IsValid)
                 {
+                    _logger.LogError(MyLogEvents.UpdateItem, $"Update a Product Error: ModelState: {ModelState.IsValid}, BadRequest: {BadRequest().StatusCode}");
                     return BadRequest(ModelState);
                 }
 
@@ -133,14 +173,24 @@ namespace SCMSystem.Controllers
                         productViewModel.ImageName = fileResult.Item2; // getting name of image
                     }
                     var model = await _productService.UpdateProduct(productViewModel, id);
-                    if (model == null) { return NotFound(); }
 
+                    if (model == null)
+                    {
+                        _logger.LogWarning(MyLogEvents.UpdateItemNotFound, $"Updated a Product by id {id} NOT FOUND : {NotFound().StatusCode}");
+                        return NotFound();
+                    }
+
+                    _logger.LogInformation(MyLogEvents.UpdateItem, $"Updated a Product: id = {model.Id}");
                     return Ok(model);
                 }
+
+
+                _logger.LogError(MyLogEvents.UpdateItem, $"Update a Product Error, ImageFile is null, BadRequest: {BadRequest().StatusCode}");
                 return BadRequest();
             }
             catch (Exception ex)
             {
+                _logger.LogError(MyLogEvents.UpdateItem, $"Update a Product by id {id} Error:  Error message = {ex.Message}");
                 return BadRequest(ex?.InnerException?.Message);
             }
         }
@@ -156,13 +206,19 @@ namespace SCMSystem.Controllers
 
             try
             {
+                _logger.LogInformation(MyLogEvents.DeleteItem, $"Run endpoint /api/product Delete Product by id: {id}");
 
                 var model = await _productService.DeleteProduct(id);
 
-                if (model == null || !model.IsProductDeleted) { return NotFound(); }
+                if (model == null || !model.IsProductDeleted) {
+                    _logger.LogWarning(MyLogEvents.DeleteItem, $"Delete Product: id = {id}, NotFound : {NotFound().StatusCode}");
+                    return NotFound(); 
+                }
 
 
                 var delete = _fileService.DeleteImage(model.ImageName);
+
+                _logger.LogInformation(MyLogEvents.DeleteItem, $"Deleted Product: id = {id}");
                 return Ok(model);
 
 
