@@ -43,9 +43,11 @@ namespace SCMSystem.Controllers
                 if (productViewModel.ImageFile != null)
                 {
                     var fileResult = _fileService.SaveImage(productViewModel.ImageFile);
+
+                    if(fileResult == null) { return  NotFound(); }
                     if (fileResult.Item1 == 1)
                     {
-                        productViewModel.ImageName =  fileResult.Item2; // getting name of image
+                        productViewModel.ImageName = fileResult.Item2; // getting name of image
                     }
                     var model = await _productService.CreateProduct(productViewModel);
 
@@ -59,7 +61,7 @@ namespace SCMSystem.Controllers
                 return BadRequest(ex?.InnerException?.Message);
             }
         }
-        
+
         #endregion
 
         #region Read
@@ -73,6 +75,7 @@ namespace SCMSystem.Controllers
             {
                 var model = await _productService.GetAllProducts();
                 if (model == null) { return NotFound(); }
+                if (model.Count == 0) { return NoContent(); }
 
                 var pageResults = 3f;
                 var pageCount = Math.Ceiling(model.Count / pageResults);
@@ -152,17 +155,17 @@ namespace SCMSystem.Controllers
         {
 
             try
-            {                
+            {
 
                 var model = await _productService.DeleteProduct(id);
 
-                if (model.IsProductDeleted)
-                {
-                    var delete = _fileService.DeleteImage(model.ImageName);
-                    return Ok(model);
-                }
+                if (model == null || !model.IsProductDeleted) { return NotFound(); }
 
-                return NotFound();
+
+                var delete = _fileService.DeleteImage(model.ImageName);
+                return Ok(model);
+
+
             }
             catch (Exception ex)
             {

@@ -1,4 +1,5 @@
 ﻿using Core.ViewModels;
+using Data.Models;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -250,61 +251,7 @@ namespace RepositoriesTest.System.Controllers
 
             Assert.Equal("Chemicals and Materials", ((Data.Models.Category)okResult.Value).Name);
         }
-        #endregion
-
-        #region Update       
-
-        [Fact]
-        public async void Task_Update_InvalidData_Return_BadRequest()
-        {
-            ////Arrange  
-            //var controller = new CategoryController(categoryService.Object);
-            //var postId = 2;
-
-            ////Act  
-            //var existingPost = await controller.GetPost(postId);
-            //var okResult = existingPost.Should().BeOfType<OkObjectResult>().Subject;
-            //var result = okResult.Value.Should().BeAssignableTo<PostViewModel>().Subject;
-
-            //var post = new Post();
-            //post.Title = "Test Title More Than 20 Characteres";
-            //post.Description = result.Description;
-            //post.CategoryId = result.CategoryId;
-            //post.CreatedDate = result.CreatedDate;
-
-            //var data = await controller.UpdatePost(post);
-
-            ////Assert  
-            //Assert.IsType<BadRequestResult>(data);
-        }
-
-        [Fact]
-        public async void Task_Update_InvalidData_Return_NotFound()
-        {
-            ////Arrange  
-            //var controller = new CategoryController(categoryService.Object);
-            //var postId = 2;
-
-            ////Act  
-            //var existingPost = await controller.GetPost(postId);
-            //var okResult = existingPost.Should().BeOfType<OkObjectResult>().Subject;
-            //var result = okResult.Value.Should().BeAssignableTo<PostViewModel>().Subject;
-
-            //var post = new Post();
-            //post.PostId = 5;
-            //post.Title = "Test Title More Than 20 Characteres";
-            //post.Description = result.Description;
-            //post.CategoryId = result.CategoryId;
-            //post.CreatedDate = result.CreatedDate;
-
-            //var data = await controller.UpdatePost(post);
-
-            ////Assert  
-            //Assert.IsType<NotFoundResult>(data);
-        }
-
-
-        #endregion
+        #endregion        
 
         #region Delete
 

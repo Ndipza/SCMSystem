@@ -35,7 +35,7 @@ namespace Repositories
             return false;
         }
 
-        public async Task<List<Customer>> GetAllCustomer()
+        public async Task<List<Customer>> GetAllCustomers()
         {
             return await _context.Customers
                 .Include(customer => customer.Carts)
@@ -65,7 +65,7 @@ namespace Repositories
             return customer.Id;
         }
 
-        public async Task<Customer> UpdateCustomer(CustomerViewModel customerViewModel, Guid id)
+        public async Task<Customer> UpdateCustomers(CustomerViewModel customerViewModel, Guid id)
         {
             var customer = GetCustomerById(id)?.Result;
 

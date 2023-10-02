@@ -35,7 +35,6 @@ namespace RepositoriesTest.MockData
             };
         }
 
-        // existing code hidden for display purpose
         public static List<Data.Models.Category> GetEmptyTodos()
         {
             return new List<Data.Models.Category>();
@@ -53,7 +52,7 @@ namespace RepositoriesTest.MockData
         {
             return new CategoryViewModel
             {
-                Name = "One thing you should notice here is that in \"Task_Add_InvalidData_Return_BadRequest\" Unit Test Cases, we are passing more than 20 characters for Title, which is not correct because in Post model, we have defined the size of the Title as 20 characters"
+                Name = "One thing you should notice here is that in \"Task_Add_InvalidData_Return_BadRequest\" Unit Test Cases, we are passing more than 50 characters for Name, which is not correct because in Category model, we have defined the size of the Name as 50 characters"
             };
         }
     }

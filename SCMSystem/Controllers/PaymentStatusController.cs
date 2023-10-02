@@ -57,6 +57,7 @@ namespace SCMSystem.Controllers
             {
                 var model = await _paymentStatusService.GetAllPaymentStatuses();
                 if (model == null) { return NotFound(); }
+                if (model.Count == 0) { return NoContent(); }
 
                 var pageResults = 3f;
                 var pageCount = Math.Ceiling(model.Count / pageResults);

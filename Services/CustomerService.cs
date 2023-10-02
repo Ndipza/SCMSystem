@@ -28,9 +28,9 @@ namespace Services
             return await _unitOfWork.CustomerRepository.DeleteCustomer(id);
         }
 
-        public async Task<List<Customer>> GetAllCustomer()
+        public async Task<List<Customer>> GetAllCustomers()
         {
-            return await _unitOfWork.CustomerRepository.GetAllCustomer();
+            return await _unitOfWork.CustomerRepository.GetAllCustomers();
         }
 
         public async Task<Customer?> GetCustomerById(Guid id)
@@ -40,7 +40,7 @@ namespace Services
 
         public async Task<Customer> UpdateCustomer(CustomerViewModel customerViewModel, Guid id)
         {
-            return await _unitOfWork.CustomerRepository.UpdateCustomer(customerViewModel, id);
+            return await _unitOfWork.CustomerRepository.UpdateCustomers(customerViewModel, id);
         }
     }
 }

@@ -52,8 +52,9 @@ namespace SCMSystem.Controllers
         {
             try
             {
-                var model = await _customerService.GetAllCustomer();
+                var model = await _customerService.GetAllCustomers();
                 if (model == null) { return NotFound(); }
+                if (model.Count == 0) { return NoContent(); }
 
                 var pageResults = 3f;
                 var pageCount = Math.Ceiling(model.Count / pageResults);
