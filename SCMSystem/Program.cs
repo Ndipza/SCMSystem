@@ -12,6 +12,7 @@ using SCMSystem.Helper;
 using SCMSystem.Helper.Interface;
 using NLog;
 using NLog.Web;
+using AspNetCoreRateLimit;
 
 namespace SCMSystem
 {
@@ -56,6 +57,22 @@ namespace SCMSystem
                 {
                     options.EnableAnnotations();
                 });
+
+                //needed to load configuration from appsettings.json
+                builder.Services.AddOptions();
+
+                //needed to store rate limit counters and ip rules
+                builder.Services.AddMemoryCache();
+
+                // configure ip rate limiting middleware
+                builder.Services.Configure<IpRateLimitOptions>(builder.Configuration.GetSection("IpRateLimiting"));
+
+                // inject counter and rules stores
+                builder.Services.AddInMemoryRateLimiting();
+
+                // configure the resolvers
+                builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+
                 builder.Services.AddDbContext<SCMSystemDBContext>(options => options.UseSqlServer(
                     builder.Configuration.GetConnectionString("CartConnection")
                 ));
@@ -85,6 +102,8 @@ namespace SCMSystem
                 builder.Services.AddScoped<IFileService, FileService>();                
 
                 var app = builder.Build();
+
+                app.UseIpRateLimiting();
 
                 // Configure the HTTP request pipeline.
                 if (app.Environment.IsDevelopment())
