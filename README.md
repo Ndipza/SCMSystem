@@ -1,7 +1,9 @@
-Online Shopping Cart Management System RESTful API with ASP.NET Core and .NET 6
+**Online Shopping Cart Management System RESTful API with ASP.NET Core and .NET 6**
+
 This project provides an example of how to create a Web API using ASP.NET Core and .NET 6 for an Online Shopping Cart Management System. The Web API is a RESTful service that exposes a set of endpoints for managing issues. Additionally, this solution includes a OAuth2 service and Docker container.
 
 **Getting Started**
+
 To run the application, follow these steps:
 
 1. Clone the repository: git clone [https://github.com/techwithpat/trackingapi.git.](https://github.com/Ndipza/SCMSystem)
