@@ -92,7 +92,7 @@ namespace RepositoriesTest.System.Controllers
 
             var page = 1;
             /// Act
-            var result = (OkObjectResult)await controller.GetAllCarts(page);
+            var result = (OkObjectResult)await controller.GetAll(page);
 
 
             // /// Assert
@@ -108,7 +108,7 @@ namespace RepositoriesTest.System.Controllers
 
             var page = 1;
             /// Act
-            var result = (NoContentResult)await controller.GetAllCarts(page);
+            var result = (NoContentResult)await controller.GetAll(page);
 
 
             /// Assert
@@ -125,7 +125,7 @@ namespace RepositoriesTest.System.Controllers
             var controller = new CartController(CartService.Object, _logger.Object);
 
             //Act  
-            var data = controller.GetAllCarts(page);
+            var data = controller.GetAll(page);
             data = null;
 
             if (data != null)

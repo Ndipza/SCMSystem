@@ -95,7 +95,7 @@ namespace RepositoriesTest.System.Controllers
 
             var page = 1;
             /// Act
-            var result = (OkObjectResult)await controller.GetAllCategories(page);
+            var result = (OkObjectResult)await controller.GetAll(page);
 
 
             // /// Assert
@@ -111,7 +111,7 @@ namespace RepositoriesTest.System.Controllers
 
             var page = 1;
             /// Act
-            var result = (NoContentResult)await controller.GetAllCategories(page);
+            var result = (NoContentResult)await controller.GetAll(page);
 
 
             /// Assert
@@ -128,7 +128,7 @@ namespace RepositoriesTest.System.Controllers
             var controller = new CategoryController(categoryService.Object, _logger.Object);
 
             //Act  
-            var data = controller.GetAllCategories(page);
+            var data = controller.GetAll(page);
             data = null;
 
             if (data != null)

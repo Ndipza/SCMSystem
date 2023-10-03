@@ -92,7 +92,7 @@ namespace RepositoriesTest.System.Controllers
 
             var page = 1;
             /// Act
-            var result = (OkObjectResult)await controller.GetAllPaymentStatuss(page);
+            var result = (OkObjectResult)await controller.GetAll(page);
 
 
             // /// Assert
@@ -108,7 +108,7 @@ namespace RepositoriesTest.System.Controllers
 
             var page = 1;
             /// Act
-            var result = (NoContentResult)await controller.GetAllPaymentStatuss(page);
+            var result = (NoContentResult)await controller.GetAll(page);
 
 
             /// Assert

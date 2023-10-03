@@ -106,7 +106,7 @@ namespace RepositoriesTest.System.Controllers
 
             int page = 1;
             /// Act
-            var result = (OkObjectResult)await controller.GetAllCustomer(page);
+            var result = (OkObjectResult)await controller.GetAll(page);
 
 
             // /// Assert

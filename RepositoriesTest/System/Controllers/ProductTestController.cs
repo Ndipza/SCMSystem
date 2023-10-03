@@ -81,7 +81,7 @@ namespace RepositoriesTest.System.Controllers
 
             var page = 1;
             /// Act
-            var result = (OkObjectResult)await controller.GetAllProducts(page);
+            var result = (OkObjectResult)await controller.GetAll(page);
 
 
             // /// Assert
@@ -97,7 +97,7 @@ namespace RepositoriesTest.System.Controllers
 
             var page = 1;
             /// Act
-            var result = (NoContentResult)await controller.GetAllProducts(page);
+            var result = (NoContentResult)await controller.GetAll(page);
 
 
             /// Assert
@@ -114,7 +114,7 @@ namespace RepositoriesTest.System.Controllers
             var controller = new ProductController(_productService.Object, _logger.Object, _fileService.Object);
 
             //Act  
-            var data = controller.GetAllProducts(page);
+            var data = controller.GetAll(page);
             data = null;
 
             if (data != null)

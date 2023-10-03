@@ -96,7 +96,7 @@ namespace RepositoriesTest.System.Controllers
 
             var page = 1;
             /// Act
-            var result = (OkObjectResult)await controller.GetAllPayments(page);
+            var result = (OkObjectResult)await controller.GetAll(page);
 
 
             // /// Assert
@@ -112,7 +112,7 @@ namespace RepositoriesTest.System.Controllers
 
             var page = 1;
             /// Act
-            var result = (NoContentResult)await controller.GetAllPayments(page);
+            var result = (NoContentResult)await controller.GetAll(page);
 
 
             /// Assert
@@ -129,7 +129,7 @@ namespace RepositoriesTest.System.Controllers
             var controller = new PaymentController(PaymentService.Object, _logger.Object);
 
             //Act  
-            var data = controller.GetAllPayments(page);
+            var data = controller.GetAll(page);
             data = null;
 
             if (data != null)
