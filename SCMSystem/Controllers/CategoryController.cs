@@ -31,7 +31,6 @@ namespace SCMSystem.Controllers
 
         // POST api/<CategoryController>
         [HttpPost]
-        [Route("CreateCategory")]
         public async Task<IActionResult> Post([FromBody] CategoryViewModel categoryViewModel)
         {
             try
@@ -68,8 +67,8 @@ namespace SCMSystem.Controllers
 
         // GET: api/<CategoryController>
         [HttpGet]
-        [Route("GetAllCategories")]
-        public async Task<IActionResult> GetAllCategories(int page)
+        [Route("GetAll")]
+        public async Task<IActionResult> GetAll(int page)
         {
             try
             {

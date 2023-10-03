@@ -66,8 +66,8 @@ namespace SCMSystem.Controllers
 
         // GET: api/<PaymentController>
         [HttpGet]
-        [Route("GetAllPayments")]
-        public async Task<IActionResult> GetAllPayments(int page)
+        [Route("GetAll")]
+        public async Task<IActionResult> GetAll(int page)
         {
 
             try

@@ -28,7 +28,6 @@ namespace SCMSystem.Controllers
 
         // POST api/<PaymentMethodController>
         [HttpPost]
-        [Route("CreatePaymentMethod")]
         public async Task<IActionResult> Post([FromBody] PaymentMethodViewModel paymentMethodViewModel)
         {
             try
@@ -65,8 +64,8 @@ namespace SCMSystem.Controllers
 
         // GET: api/<PaymentMethodController>
         [HttpGet]
-        [Route("GetAllPaymentMethods")]
-        public async Task<IActionResult> GetAllPaymentMethods(int page)
+        [Route("GetAll")]
+        public async Task<IActionResult> GetAll(int page)
         {
             try
             {

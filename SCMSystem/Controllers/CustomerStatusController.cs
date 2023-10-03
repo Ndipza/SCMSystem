@@ -26,7 +26,6 @@ namespace SCMSystem.Controllers
 
         // POST api/<CustomerStatusController>
         [HttpPost]
-        [Route("CreateCustomerStatus")]
         public async Task<IActionResult> Post([FromBody] CustomerStatusViewModel customerStatusViewModel)
         {
             try
@@ -63,8 +62,8 @@ namespace SCMSystem.Controllers
 
         // GET: api/<CustomerStatusController>
         [HttpGet]
-        [Route("GetAllCustomerStatuss")]
-        public async Task<IActionResult> GetAllCustomerStatuss(int page)
+        [Route("GetAll")]
+        public async Task<IActionResult> GetAll(int page)
         {
             try
             {

@@ -81,8 +81,8 @@ namespace SCMSystem.Controllers
 
         // GET: api/<ProductController>
         [HttpGet]
-        [Route("GetAllProducts")]
-        public async Task<IActionResult> GetAllProducts(int page)
+        [Route("GetAll")]
+        public async Task<IActionResult> GetAll(int page)
         {
             try
             {
