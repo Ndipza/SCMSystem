@@ -14,6 +14,7 @@ To run the application, follow these steps:
 6. Type - add-migration Initial
 7. Type - update-database
 8. Run the application.
+9. 8. rund docker db - docker-compose up
    
 The RESTful API uses a Miscrosoft SQL Server Management Studio database to store data but you can choose any EF Core provider you like. 
 
