@@ -6,7 +6,7 @@ This project provides an example of how to create a Web API using ASP.NET Core a
 
 To run the application, follow these steps:
 
-1. Clone the repository: git clone [https://github.com/techwithpat/trackingapi.git.](https://github.com/Ndipza/SCMSystem)
+1. Clone the repository: git clone https://github.com/Ndipza/SCMSystem
 2. Open the solution in Visual Studio or your favorite code editor.
 3. Set the SCMSystem project as the startup project.
 4. Open a Package Manager Console
