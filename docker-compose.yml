@@ -2,7 +2,7 @@
 
 services:
  api:
-    image: ndiphiwenombula/scmsystem:latest
+    image: ndiphiwenombula/scm_system_rest_api:latest
     container_name: cart-api
     environment:
       "ASPNETCORE_ENVIRONMENT": "Development"
