@@ -6,7 +6,7 @@ This project provides an example of how to create a Web API using ASP.NET Core a
 
 To run the application, follow these steps:
 
-1. Clone the repository: git clone [https://github.com/techwithpat/trackingapi.git.](https://github.com/Ndipza/SCMSystem)
+1. Clone the repository: git clone https://github.com/Ndipza/SCMSystem
 2. Open the solution in Visual Studio or your favorite code editor.
 3. Set the SCMSystem project as the startup project.
 4. Open a Package Manager Console
@@ -14,6 +14,7 @@ To run the application, follow these steps:
 6. Type - add-migration Initial
 7. Type - update-database
 8. Run the application.
+9. 8. rund docker db - docker-compose up
    
 The RESTful API uses a Miscrosoft SQL Server Management Studio database to store data but you can choose any EF Core provider you like. 
 
