@@ -1,7 +1,9 @@
 ﻿using Core.Constants;
 using Core.ViewModels;
 using Data.DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Web.Resource;
 using Repositories.Interfaces;
 using SCMSystem.Helper.Interface;
 using Services.Interfaces;
@@ -10,6 +12,8 @@ using Services.Interfaces;
 
 namespace SCMSystem.Controllers
 {
+    [Authorize]
+    [RequiredScope("access_as_user")]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductController : ControllerBase

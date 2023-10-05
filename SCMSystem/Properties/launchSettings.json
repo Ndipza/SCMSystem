@@ -37,5 +37,12 @@
       "applicationUrl": "http://localhost:54008",
       "sslPort": 44355
     }
+  },
+  "AzureAd": {
+    "Instance": "https://login.microsoftonline.com/",
+    "ClientId": "xxx",
+    "TenantId": "xxx",
+    "Domain": "xxx",
+    "Scopes": "access_as_user"
   }
 }

@@ -1,18 +1,18 @@
 using Data;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Repositories;
 using Repositories.Interfaces;
 using Services;
 using Services.Interfaces;
 using System.Text.Json.Serialization;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using SCMSystem.Helper;
 using SCMSystem.Helper.Interface;
 using NLog;
 using NLog.Web;
 using AspNetCoreRateLimit;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Identity.Web;
+using Microsoft.OpenApi.Models;
 
 namespace SCMSystem
 {
@@ -32,21 +32,7 @@ namespace SCMSystem
                 // Add services to the container.
 
 
-                builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                    .AddJwtBearer(options =>
-                    {
-                        options.TokenValidationParameters = new TokenValidationParameters
-                        {
-                            ValidateIssuer = true,
-                            ValidateAudience = true,
-                            ValidateLifetime = true,
-                            ValidateIssuerSigningKey = true,
-                            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                            ValidAudience = builder.Configuration["Jwt:Audience"],
-                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-                        };
-                    });
-
+                
                 builder.Services.AddMvc();
                 builder.Services.AddControllers().AddJsonOptions(x =>
                     x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
@@ -56,6 +42,31 @@ namespace SCMSystem
                 builder.Services.AddSwaggerGen(options =>
                 {
                     options.EnableAnnotations();
+                    options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                    {
+                        Description = "",
+                        Name = "Authorization",
+                        In = ParameterLocation.Header,
+                        Type = SecuritySchemeType.ApiKey,
+                        Scheme = "Bearer"
+                    });
+                    options.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                  {
+                    {
+                      new OpenApiSecurityScheme
+                      {
+                        Reference = new OpenApiReference
+                          {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                          },
+                          Scheme = "oauth2",
+                          Name = "Bearer",
+                          In = ParameterLocation.Header,
+                        },
+                        new List<string>()
+                      }
+                    });
                 });
 
                 //needed to load configuration from appsettings.json
@@ -76,6 +87,9 @@ namespace SCMSystem
                 builder.Services.AddDbContext<SCMSystemDBContext>(options => options.UseSqlServer(
                     builder.Configuration.GetConnectionString("CartConnection")
                 ));
+                builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
+
                 builder.Services.AddTransient<IUnitOfWorkRepository, UnitOfWorkRepository>();
 
                 builder.Services.AddScoped<ICartRepository, CartRepository>();

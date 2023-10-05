@@ -1,6 +1,8 @@
 ﻿using Core.Constants;
 using Core.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Web.Resource;
 using Newtonsoft.Json;
 using Repositories.Interfaces;
 using Services;
@@ -10,6 +12,8 @@ using Services.Interfaces;
 
 namespace SCMSystem.Controllers
 {
+    [Authorize]
+    [RequiredScope("access_as_user")]
     [Route("api/[controller]")]
     [ApiController]
     public class CartStatusController : ControllerBase
@@ -195,7 +199,7 @@ namespace SCMSystem.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(MyLogEvents.DeleteItem, $"Get CartStatuses by id Error: Error message = {ex.Message}, ex {JsonConvert.SerializeObject(ex)}");
+                _logger.LogError(MyLogEvents.DeleteItem, $"Get CartStatuses by id Error: Error message = {ex.Message}");
                 return BadRequest(ex?.InnerException?.Message);
             }
         }

@@ -1,15 +1,14 @@
 ﻿using Core.Constants;
 using Core.ViewModels;
-using Data.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Repositories.Interfaces;
+using Microsoft.Identity.Web.Resource;
 using Services.Interfaces;
-using System.Reflection;
 
 namespace SCMSystem.Controllers
 {
+    [Authorize]
+    [RequiredScope("access_as_user")]
     [Route("api/[controller]")]
     [ApiController]
     public class CategoryController : ControllerBase
@@ -70,6 +69,7 @@ namespace SCMSystem.Controllers
         [Route("GetAll")]
         public async Task<IActionResult> GetAll(int page)
         {
+
             try
             {
                 _logger.LogInformation(MyLogEvents.GetItem, $"Run endpoint /api/category Get Categories: page = {page}");
@@ -196,11 +196,12 @@ namespace SCMSystem.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(MyLogEvents.DeleteItem, $"Get Category by id Error: Error message = {ex.Message}, ex {JsonConvert.SerializeObject(ex)}");
+                _logger.LogError(MyLogEvents.DeleteItem, $"Get Category by id Error: Error message = {ex.Message}");
                 return BadRequest(ex?.InnerException?.Message);
             }
         }
         #endregion
 
     }
+
 }
