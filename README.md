@@ -53,4 +53,6 @@ The RESTful API uses a Miscrosoft SQL Server Management Studio database to store
 	b, Cart items
 	c, Payment
 
+Check logs in c:\temp\
+
 Run the application. The client application will use the Web API endpoints to perform various operations, including creating and updating issues, adding and deleting comments, and retrieving lists of issues.
