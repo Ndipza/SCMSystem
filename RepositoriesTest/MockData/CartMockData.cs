@@ -43,8 +43,8 @@ namespace RepositoriesTest.MockData
         {
             return new CartViewModel
             {
-                CartStatusId = 1,
-                CustomerId = new Guid("aadfb272-352f-41dd-bb9d-d3eb36af1c04")
+                CartStatusId = 2,
+                CustomerId = new Guid("28f1a0af-71bc-4d9e-bc4e-eae210abbb79")
             };
         }
                 

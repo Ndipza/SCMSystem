@@ -147,10 +147,16 @@ namespace SCMSystem.Controllers
 
                 var model = await _cartService.GetCartById(id);
 
-                if (model == null || model.CustomerId != new Guid(userId))
+                if (model == null)
                 {
                     _logger.LogWarning(MyLogEvents.GetItemNotFound, $"Get Cart by id {id} NOT FOUND : {NotFound().StatusCode}");
                     return NotFound();
+                }
+
+                if (model.CustomerId != new Guid(userId))
+                {
+                    _logger.LogWarning(MyLogEvents.GetItemNotFound, $"This cart {id} doesnt belong to customer {userId}");
+                    return NotFound($"This cart {id} doesnt belong to customer {userId}");
                 }
 
                 _logger.LogInformation(MyLogEvents.GetItem, $"Get Cart by id {id}: results successful");

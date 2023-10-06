@@ -17,13 +17,17 @@ namespace Repositories
         {
             List<int>? cartIds = GetCartIdsOfLoginUser(userId);
 
-            if (cartIds == null && !cartIds.Contains(cartItemViewModel.CartId)) return null;
+            if (cartIds == null || !cartIds.Contains(cartItemViewModel.CartId)) return null;
 
+            var pricePerProduct = _context.Products.FirstOrDefault(x => x.Id == cartItemViewModel.ProductId)?.Price;
+
+            if(pricePerProduct == null) return null;
             var cartItem = new CartItem
             {
                 CartId = cartItemViewModel.CartId,
                 ProductId = cartItemViewModel.ProductId,
-                Quantity = cartItemViewModel.Quantity
+                Quantity = cartItemViewModel.Quantity,
+                TotalCost = pricePerProduct * cartItemViewModel.Quantity
             };
             await _context.CartItems.AddAsync(cartItem);
             await _context.SaveChangesAsync();
@@ -62,6 +66,7 @@ namespace Repositories
             List<int>? cartIds = GetCartIdsOfLoginUser(userId);
 
             if(cartIds == null) return null;
+
 
             return await _context.CartItems.Where(c => cartIds.Contains((int)c.CartId))
                 .Include(CartItem => CartItem.Cart)

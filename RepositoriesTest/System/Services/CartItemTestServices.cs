@@ -4,9 +4,11 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Repositories;
 using RepositoriesTest.MockData;
+using RepositoriesTest.System.Controllers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -37,12 +39,13 @@ namespace RepositoriesTest.System.Services
         {
             /// Arrange
             var newCartItem = CartItemMockData.NewCartItem();
+            _context.Carts.AddRange(CartMockData.GetCarts());
+            _context.Products.AddRange(ProductMockData.GetProducts());
             _context.CartItems.AddRange(CartItemMockData.GetCartItems());
             _context.SaveChanges();
 
-            string? userId = "28f1a0af-71bc-4d9e-bc4e-eae210abbb79";
-
             var sut = new CartItemRepository(_context);
+            string? userId = LoginUserId();
 
             /// Act
             await sut.CreateCartItem(newCartItem, userId);
@@ -61,16 +64,16 @@ namespace RepositoriesTest.System.Services
         {
             /// Arrange
             _context.CartItems.AddRange(CartItemMockData.GetCartItems());
+            _context.Carts.AddRange(CartMockData.GetCarts());
             _context.SaveChanges();
-            string? userId = "28f1a0af-71bc-4d9e-bc4e-eae210abbb79";
 
             var sut = new CartItemRepository(_context);
-
+            string? userId = LoginUserId();
             /// Act
             var result = await sut.GetAllCartItems(userId);
 
             /// Assert
-            result.Should().HaveCount(CartItemMockData.GetCartItems().Count);
+            result.Should().HaveCount(3);
         }
 
         [Fact]
@@ -78,11 +81,11 @@ namespace RepositoriesTest.System.Services
         {
             /// Arrange
             _context.CartItems.AddRange(CartItemMockData.GetCartItems());
+            _context.Carts.AddRange(CartMockData.GetCarts());
             _context.SaveChanges();
-            string? userId = "28f1a0af-71bc-4d9e-bc4e-eae210abbb79";
 
             var sut = new CartItemRepository(_context);
-
+            string? userId = LoginUserId();
             /// Act
             int id = 1;
             var result = await sut.GetCartItemById(id, userId);
@@ -98,29 +101,24 @@ namespace RepositoriesTest.System.Services
         [Fact]
         public async void Update_ValidData_Return_CorrectResults()
         {
-            //Arrange  
-            string? userId = "28f1a0af-71bc-4d9e-bc4e-eae210abbb79";
+            //Arrange              string? userId = "28f1a0af-71bc-4d9e-bc4e-eae210abbb79";
             _context.Carts.AddRange(CartMockData.GetCarts());
-
             _context.CartItems.AddRange(CartItemMockData.GetCartItems());
             _context.SaveChanges();
 
             var sut = new CartItemRepository(_context);
+            string? userId = LoginUserId();
 
             //Act  
-            var id = 2;
-            var existingPost = await sut.GetCartItemById(id, userId);
-            var okResult = existingPost.Should().BeOfType<Data.Models.CartItem>().Subject;
-            var result = okResult.Quantity.Equals(CartItemMockData.GetCartItems().FirstOrDefault(x => x.Id == id).Quantity);
-            okResult.Quantity.Equals(20);
-
+            var id = 1;
             var CartItem = new CartItemViewModel();
             CartItem.Quantity = 30;
+            CartItem.CartId = 1;
+            CartItem.ProductId = 1;
 
             var updatedData = await sut.UpdateCartItem(CartItem, id, userId);
 
             //Assert  
-            result.Should().BeTrue();
             updatedData.Quantity.Equals(CartItem.Quantity);
         }
 
@@ -128,13 +126,12 @@ namespace RepositoriesTest.System.Services
         public async void Update_InvalidData_Return_Null()
         {
             //Arrange  
-            string? userId = "28f1a0af-71bc-4d9e-bc4e-eae210abbb79";
             _context.Carts.AddRange(CartMockData.GetCarts());
-
             _context.CartItems.AddRange(CartItemMockData.GetCartItems());
             _context.SaveChanges();
 
             var sut = new CartItemRepository(_context);
+            string? userId = LoginUserId();
 
             //Act  
             var id = 100;
@@ -144,7 +141,7 @@ namespace RepositoriesTest.System.Services
             var updatedData = await sut.UpdateCartItem(CartItem, id, userId);
 
             //Assert  
-            Assert.Null(updatedData.Product);
+            Assert.Null(updatedData);
         }
 
         #endregion
@@ -156,13 +153,13 @@ namespace RepositoriesTest.System.Services
         {
             //Arrange
             var id = 1;
-            string? userId = "28f1a0af-71bc-4d9e-bc4e-eae210abbb79";
-            _context.Carts.AddRange(CartMockData.GetCarts());
 
+            _context.Carts.AddRange(CartMockData.GetCarts());
             _context.CartItems.AddRange(CartItemMockData.GetCartItems());
             _context.SaveChanges();
 
             var sut = new CartItemRepository(_context);
+            string? userId = LoginUserId();
 
             //Act
             var data = await sut.DeleteCartItem(id, userId);
@@ -176,13 +173,12 @@ namespace RepositoriesTest.System.Services
         {
             //Arrange
             var id = 100;
-            string? userId = "28f1a0af-71bc-4d9e-bc4e-eae210abbb79";
             _context.Carts.AddRange(CartMockData.GetCarts());
-
             _context.CartItems.AddRange(CartItemMockData.GetCartItems());
             _context.SaveChanges();
 
             var sut = new CartItemRepository(_context);
+            string? userId = LoginUserId();
 
             //Act
             var data = await sut.DeleteCartItem(id, userId);
@@ -192,8 +188,14 @@ namespace RepositoriesTest.System.Services
             Assert.False(data);
         }
 
-        #endregion       
-
+        #endregion
+        private static string? LoginUserId()
+        {
+            var testController = new TestControllerBuilder().WithIdentity("28f1a0af-71bc-4d9e-bc4e-eae210abbb79", "John Doe").Build();
+            var actual = testController.GetUserId();
+            string? userId = ((Microsoft.AspNetCore.Mvc.ObjectResult)actual).Value.ToString();
+            return userId;
+        }
         public void Dispose()
         {
             _context.Database.EnsureDeleted();

@@ -1,5 +1,6 @@
 ﻿using Core.ViewModels;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -7,6 +8,7 @@ using RepositoriesTest.MockData;
 using SCMSystem.Controllers;
 using Services.Interfaces;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 
 namespace RepositoriesTest.System.Controllers
 {
@@ -64,57 +66,42 @@ namespace RepositoriesTest.System.Controllers
 
         #endregion
 
-        #region Create
-
-        //[Fact]
-        //public async Task SaveCart_ShouldCall_ICartService_SaveAsync_AtleastOnce()
-        //{
-        //    /// Arrange
-        //    var newCart = CartMockData.NewCart();
-        //    var controller = new CartController(CartService.Object, _logger.Object);
-
-        //    /// Act
-        //    var result = await controller.Post(newCart.CartStatusId);
-
-        //    /// Assert
-        //    CartService.Verify(_ => _.CreateCart(newCart), Times.Exactly(1));
-        //}
-
-        #endregion
-
         #region Read
+        [Fact]
+        public async Task GetAllCarts_ShouldReturn200Status()
+        {
+            /// Arrange
+            CartService.Setup(_ => _.GetAllCarts()).ReturnsAsync(CartMockData.GetCarts());
+            var controller = new CartController(CartService.Object, _logger.Object);
+            controller.ControllerContext.HttpContext = new DefaultHttpContext { User = GetUser() };
+
+            var page = 1;
+            /// Act
+            var result = (OkObjectResult)await controller.GetAll(page);
+
+
+            // /// Assert
+            result.StatusCode.Should().Be(200);
+        }
+
+
         //[Fact]
-        //public async Task GetAllCarts_ShouldReturn200Status()
-        //{
-        //    /// Arrange
-        //    CartService.Setup(_ => _.GetAllCarts()).ReturnsAsync(CartMockData.GetCarts());
-        //    var controller = new CartController(CartService.Object, _logger.Object);
+        public async Task GetAllCarts_ShouldReturn204NoContentStatus()
+        {
+            /// Arrange
+            CartService.Setup(_ => _.GetAllCarts()).ReturnsAsync(CartMockData.GetEmptyTodos());
+            var controller = new CartController(CartService.Object, _logger.Object);
+            controller.ControllerContext.HttpContext = new DefaultHttpContext { User = GetUser() };
 
-        //    var page = 1;
-        //    /// Act
-        //    var result = (OkObjectResult)await controller.GetAll(page);
-
-
-        //    // /// Assert
-        //    result.StatusCode.Should().Be(200);
-        //}
-
-        //[Fact]
-        //public async Task GetAllCarts_ShouldReturn204NoContentStatus()
-        //{
-        //    /// Arrange
-        //    CartService.Setup(_ => _.GetAllCarts()).ReturnsAsync(CartMockData.GetEmptyTodos());
-        //    var controller = new CartController(CartService.Object, _logger.Object);
-
-        //    var page = 1;
-        //    /// Act
-        //    var result = (NoContentResult)await controller.GetAll(page);
+            var page = 1;
+            /// Act
+            var result = (NoContentResult)await controller.GetAll(page);
 
 
-        //    /// Assert
-        //    result.StatusCode.Should().Be(204);
-        //    CartService.Verify(_ => _.GetAllCarts(), Times.Exactly(1));
-        //}
+            /// Assert
+            result.StatusCode.Should().Be(204);
+            CartService.Verify(_ => _.GetAllCarts(), Times.Exactly(1));
+        }
 
         [Fact]
         public void GetAllCarts_Return_BadRequestResult()
@@ -123,6 +110,7 @@ namespace RepositoriesTest.System.Controllers
             //Arrange  
             CartService.Setup(_ => _.GetAllCarts()).ReturnsAsync(CartMockData.GetEmptyTodos());
             var controller = new CartController(CartService.Object, _logger.Object);
+            controller.ControllerContext.HttpContext = new DefaultHttpContext { User = GetUser() };
 
             //Act  
             var data = controller.GetAll(page);
@@ -133,113 +121,123 @@ namespace RepositoriesTest.System.Controllers
                 Assert.IsType<BadRequestResult>(data);
         }
 
-        //[Fact]
-        //public async Task GetCartById_ShouldReturn200Status()
-        //{
-        //    var id = 1;
-        //    /// Arrange
-        //    CartService.Setup(_ => _.GetCartById(id)).ReturnsAsync(CartMockData.GetCarts()?.FirstOrDefault(x => x.Id == id));
-        //    var controller = new CartController(CartService.Object, _logger.Object);
+        [Fact]
+        public async Task GetCartById_ShouldReturn200Status()
+        {
+            var id = 1;
+            /// Arrange
+            CartService.Setup(_ => _.GetCartById(id)).ReturnsAsync(CartMockData.GetCarts()?.FirstOrDefault(x => x.Id == id));
+            var controller = new CartController(CartService.Object, _logger.Object);
+            controller.ControllerContext.HttpContext = new DefaultHttpContext { User = GetUser() };
+
+            /// Act
+            var result = (OkObjectResult)await controller.Get(id);
 
 
-        //    /// Act
-        //    var result = (OkObjectResult)await controller.Get(id);
+            // /// Assert
+            result.StatusCode.Should().Be(200);
+            result.Value.Should().NotBeNull();
+            ((Data.Models.Cart)result.Value).CartStatusId.Equals(1);
+        }
+
+        [Fact]
+        public async Task GetCartById_ShouldReturn404NotFoundStatus()
+        {
+            var id = 1;
+            /// Arrange
+            CartService.Setup(_ => _.GetCartById(id)).ReturnsAsync(CartMockData.GetEmptyTodos()?.FirstOrDefault(x => x.Id == id));
+            var controller = new CartController(CartService.Object, _logger.Object);
+            controller.ControllerContext.HttpContext = new DefaultHttpContext { User = GetUser() };
+
+            /// Act
+            var result = (NotFoundResult)await controller.Get(id);
 
 
-        //    // /// Assert
-        //    result.StatusCode.Should().Be(200);
-        //    result.Value.Should().NotBeNull();
-        //    ((Data.Models.Cart)result.Value).CartStatusId.Equals(1);
-        //}
+            /// Assert
+            result.StatusCode.Should().Be(404);
+        }
 
-        //[Fact]
-        //public async Task GetCartById_ShouldReturn404NotFoundStatus()
-        //{
-        //    var id = 1;
-        //    /// Arrange
-        //    CartService.Setup(_ => _.GetCartById(id)).ReturnsAsync(CartMockData.GetEmptyTodos()?.FirstOrDefault(x => x.Id == id));
-        //    var controller = new CartController(CartService.Object, _logger.Object);
+        [Fact]
+        public async void GetCartById_Return_OkResult()
+        {
+            var id = 1;
+            //Arrange  
+            CartService.Setup(_ => _.GetCartById(id)).ReturnsAsync(CartMockData.GetCarts()?.FirstOrDefault(x => x.Id == id));
+            var controller = new CartController(CartService.Object, _logger.Object);
+            controller.ControllerContext.HttpContext = new DefaultHttpContext { User = GetUser() };
 
+            //Act  
+            var result = await controller.Get(id);
 
-        //    /// Act
-        //    var result = (NotFoundResult)await controller.Get(id);
+            //Assert  
+            Assert.IsType<OkObjectResult>(result);
+        }
 
+        [Fact]
+        public async void GetCartById_Return_NotFoundResult()
+        {
+            var id = 10000;
+            //Arrange  
+            CartService.Setup(_ => _.GetCartById(id)).ReturnsAsync(CartMockData.GetCarts()?.FirstOrDefault(x => x.Id == id));
+            var controller = new CartController(CartService.Object, _logger.Object);
+            controller.ControllerContext.HttpContext = new DefaultHttpContext { User = GetUser() };
 
-        //    /// Assert
-        //    result.StatusCode.Should().Be(404);
-        //}
+            //Act  
+            var result = await controller.Get(id);
 
-        //[Fact]
-        //public async void GetCartById_Return_OkResult()
-        //{
-        //    var id = 2;
-        //    //Arrange  
-        //    CartService.Setup(_ => _.GetCartById(id)).ReturnsAsync(CartMockData.GetCarts()?.FirstOrDefault(x => x.Id == id));
-        //    var controller = new CartController(CartService.Object, _logger.Object);
+            //Assert  
+            Assert.IsType<NotFoundResult>(result);
+        }
 
+        [Fact]
+        public async void GetCartById_MatchResult()
+        {
+            int id = 1;
+            //Arrange  
+            CartService.Setup(_ => _.GetCartById(id)).ReturnsAsync(CartMockData.GetCarts()?.FirstOrDefault(x => x.Id == id));
+            var controller = new CartController(CartService.Object, _logger.Object);
+            controller.ControllerContext.HttpContext = new DefaultHttpContext { User = GetUser() };
 
-        //    //Act  
-        //    var result = await controller.Get(id);
+            //Act  
+            var result = await controller.Get(id);
 
-        //    //Assert  
-        //    Assert.IsType<OkObjectResult>(result);
-        //}
+            //Assert  
+            Assert.IsType<OkObjectResult>(result);
 
-        //[Fact]
-        //public async void GetCartById_Return_NotFoundResult()
-        //{
-        //    var id = 10000;
-        //    //Arrange  
-        //    CartService.Setup(_ => _.GetCartById(id)).ReturnsAsync(CartMockData.GetCarts()?.FirstOrDefault(x => x.Id == id));
-        //    var controller = new CartController(CartService.Object, _logger.Object);
+            var okResult = result.Should().BeOfType<OkObjectResult>().Subject;
 
-
-        //    //Act  
-        //    var result = await controller.Get(id);
-
-        //    //Assert  
-        //    Assert.IsType<NotFoundResult>(result);
-        //}
-
-        //[Fact]
-        //public async void GetCartById_MatchResult()
-        //{
-        //    int id = 3;
-        //    //Arrange  
-        //    CartService.Setup(_ => _.GetCartById(id)).ReturnsAsync(CartMockData.GetCarts()?.FirstOrDefault(x => x.Id == id));
-        //    var controller = new CartController(CartService.Object, _logger.Object);
-
-
-        //    //Act  
-        //    var result = await controller.Get(id);
-
-        //    //Assert  
-        //    Assert.IsType<OkObjectResult>(result);
-
-        //    var okResult = result.Should().BeOfType<OkObjectResult>().Subject;
-
-        //    Assert.Equal(2, ((Data.Models.Cart)okResult.Value).CartStatusId);
-        //}
+            Assert.Equal(1, ((Data.Models.Cart)okResult.Value).CartStatusId);
+        }
         #endregion        
 
         #region Delete
 
-        //[Fact]
-        //public async void Task_Delete_Post_Return_NotFoundResult()
-        //{
-        //    //Arrange
-        //    var id = 100;
-        //    CartService.Setup(_ => _.GetCartById(id)).ReturnsAsync(CartMockData.GetCarts()?.FirstOrDefault(x => x.Id == id));
-        //    var controller = new CartController(CartService.Object, _logger.Object);
+        [Fact]
+        public async void Task_Delete_Post_Return_NotFoundResult()
+        {
+            //Arrange
+            var id = 100;
+            CartService.Setup(_ => _.GetCartById(id)).ReturnsAsync(CartMockData.GetCarts()?.FirstOrDefault(x => x.Id == id));
+            var controller = new CartController(CartService.Object, _logger.Object);
+            controller.ControllerContext.HttpContext = new DefaultHttpContext { User = GetUser() };
 
-        //    //Act
-        //    var data = await controller.Delete(id);
+            //Act
+            var data = await controller.Delete(id);
 
-        //    //Assert
-        //    Assert.IsType<NotFoundResult>(data);
-        //}
+            //Assert
+            Assert.IsType<NotFoundResult>(data);
+        }
 
         #endregion
+
+        private static ClaimsPrincipal GetUser()
+        {
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+                                        new Claim(ClaimTypes.NameIdentifier, "28f1a0af-71bc-4d9e-bc4e-eae210abbb79"),
+                                        new Claim(ClaimTypes.Name, "ndiphiwe@somecompany.com")
+                                   }, "TestAuthentication"));
+            return user;
+        }
 
     }
 }

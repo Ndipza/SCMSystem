@@ -18,37 +18,43 @@ namespace RepositoriesTest.MockData
                      Id = 1,
                      CartId = 1,
                      ProductId = 1,
-                     Quantity = 10
+                     Quantity = 10,
+                     TotalCost = 150
                  },
                  new Data.Models.CartItem{
                      Id = 2,
                      CartId = 2,
                      ProductId = 1,
-                     Quantity = 20
+                     Quantity = 20,
+                     TotalCost = 250
                  },
                  new Data.Models.CartItem{
                      Id = 3,
                      CartId = 2,
                      ProductId = 2,
-                     Quantity = 30
+                     Quantity = 30,
+                     TotalCost = 350
                  },
                  new Data.Models.CartItem{
                      Id = 4,
                      CartId = 1,
                      ProductId = 1,
-                     Quantity = 40
+                     Quantity = 40,
+                     TotalCost = 450
                  },
                  new Data.Models.CartItem{
                      Id = 5,
                      CartId = 3,
                      ProductId = 1,
-                     Quantity = 50
+                     Quantity = 50,
+                     TotalCost = 550
                  },
                  new Data.Models.CartItem{
                      Id = 6,
                      CartId = 1,
                      ProductId = 3,
-                     Quantity = 60
+                     Quantity = 60,
+                     TotalCost = 650
                  }
             };
         }
@@ -63,7 +69,7 @@ namespace RepositoriesTest.MockData
             return new CartItemViewModel
             {
 
-                CartId = 4,
+                CartId = 1,
                 ProductId = 3,
                 Quantity = 5
             };
