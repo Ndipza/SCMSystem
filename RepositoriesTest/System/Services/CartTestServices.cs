@@ -142,13 +142,15 @@ namespace RepositoriesTest.System.Services
         {
             //Arrange
             var id = 1;
+            string? userId = "28f1a0af-71bc-4d9e-bc4e-eae210abbb79";
+
             _context.Carts.AddRange(CartMockData.GetCarts());
             _context.SaveChanges();
 
             var sut = new CartRepository(_context);
 
             //Act
-            var data = await sut.DeleteCart(id);
+            var data = await sut.DeleteCart(id, userId);
 
             //Assert
             Assert.True(data);
@@ -159,14 +161,15 @@ namespace RepositoriesTest.System.Services
         {
             //Arrange
             var id = 100;
+            string? userId = "28f1a0af-71bc-4d9e-bc4e-eae210abbb79";
             _context.Carts.AddRange(CartMockData.GetCarts());
             _context.SaveChanges();
 
             var sut = new CartRepository(_context);
 
             //Act
-            var data = await sut.DeleteCart(id);
-            await sut.DeleteCart(id);
+            var data = await sut.DeleteCart(id, userId);
+            await sut.DeleteCart(id, userId);
 
             //Assert
             Assert.False(data);

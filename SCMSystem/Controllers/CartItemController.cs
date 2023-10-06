@@ -11,10 +11,9 @@ using System.Reflection;
 namespace SCMSystem.Controllers
 {
     [Authorize]
-    [RequiredScope("access_as_user")]
     [Route("api/[controller]")]
     [ApiController]
-    public class CartItemController : ControllerBase
+    public class CartItemController : BaseController
     {
         #region Constructor
 
@@ -38,13 +37,21 @@ namespace SCMSystem.Controllers
             {
                 _logger.LogInformation(MyLogEvents.InsertItem, $"Run endpoint /api/cartitem POST CartItem");
 
+                string? userId = GetUserId();
+
+                if (userId == null)
+                {
+                    _logger.LogError(MyLogEvents.InsertItem, $"Login user can't be found, BadRequest: {BadRequest().StatusCode}");
+                    return BadRequest("Login user can't be found");
+                }
+
                 if (!ModelState.IsValid)
                 {
                     _logger.LogError(MyLogEvents.InsertItem, $"Create new CartItem Error: ModelState: {ModelState.IsValid}, BadRequest: {BadRequest().StatusCode}");
                     return BadRequest(ModelState);
                 }
 
-                var model = await _CartItemService.CreateCartItem(CartItemViewModel);
+                var model = await _CartItemService.CreateCartItem(CartItemViewModel, userId);
 
                 if (model == 0)
                 {
@@ -74,7 +81,15 @@ namespace SCMSystem.Controllers
             {
                 _logger.LogInformation(MyLogEvents.GetItem, $"Run endpoint /api/cartitem Get Categories: page = {page}");
 
-                var model = await _CartItemService.GetAllCartItems();
+                string? userId = GetUserId();
+
+                if (userId == null)
+                {
+                    _logger.LogError(MyLogEvents.InsertItem, $"Login user can't be found, BadRequest: {BadRequest().StatusCode}");
+                    return BadRequest("Login user can't be found");
+                }
+
+                var model = await _CartItemService.GetAllCartItems(userId);
 
                 if (model == null)
                 {
@@ -115,7 +130,15 @@ namespace SCMSystem.Controllers
             {
                 _logger.LogInformation(MyLogEvents.GetItem, $"Run endpoint /api/cartitems to Get category by id : {id}");
 
-                var model = await _CartItemService.GetCartItemById(id);
+                string? userId = GetUserId();
+
+                if (userId == null)
+                {
+                    _logger.LogError(MyLogEvents.InsertItem, $"Login user can't be found, BadRequest: {BadRequest().StatusCode}");
+                    return BadRequest("Login user can't be found");
+                }
+
+                var model = await _CartItemService.GetCartItemById(id, userId);
 
                 if (model == null)
                 {
@@ -147,13 +170,21 @@ namespace SCMSystem.Controllers
             {
                 _logger.LogInformation(MyLogEvents.UpdateItem, $"Run endpoint /api/cartitems Update Category: id = {id}");
 
+                string? userId = GetUserId();
+
+                if (userId == null)
+                {
+                    _logger.LogError(MyLogEvents.InsertItem, $"Login user can't be found, BadRequest: {BadRequest().StatusCode}");
+                    return BadRequest("Login user can't be found");
+                }
+
                 if (!ModelState.IsValid)
                 {
                     _logger.LogError(MyLogEvents.UpdateItem, $"Update a CartItem Error: ModelState: {ModelState.IsValid}, BadRequest: {BadRequest().StatusCode}");
                     return BadRequest(ModelState);
                 }
 
-                var model = await _CartItemService.UpdateCartItem(CartItemViewModel, id);
+                var model = await _CartItemService.UpdateCartItem(CartItemViewModel, id, userId);
 
 
                 if (model == null)
@@ -184,7 +215,15 @@ namespace SCMSystem.Controllers
             {
                 _logger.LogInformation(MyLogEvents.DeleteItem, $"Run endpoint /api/cartitems Delete Category by id: {id}");
 
-                var model = await _CartItemService.DeleteCartItem(id);
+                string? userId = GetUserId();
+
+                if (userId == null)
+                {
+                    _logger.LogError(MyLogEvents.InsertItem, $"Login user can't be found, BadRequest: {BadRequest().StatusCode}");
+                    return BadRequest("Login user can't be found");
+                }
+
+                var model = await _CartItemService.DeleteCartItem(id, userId);
 
                 if (model)
                 {

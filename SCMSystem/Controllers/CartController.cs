@@ -4,14 +4,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
 using Services.Interfaces;
+using System.Security.Claims;
 
 namespace SCMSystem.Controllers
 {
     [Authorize]
-    [RequiredScope("access_as_user")]
     [Route("api/[controller]")]
     [ApiController]
-    public class CartController : ControllerBase
+    public class CartController : BaseController
     {
 
         #region Constructor
@@ -29,17 +29,30 @@ namespace SCMSystem.Controllers
         #region Create
 
         // POST api/<CartController>
-        [HttpPost]
-        public async Task<IActionResult> Post([FromBody] CartViewModel cartViewModel)
+        [HttpPost("{cartStatusId}")]
+        public async Task<IActionResult> Post(int cartStatusId)
         {
             try
             {
                 _logger.LogInformation(MyLogEvents.InsertItem, $"Run endpoint /api/cart POST");
+                string? userId = GetUserId();
+
+                if (userId == null) 
+                {
+                    _logger.LogError(MyLogEvents.InsertItem, $"Login user can't be found, BadRequest: {BadRequest().StatusCode}");
+                    return BadRequest("Login user can't be found"); 
+                }
+
+                CartViewModel cartViewModel = new CartViewModel()
+                {
+                    CartStatusId = cartStatusId,
+                    CustomerId = new Guid(userId)
+                };                
 
                 if (!ModelState.IsValid)
                 {
                     _logger.LogError(MyLogEvents.InsertItem, $"Create new Cart Error: ModelState: {ModelState.IsValid}, BadRequest: {BadRequest().StatusCode}");
-                    return BadRequest(ModelState);
+                    return BadRequest("Create new Cart Error");
                 }
 
                 var model = await _cartService.CreateCart(cartViewModel);
@@ -47,7 +60,7 @@ namespace SCMSystem.Controllers
                 if (model == 0)
                 {
                     _logger.LogInformation(MyLogEvents.InsertItem, $"New Cart entity not created");
-                    return NotFound();
+                    return NotFound("New Cart entity not created");
                 }
 
                 _logger.LogInformation(MyLogEvents.InsertItem, $"Added new Cart entity with Id: {model}");
@@ -73,7 +86,17 @@ namespace SCMSystem.Controllers
             {
                 _logger.LogInformation(MyLogEvents.GetItem, $"Run endpoint /api/cart Get Cart: page = {page}");
 
+                string? userId = GetUserId();
+
+                if (userId == null)
+                {
+                    _logger.LogError(MyLogEvents.InsertItem, $"Login user can't be found, BadRequest: {BadRequest().StatusCode}");
+                    return BadRequest("Login user can't be found");
+                }
+
                 var model = await _cartService.GetAllCarts();
+
+                model = model.Where(x => x.CustomerId == new Guid(userId))?.ToList();
 
                 if (model == null)
                 {
@@ -113,9 +136,18 @@ namespace SCMSystem.Controllers
             try
             {
                 _logger.LogInformation(MyLogEvents.GetItem, $"Run endpoint /api/cart to Get Cart by id : {id}");
+
+                string? userId = GetUserId();
+
+                if (userId == null)
+                {
+                    _logger.LogError(MyLogEvents.InsertItem, $"Login user can't be found, BadRequest: {BadRequest().StatusCode}");
+                    return BadRequest("Login user can't be found");
+                }
+
                 var model = await _cartService.GetCartById(id);
 
-                if (model == null)
+                if (model == null || model.CustomerId != new Guid(userId))
                 {
                     _logger.LogWarning(MyLogEvents.GetItemNotFound, $"Get Cart by id {id} NOT FOUND : {NotFound().StatusCode}");
                     return NotFound();
@@ -136,18 +168,33 @@ namespace SCMSystem.Controllers
         #region Update
 
         // PUT api/<CartController>/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put([FromBody] CartViewModel cartViewModel, int id)
+        [HttpPut("{id}/{cartStatusId}")]
+        public async Task<IActionResult> Put(int id, int cartStatusId)
         {
             try
             {
+                
                 _logger.LogInformation(MyLogEvents.UpdateItem, $"Run endpoint /api/cart Update Cart: id = {id}");
+
+                string? userId = GetUserId();
+
+                if (userId == null)
+                {
+                    _logger.LogError(MyLogEvents.InsertItem, $"Login user can't be found, BadRequest: {BadRequest().StatusCode}");
+                    return BadRequest("Login user can't be found");
+                }
 
                 if (!ModelState.IsValid)
                 {
                     _logger.LogError(MyLogEvents.UpdateItem, $"Update a Cart Error: ModelState: {ModelState.IsValid}, BadRequest: {BadRequest().StatusCode}");
                     return BadRequest(ModelState);
                 }
+
+                CartViewModel cartViewModel = new CartViewModel()
+                {
+                    CartStatusId = cartStatusId,
+                    CustomerId = new Guid(userId)
+                };
 
                 var model = await _cartService.UpdateCart(cartViewModel, id);
 
@@ -178,7 +225,16 @@ namespace SCMSystem.Controllers
             try
             {
                 _logger.LogInformation(MyLogEvents.DeleteItem, $"Run endpoint /api/cart Delete Category by id: {id}");
-                var model = await _cartService.DeleteCart(id);
+
+                string? userId = GetUserId();
+
+                if (userId == null)
+                {
+                    _logger.LogError(MyLogEvents.InsertItem, $"Login user can't be found, BadRequest: {BadRequest().StatusCode}");
+                    return BadRequest("Login user can't be found");
+                }
+
+                var model = await _cartService.DeleteCart(id,userId);
 
                 if (model)
                 {

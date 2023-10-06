@@ -9,8 +9,7 @@ using Services.Interfaces;
 
 namespace SCMSystem.Controllers
 {
-    [Authorize]
-    [RequiredScope("access_as_user")]
+    [Authorize(Roles = UserRoles.Admin)]
     [Route("api/[controller]")]
     [ApiController]
     public class PaymentStatusController : ControllerBase

@@ -13,29 +13,29 @@ namespace Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<long> CreateCartItem(CartItemViewModel cartItemViewModel)
+        public async Task<long?> CreateCartItem(CartItemViewModel cartItemViewModel, string? userId)
         {
-            return await _unitOfWork.CartItemRepository.CreateCartItem(cartItemViewModel);
+            return await _unitOfWork.CartItemRepository.CreateCartItem(cartItemViewModel, userId);
         }
 
-        public async Task<bool> DeleteCartItem(int id)
+        public async Task<bool> DeleteCartItem(int id, string? userId)
         {
-            return await _unitOfWork.CartItemRepository.DeleteCartItem(id);
+            return await _unitOfWork.CartItemRepository.DeleteCartItem(id, userId);
         }
 
-        public async Task<List<CartItem>> GetAllCartItems()
+        public async Task<List<CartItem>> GetAllCartItems(string? userId)
         {
-            return await _unitOfWork.CartItemRepository.GetAllCartItems();
+            return await _unitOfWork.CartItemRepository.GetAllCartItems(userId);
         }
 
-        public async Task<CartItem?> GetCartItemById(int id)
+        public async Task<CartItem?> GetCartItemById(int id, string? userId)
         {
-            return await _unitOfWork.CartItemRepository.GetCartItemById(id);
+            return await _unitOfWork.CartItemRepository.GetCartItemById(id, userId);
         }
 
-        public async Task<CartItem> UpdateCartItem(CartItemViewModel cartItemViewModel, int id)
+        public async Task<CartItem?> UpdateCartItem(CartItemViewModel cartItemViewModel, int id, string? userId)
         {
-            return await _unitOfWork.CartItemRepository.UpdateCartItem(cartItemViewModel, id);
+            return await _unitOfWork.CartItemRepository.UpdateCartItem(cartItemViewModel, id, userId);
         }
     }
 }

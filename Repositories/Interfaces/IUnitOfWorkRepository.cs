@@ -11,11 +11,9 @@ namespace Repositories.Interfaces
         
         ICartRepository CartRepository { get; }
         ICategoryRepository CategoryRepository { get; }
-        ICustomerRepository CustomerRepository { get; }
         IPaymentMethodRepository PaymentMethodRepository { get; }
         IPaymentRepository PaymentRepository { get; }
         IProductRepository ProductRepository { get; }
-        ICustomerStatusRepository CustomerStatusRepository { get; }
         ICartStatusRepository CartStatusRepository { get; }
         IPaymentStatusRepository PaymentStatusRepository { get; }
         ICartItemRepository CartItemRepository { get; }

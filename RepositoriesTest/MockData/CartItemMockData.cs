@@ -11,6 +11,7 @@ namespace RepositoriesTest.MockData
     {
         public static List<Data.Models.CartItem> GetCartItems()
         {
+
             return new List<Data.Models.CartItem>
             {
                  new Data.Models.CartItem{
@@ -78,6 +79,7 @@ namespace RepositoriesTest.MockData
                 Quantity = 10101
             };
         }
+
 
     }
 }

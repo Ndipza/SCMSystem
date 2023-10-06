@@ -10,10 +10,10 @@ namespace Services.Interfaces
 {
     public interface ICartItemService
     {
-        Task<List<CartItem>> GetAllCartItems();
-        Task<CartItem?> GetCartItemById(int id);
-        Task<long> CreateCartItem(CartItemViewModel cartItemViewModel);
-        Task<CartItem> UpdateCartItem(CartItemViewModel cartItemViewModel, int id);
-        Task<bool> DeleteCartItem(int id);
+        Task<List<CartItem>> GetAllCartItems(string? userId);
+        Task<CartItem?> GetCartItemById(int id, string? userId);
+        Task<long?> CreateCartItem(CartItemViewModel cartItemViewModel, string? userId);
+        Task<CartItem?> UpdateCartItem(CartItemViewModel cartItemViewModel, int id, string? userId);
+        Task<bool> DeleteCartItem(int id, string? userId);
     }
 }

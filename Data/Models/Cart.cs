@@ -11,7 +11,6 @@ namespace Data.Models
         public int? CartStatusId { get; set; }        
         public virtual CartStatus? CartStatus { get; set; }
         public Guid? CustomerId { get; set; }
-        public virtual Customer? Customer { get; set; }
         public virtual ICollection<Payment>? Payments { get; set; } = new List<Payment>();
         public virtual ICollection<CartItem>? CartItems { get; set; } = new List<CartItem>();
     }

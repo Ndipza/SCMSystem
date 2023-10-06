@@ -1,8 +1,8 @@
 ﻿using Core.ViewModels;
 using Data;
 using Data.Models;
-using Microsoft.EntityFrameworkCore;
 using Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Repositories
 {

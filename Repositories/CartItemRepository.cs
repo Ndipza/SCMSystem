@@ -13,8 +13,12 @@ namespace Repositories
         {
             _context = context;
         }
-        public async Task<long> CreateCartItem(CartItemViewModel cartItemViewModel)
+        public async Task<long?> CreateCartItem(CartItemViewModel cartItemViewModel, string? userId)
         {
+            List<int>? cartIds = GetCartIdsOfLoginUser(userId);
+
+            if (cartIds == null && !cartIds.Contains(cartItemViewModel.CartId)) return null;
+
             var cartItem = new CartItem
             {
                 CartId = cartItemViewModel.CartId,
@@ -26,11 +30,11 @@ namespace Repositories
             return cartItem.Id;
         }
 
-        public async Task<bool> DeleteCartItem(int id)
+        public async Task<bool> DeleteCartItem(int id, string? userId)
         {
             if (_context != null)
             {
-                var cartItem = GetCartItemById(id)?.Result;
+                var cartItem = GetCartItemById(id, userId)?.Result;
                 if (cartItem != null)
                 {
                     _context.CartItems.RemoveRange(cartItem);
@@ -42,35 +46,48 @@ namespace Repositories
             return false;
         }
 
-        public async Task<List<CartItem>> GetAllCartItems()
+        public async Task<List<CartItem>> GetAllCartItems(string? userId)
         {
-            return await _context.CartItems                
+            List<int>? cartIds = GetCartIdsOfLoginUser(userId);
+
+            if (cartIds == null) return null;
+
+            return await _context.CartItems.Where(c => cartIds.Contains((int)c.CartId))             
                 .Include(p => p.Cart)
                 .Include(p => p.Product).ToListAsync();
         }
 
-        public async Task<CartItem?> GetCartItemById(int id)
+        public async Task<CartItem?> GetCartItemById(int id, string? userId)
         {
-            return await _context.CartItems
+            List<int>? cartIds = GetCartIdsOfLoginUser(userId);
+
+            if(cartIds == null) return null;
+
+            return await _context.CartItems.Where(c => cartIds.Contains((int)c.CartId))
                 .Include(CartItem => CartItem.Cart)
                 .Include(CartItem => CartItem.Product)
                 .SingleOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<CartItem> UpdateCartItem(CartItemViewModel cartItemViewModel, int id)
+        private List<int>? GetCartIdsOfLoginUser(string? userId)
         {
-            var CartItem = GetCartItemById(id)?.Result;
+            return _context.Carts?.Where(x => x.CustomerId == new Guid(userId))?.ToList().Select(c => c.Id).ToList();
+        }
 
-            if (CartItem == null) { return new CartItem(); }
+        public async Task<CartItem?> UpdateCartItem(CartItemViewModel cartItemViewModel, int id, string? userId)
+        {
+            var cartItem = GetCartItemById(id, userId)?.Result;
 
-            CartItem.Id = id;
-            CartItem.CartId = cartItemViewModel.CartId;
-            CartItem.ProductId = cartItemViewModel.ProductId;
-            CartItem.Quantity = cartItemViewModel.Quantity;
+            if (cartItem == null) { return null; }
 
-            _context.CartItems.Update(CartItem);
+            cartItem.Id = id;
+            cartItem.CartId = cartItemViewModel.CartId;
+            cartItem.ProductId = cartItemViewModel.ProductId;
+            cartItem.Quantity = cartItemViewModel.Quantity;
+
+            _context.CartItems.Update(cartItem);
             await _context.SaveChangesAsync();
-            return CartItem;
+            return cartItem;
         }
     }
 }

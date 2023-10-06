@@ -13,13 +13,13 @@ namespace Repositories
         {
             _context = context;
         }
-        public async Task<bool> DeleteCart(int id)
+        public async Task<bool> DeleteCart(int id, string? userId)
         {
 
             if (_context != null)
             {
                 var cart = GetCartById(id)?.Result;
-                if (cart != null)
+                if (cart != null && cart.CustomerId == new Guid(userId))
                 {
                     _context.Carts.RemoveRange(cart);
                     await _context.SaveChangesAsync();
@@ -33,15 +33,13 @@ namespace Repositories
         public async Task<List<Cart>> GetAllCarts()
         {
             return await _context.Carts
-                .Include(cart => cart.CartStatus)
-                .Include(cart => cart.Customer).ToListAsync();
+                .Include(cart => cart.CartStatus).ToListAsync();
         }
 
         public async Task<Cart?> GetCartById(int id)
         {
             return await _context.Carts
                 .Include(cart => cart.CartStatus)
-                .Include(cart => cart.Customer)
                 .SingleOrDefaultAsync(x => x.Id == id);
         }
 
@@ -62,7 +60,7 @@ namespace Repositories
         {
             var cart = GetCartById(id)?.Result;
 
-            if (cart == null) { return new Cart(); }
+            if (cart == null || cart.CustomerId != cartViewModel.CustomerId) { return new Cart(); }
 
             cart.Id = id;
             cart.DateUpdated = DateTime.Now;

@@ -14,27 +14,23 @@ namespace Repositories
         private readonly SCMSystemDBContext _context;
         private ICartRepository _cartRepository;
         private ICategoryRepository _categoryRepository;
-        private ICustomerRepository _customerRepository;
         private IPaymentMethodRepository _paymentMethodRepository;
         private IPaymentRepository _paymentRepository;
         private IProductRepository _productRepository;
-        private ICustomerStatusRepository _customerStatusRepository;
         private ICartStatusRepository _cartStatusRepository;
         private IPaymentStatusRepository _paymentStatusRepository;
         private ICartItemRepository _cartItemRepository;
         public UnitOfWorkRepository(SCMSystemDBContext context, ICartRepository cartRepository,
-            ICategoryRepository categoryRepository, ICustomerRepository customerRepository, IPaymentMethodRepository paymentMethodRepository, IPaymentRepository paymentRepository,
-            IProductRepository productRepository, ICustomerStatusRepository customerStatusRepository,
-            ICartStatusRepository cartStatusRepository, IPaymentStatusRepository paymentStatusRepository, ICartItemRepository cartItemRepository)
+            ICategoryRepository categoryRepository, IPaymentMethodRepository paymentMethodRepository, IPaymentRepository paymentRepository,
+            IProductRepository productRepository, ICartStatusRepository cartStatusRepository, 
+            IPaymentStatusRepository paymentStatusRepository, ICartItemRepository cartItemRepository)
         {
             _context = context;
             _cartRepository = cartRepository;
             _categoryRepository = categoryRepository;
-            _customerRepository = customerRepository;
             _paymentMethodRepository = paymentMethodRepository;
             _paymentRepository = paymentRepository;
             _productRepository = productRepository;
-            _customerStatusRepository = customerStatusRepository;
             _cartStatusRepository = cartStatusRepository;
             _paymentStatusRepository = paymentStatusRepository;
             _cartItemRepository = cartItemRepository;
@@ -53,14 +49,6 @@ namespace Repositories
             get
             {
                 return _categoryRepository ?? new CategoryRepository(_context);
-            }
-        }
-
-        public ICustomerRepository CustomerRepository
-        {
-            get
-            {
-                return _customerRepository ?? new CustomerRepository(_context);
             }
         }
 
@@ -85,14 +73,6 @@ namespace Repositories
             get
             {
                 return _productRepository ?? new ProductRepository(_context);
-            }
-        }
-
-        public ICustomerStatusRepository CustomerStatusRepository
-        {
-            get
-            {
-                return _customerStatusRepository ?? new CustomerStatusRepository(_context);
             }
         }
 

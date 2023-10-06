@@ -40,10 +40,12 @@ namespace RepositoriesTest.System.Services
             _context.CartItems.AddRange(CartItemMockData.GetCartItems());
             _context.SaveChanges();
 
+            string? userId = "28f1a0af-71bc-4d9e-bc4e-eae210abbb79";
+
             var sut = new CartItemRepository(_context);
 
             /// Act
-            await sut.CreateCartItem(newCartItem);
+            await sut.CreateCartItem(newCartItem, userId);
 
             ///Assert
             int expectedRecordCount = (CartItemMockData.GetCartItems().Count() + 1);
@@ -60,11 +62,12 @@ namespace RepositoriesTest.System.Services
             /// Arrange
             _context.CartItems.AddRange(CartItemMockData.GetCartItems());
             _context.SaveChanges();
+            string? userId = "28f1a0af-71bc-4d9e-bc4e-eae210abbb79";
 
             var sut = new CartItemRepository(_context);
 
             /// Act
-            var result = await sut.GetAllCartItems();
+            var result = await sut.GetAllCartItems(userId);
 
             /// Assert
             result.Should().HaveCount(CartItemMockData.GetCartItems().Count);
@@ -76,12 +79,13 @@ namespace RepositoriesTest.System.Services
             /// Arrange
             _context.CartItems.AddRange(CartItemMockData.GetCartItems());
             _context.SaveChanges();
+            string? userId = "28f1a0af-71bc-4d9e-bc4e-eae210abbb79";
 
             var sut = new CartItemRepository(_context);
 
             /// Act
             int id = 1;
-            var result = await sut.GetCartItemById(id);
+            var result = await sut.GetCartItemById(id, userId);
 
             /// Assert
             result.Equals(CartItemMockData.GetCartItems().FirstOrDefault(x => x.Id == id));
@@ -95,6 +99,9 @@ namespace RepositoriesTest.System.Services
         public async void Update_ValidData_Return_CorrectResults()
         {
             //Arrange  
+            string? userId = "28f1a0af-71bc-4d9e-bc4e-eae210abbb79";
+            _context.Carts.AddRange(CartMockData.GetCarts());
+
             _context.CartItems.AddRange(CartItemMockData.GetCartItems());
             _context.SaveChanges();
 
@@ -102,7 +109,7 @@ namespace RepositoriesTest.System.Services
 
             //Act  
             var id = 2;
-            var existingPost = await sut.GetCartItemById(id);
+            var existingPost = await sut.GetCartItemById(id, userId);
             var okResult = existingPost.Should().BeOfType<Data.Models.CartItem>().Subject;
             var result = okResult.Quantity.Equals(CartItemMockData.GetCartItems().FirstOrDefault(x => x.Id == id).Quantity);
             okResult.Quantity.Equals(20);
@@ -110,7 +117,7 @@ namespace RepositoriesTest.System.Services
             var CartItem = new CartItemViewModel();
             CartItem.Quantity = 30;
 
-            var updatedData = await sut.UpdateCartItem(CartItem, id);
+            var updatedData = await sut.UpdateCartItem(CartItem, id, userId);
 
             //Assert  
             result.Should().BeTrue();
@@ -121,6 +128,9 @@ namespace RepositoriesTest.System.Services
         public async void Update_InvalidData_Return_Null()
         {
             //Arrange  
+            string? userId = "28f1a0af-71bc-4d9e-bc4e-eae210abbb79";
+            _context.Carts.AddRange(CartMockData.GetCarts());
+
             _context.CartItems.AddRange(CartItemMockData.GetCartItems());
             _context.SaveChanges();
 
@@ -131,7 +141,7 @@ namespace RepositoriesTest.System.Services
             var CartItem = new CartItemViewModel();
             CartItem.Quantity = 1000;
 
-            var updatedData = await sut.UpdateCartItem(CartItem, id);
+            var updatedData = await sut.UpdateCartItem(CartItem, id, userId);
 
             //Assert  
             Assert.Null(updatedData.Product);
@@ -146,13 +156,16 @@ namespace RepositoriesTest.System.Services
         {
             //Arrange
             var id = 1;
+            string? userId = "28f1a0af-71bc-4d9e-bc4e-eae210abbb79";
+            _context.Carts.AddRange(CartMockData.GetCarts());
+
             _context.CartItems.AddRange(CartItemMockData.GetCartItems());
             _context.SaveChanges();
 
             var sut = new CartItemRepository(_context);
 
             //Act
-            var data = await sut.DeleteCartItem(id);
+            var data = await sut.DeleteCartItem(id, userId);
 
             //Assert
             Assert.True(data);
@@ -163,14 +176,17 @@ namespace RepositoriesTest.System.Services
         {
             //Arrange
             var id = 100;
+            string? userId = "28f1a0af-71bc-4d9e-bc4e-eae210abbb79";
+            _context.Carts.AddRange(CartMockData.GetCarts());
+
             _context.CartItems.AddRange(CartItemMockData.GetCartItems());
             _context.SaveChanges();
 
             var sut = new CartItemRepository(_context);
 
             //Act
-            var data = await sut.DeleteCartItem(id);
-            await sut.DeleteCartItem(id);
+            var data = await sut.DeleteCartItem(id, userId);
+            await sut.DeleteCartItem(id, userId);
 
             //Assert
             Assert.False(data);

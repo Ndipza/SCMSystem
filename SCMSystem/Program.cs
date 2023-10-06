@@ -13,6 +13,9 @@ using AspNetCoreRateLimit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Identity;
 
 namespace SCMSystem
 {
@@ -24,6 +27,7 @@ namespace SCMSystem
             try
             {
                 var builder = WebApplication.CreateBuilder(args);
+                ConfigurationManager configuration = builder.Configuration;
 
                 // NLog: Setup NLog for Dependency injection
                 builder.Logging.ClearProviders();
@@ -87,33 +91,56 @@ namespace SCMSystem
                 builder.Services.AddDbContext<SCMSystemDBContext>(options => options.UseSqlServer(
                     builder.Configuration.GetConnectionString("CartConnection")
                 ));
-                builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
+
+
+                // For Identity
+                builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+                    .AddEntityFrameworkStores<SCMSystemDBContext>()
+                    .AddDefaultTokenProviders();
+
+                // Adding Authentication
+                builder.Services.AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+
+                // Adding Jwt Bearer
+                .AddJwtBearer(options =>
+                {
+                    options.SaveToken = true;
+                    options.RequireHttpsMetadata = false;
+                    options.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidAudience = configuration["JWT:ValidAudience"],
+                        ValidIssuer = configuration["JWT:ValidIssuer"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]))
+                    };
+                });
 
                 builder.Services.AddTransient<IUnitOfWorkRepository, UnitOfWorkRepository>();
 
                 builder.Services.AddScoped<ICartRepository, CartRepository>();
                 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-                builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
                 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
                 builder.Services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository>();
                 builder.Services.AddScoped<IProductRepository, ProductRepository>();
-                builder.Services.AddScoped<ICustomerStatusRepository, CustomerStatusRepository>();
                 builder.Services.AddScoped<ICartStatusRepository, CartStatusRepository>();
                 builder.Services.AddScoped<IPaymentStatusRepository, PaymentStatusRepository>();
                 builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
 
                 builder.Services.AddScoped<ICartService, CartService>();
                 builder.Services.AddScoped<ICategoryService, CategoryService>();
-                builder.Services.AddScoped<ICustomerService, CustomerService>();
                 builder.Services.AddScoped<IPaymentService, PaymentService>();
                 builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
                 builder.Services.AddScoped<IProductService, ProductService>();
-                builder.Services.AddScoped<ICustomerStatusService, CustomerStatusService>();
                 builder.Services.AddScoped<ICartStatusService, CartStatusService>();
                 builder.Services.AddScoped<IPaymentStatusService, PaymentStatusService>();
                 builder.Services.AddScoped<ICartItemService, CartItemService>();
-                builder.Services.AddScoped<IFileService, FileService>();                
+                builder.Services.AddScoped<IFileService, FileService>();
 
                 var app = builder.Build();
 
