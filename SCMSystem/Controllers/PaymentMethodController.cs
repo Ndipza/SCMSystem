@@ -76,16 +76,10 @@ namespace SCMSystem.Controllers
 
                 var model = await _paymentMethodService.GetAllPaymentMethods();
 
-                if (model == null)
+                if (model == null || model.Count == 0)
                 {
                     _logger.LogWarning(MyLogEvents.GetItemNotFound, $"Get PaymentMethods on page: {page}, NotFound = {NotFound().StatusCode}");
                     return NotFound();
-                }
-
-                if (model.Count == 0)
-                {
-                    _logger.LogWarning(MyLogEvents.GetItemNotFound, $"Get PaymentMethods on page: {page}, NoContent = {NoContent().StatusCode}");
-                    return NoContent();
                 }
 
                 //Pagination

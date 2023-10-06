@@ -103,7 +103,7 @@ namespace RepositoriesTest.System.Controllers
         }
 
         [Fact]
-        public async Task GetAllCategories_ShouldReturn204NoContentStatus()
+        public async Task GetAllCategories_ShouldReturn404NoFoundStatus()
         {
             /// Arrange
             categoryService.Setup(_ => _.GetCategories()).ReturnsAsync(CategoryMockData.GetEmptyTodos());
@@ -111,11 +111,11 @@ namespace RepositoriesTest.System.Controllers
 
             var page = 1;
             /// Act
-            var result = (NoContentResult)await controller.GetAll(page);
+            var result = (NotFoundResult)await controller.GetAll(page);
 
 
             /// Assert
-            result.StatusCode.Should().Be(204);
+            result.StatusCode.Should().Be(404);
             categoryService.Verify(_ => _.GetCategories(), Times.Exactly(1));
         }
 

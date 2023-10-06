@@ -75,14 +75,10 @@ namespace SCMSystem.Controllers
 
                 var model = await _categoryService.GetCategories();
 
-                if (model == null) {
+                if (model == null || model.Count == 0)
+                {
                     _logger.LogWarning(MyLogEvents.GetItemNotFound, $"Get Categories on page: {page}, NotFound = {NotFound().StatusCode}");
                     return NotFound(); 
-                }
-
-                if (model.Count == 0) {
-                    _logger.LogWarning(MyLogEvents.GetItemNotFound, $"Get Categories on page: {page}, NoContent = {NoContent().StatusCode}");
-                    return NoContent(); 
                 }
 
                 //Pagination

@@ -89,7 +89,7 @@ namespace RepositoriesTest.System.Controllers
         }
 
         [Fact]
-        public async Task GetAllProducts_ShouldReturn204NoContentStatus()
+        public async Task GetAllProducts_ShouldReturn404NoFoundStatus()
         {
             /// Arrange
             _productService.Setup(_ => _.GetAllProducts()).ReturnsAsync(ProductMockData.GetEmptyTodos());
@@ -97,11 +97,11 @@ namespace RepositoriesTest.System.Controllers
 
             var page = 1;
             /// Act
-            var result = (NoContentResult)await controller.GetAll(page);
+            var result = (NotFoundResult)await controller.GetAll(page);
 
 
             /// Assert
-            result.StatusCode.Should().Be(204);
+            result.StatusCode.Should().Be(404);
             _productService.Verify(_ => _.GetAllProducts(), Times.Exactly(1));
         }
 

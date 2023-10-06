@@ -93,16 +93,10 @@ namespace SCMSystem.Controllers
 
                 var model = await _productService.GetAllProducts();
 
-                if (model == null)
+                if (model == null || model.Count == 0)
                 {
                     _logger.LogWarning(MyLogEvents.GetItemNotFound, $"Get Products on page: {page}, NotFound = {NotFound().StatusCode}");
                     return NotFound();
-                }
-
-                if (model.Count == 0)
-                {
-                    _logger.LogWarning(MyLogEvents.GetItemNotFound, $"Get Products on page: {page}, NoContent = {NoContent().StatusCode}");
-                    return NoContent();
                 }
 
                 //Pagination

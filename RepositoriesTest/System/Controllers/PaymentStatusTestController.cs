@@ -100,7 +100,7 @@ namespace RepositoriesTest.System.Controllers
         }
 
         [Fact]
-        public async Task GetAllPaymentStatuses_ShouldReturn204NoContentStatus()
+        public async Task GetAllPaymentStatuses_ShouldReturn404NoFoundStatus()
         {
             /// Arrange
             PaymentStatusService.Setup(_ => _.GetAllPaymentStatuses()).ReturnsAsync(PaymentStatusMockData.GetEmptyTodos());
@@ -108,11 +108,11 @@ namespace RepositoriesTest.System.Controllers
 
             var page = 1;
             /// Act
-            var result = (NoContentResult)await controller.GetAll(page);
+            var result = (NotFoundResult)await controller.GetAll(page);
 
 
             /// Assert
-            result.StatusCode.Should().Be(204);
+            result.StatusCode.Should().Be(404);
             PaymentStatusService.Verify(_ => _.GetAllPaymentStatuses(), Times.Exactly(1));
         }
 

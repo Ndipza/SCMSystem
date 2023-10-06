@@ -11,7 +11,7 @@ namespace SCMSystem.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class CartController : BaseController
+    public class CartController : ControllerBase
     {
 
         #region Constructor
@@ -98,16 +98,10 @@ namespace SCMSystem.Controllers
 
                 model = model.Where(x => x.CustomerId == new Guid(userId))?.ToList();
 
-                if (model == null)
+                if (model == null || model.Count == 0)
                 {
                     _logger.LogWarning(MyLogEvents.GetItemNotFound, $"Get Cart on page: {page}, NotFound = {NotFound().StatusCode}");
                     return NotFound();
-                }
-
-                if (model.Count == 0)
-                {
-                    _logger.LogWarning(MyLogEvents.GetItemNotFound, $"Get Cart on page: {page}, NoContent = {NoContent().StatusCode}");
-                    return NoContent();
                 }
 
                 //Pagination
@@ -259,5 +253,12 @@ namespace SCMSystem.Controllers
         }
         #endregion
 
+        private string? GetUserId()
+        {
+            var claimsIdentity = this.User.Identity as ClaimsIdentity;
+
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            return userId;
+        }
     }
 }

@@ -7,13 +7,14 @@ using Newtonsoft.Json;
 using Services;
 using Services.Interfaces;
 using System.Reflection;
+using System.Security.Claims;
 
 namespace SCMSystem.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class CartItemController : BaseController
+    public class CartItemController : ControllerBase
     {
         #region Constructor
 
@@ -91,16 +92,10 @@ namespace SCMSystem.Controllers
 
                 var model = await _CartItemService.GetAllCartItems(userId);
 
-                if (model == null)
+                if (model == null || model.Count == 0)
                 {
                     _logger.LogWarning(MyLogEvents.GetItemNotFound, $"Get CartItems on page: {page}, NotFound = {NotFound().StatusCode}");
                     return NotFound();
-                }
-
-                if (model.Count == 0)
-                {
-                    _logger.LogWarning(MyLogEvents.GetItemNotFound, $"Get CartItems on page: {page}, NoContent = {NoContent().StatusCode}");
-                    return NoContent();
                 }
 
                 //Pagination
@@ -241,6 +236,14 @@ namespace SCMSystem.Controllers
             }
         }
         #endregion
+
+        private string? GetUserId()
+        {
+            var claimsIdentity = this.User.Identity as ClaimsIdentity;
+
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            return userId;
+        }
 
     }
 }
